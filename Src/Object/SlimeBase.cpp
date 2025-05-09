@@ -405,7 +405,7 @@ int SlimeBase::GetAtkPow(void)
 	return atkPow_;
 }
 
-void SlimeBase::ChangeState(CommonData::PLAYERSTATE state)
+void SlimeBase::ChangeState(SlimeBase::PLAYERSTATE state)
 {
 
 }

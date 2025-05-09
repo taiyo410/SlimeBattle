@@ -147,7 +147,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	void ChangeState(CommonData::PLAYERSTATE state)override;
+	void ChangeState(SlimeBase::PLAYERSTATE state)override;
 
 	/// <summary>
 	/// チャージ開始
@@ -159,16 +159,16 @@ public:
 
 
 	//プレイヤー座標のゲッター
-	VECTOR GetPos(void);
+	const VECTOR GetPos(void)const;
 
 	//プレイヤーの状態ゲッタ
-	CommonData::PLAYERSTATE GetState(void);
+	SlimeBase::PLAYERSTATE GetState(void);
 
 	/// <summary>
 	/// プレイヤー状態のセッター
 	/// </summary>
 	/// <param name="playerState"></param>
-	void SetPlayerState(const CommonData::PLAYERSTATE playerState);
+	void SetPlayerState(const SlimeBase::PLAYERSTATE playerState);
 
 	//ガードクールタイムのセッタ
 	void SetGuardCoolTime(const int guardCooltime);
@@ -336,8 +336,8 @@ protected:
 	void RevivalUpdate(void);
 
 
-	CommonData::PLAYERSTATE state_;		//プレイヤーの状態
-	CommonData::PLAYERSTATE colState_;	//プレイヤーが当たった時の保管用変数
+	SlimeBase::PLAYERSTATE state_;		//プレイヤーの状態
+	SlimeBase::PLAYERSTATE colState_;	//プレイヤーが当たった時の保管用変数
 
 #pragma endregion
 

@@ -89,7 +89,7 @@ void Player::SetParam(void)
 	isStaminaRecov_ = false;
 
 	//プレイヤー状態
-	state_ = CommonData::PLAYERSTATE::ACTIONABLE;
+	state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
 
 	//フレームカウント
 	frame_ = FRAME_DEFAULT;
@@ -119,7 +119,7 @@ void Player::SetParam(void)
 #pragma endregion
 }
 //プレイヤー状態セッタ
-void Player::SetPlayerState(const CommonData::PLAYERSTATE playerState)
+void Player::SetPlayerState(const SlimeBase::PLAYERSTATE playerState)
 {
 	state_ = playerState;
 }
@@ -130,13 +130,14 @@ void Player::SetPlayerState(const CommonData::PLAYERSTATE playerState)
 //	return true;
 //}
 
+
 //更新処理
 void Player::Update(void)
 {
 	SlimeBase::Update();
 
 	//重力をかける
-	if (state_ != CommonData::PLAYERSTATE::REVIVAL)
+	if (state_ != SlimeBase::PLAYERSTATE::REVIVAL)
 	{
 		AddGravity(gravityPow_);
 	}
@@ -181,7 +182,7 @@ void Player::Draw(void)
 	//方向三角形
 	DrawDirTriangle(pos_, dir_, SLIME_COLOR);
 
-	if (state_ == CommonData::PLAYERSTATE::CHARGE)
+	if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
 		VECTOR framePos = VECTOR();
@@ -213,8 +214,13 @@ bool Player::Release(void)
 	return true;
 }
 
+const VECTOR Player::GetPos(void)const 
+{
+	return pos_;
+}
+
 //プレイヤーの状態ゲッタ
-CommonData::PLAYERSTATE Player::GetState(void)
+SlimeBase::PLAYERSTATE Player::GetState(void)
 {
 	return state_;
 }
@@ -258,7 +264,7 @@ void Player::FrameUpdate(void)
 	{
 		frame_ = FRAME_DEFAULT;
 		stamina_ = 0.0f;
-		state_ = CommonData::PLAYERSTATE::ACTIONABLE;
+		state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
 		isStaminaRecov_ = true;
 	}
 }
@@ -327,14 +333,14 @@ void Player::ProcessMove(void)
 	if (InputManager::GetInput().IsPadRelease(padNum_, PAD_INPUT_A))
 	{
 		frameNum_ = frame_;
-		if (state_ == CommonData::PLAYERSTATE::CHARGE)
+		if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
 		{
 			StopJoypadVibration(padNum_, -1);
-			ChangeState(CommonData::PLAYERSTATE::NORMALATTACK);
+			ChangeState(SlimeBase::PLAYERSTATE::NORMALATTACK);
 		}
 		else
 		{
-			ChangeState(CommonData::PLAYERSTATE::STEP);
+			ChangeState(SlimeBase::PLAYERSTATE::STEP);
 		}
 
 	}
@@ -359,11 +365,11 @@ void Player::KnockBuckUpdate(void)
 	if (!MoveLimit())
 	{
 		StopJoypadVibration(padNum_, -1);
-		ChangeState(CommonData::PLAYERSTATE::FALL);
+		ChangeState(SlimeBase::PLAYERSTATE::FALL);
 	}
 	if (knockBackCnt_ < 0)
 	{
-		ChangeState(CommonData::PLAYERSTATE::COOL);
+		ChangeState(SlimeBase::PLAYERSTATE::COOL);
 	}
 }
 
@@ -398,10 +404,10 @@ void Player::KnockBack(void)
 //チャージとステップを決める処理
 void Player::MoveDecide(void)
 {
-	ChangeState(CommonData::PLAYERSTATE::STEPKEEP);
+	ChangeState(SlimeBase::PLAYERSTATE::STEPKEEP);
 	if (stepFrame_ < 0)
 	{
-		ChangeState(CommonData::PLAYERSTATE::CHARGE);
+		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -445,12 +451,12 @@ void Player::CoolUpdate(void)
 	if (coolTime_ <= 0)
 	{
 		coolTime_ = 0;
-		ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(CommonData::PLAYERSTATE::FALL);
+		ChangeState(SlimeBase::PLAYERSTATE::FALL);
 	}
 }
 
@@ -472,12 +478,12 @@ void Player::ActionableUpdate(void)
 	//Eキーを押すとガード状態
 	if (ins.IsPadKeep(padNum_, PAD_INPUT_6) && guardCoolTime_ == 0)
 	{
-		ChangeState(CommonData::PLAYERSTATE::GUARD);
+		ChangeState(SlimeBase::PLAYERSTATE::GUARD);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(CommonData::PLAYERSTATE::FALL);
+		ChangeState(SlimeBase::PLAYERSTATE::FALL);
 	}
 
 	GetItemUpdate();
@@ -491,7 +497,7 @@ void Player::StepKeepUpdate(void)
 	ProcessMove();
 	if (stepFrame_ < 0)
 	{
-		ChangeState(CommonData::PLAYERSTATE::CHARGE);
+		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -509,7 +515,7 @@ void Player::StepUpdate(void)
 		frame_--;
 		if (frame_ <= 0)
 		{
-			ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+			ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 		}
 		//ステップ中スタミナを減らす
 		stamina_--;
@@ -517,7 +523,7 @@ void Player::StepUpdate(void)
 	}
 	else
 	{
-		ChangeState(CommonData::PLAYERSTATE::CHARGE);
+		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -557,7 +563,7 @@ void Player::ChargeUpdate(void)
 	if (ins.IsPadKeep(padNum_,PAD_INPUT_5))
 	{
 		StopJoypadVibration(padNum_, -1);
-		ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 
 }
@@ -573,7 +579,7 @@ void Player::NormalAttackUpdate(void)
 	stamina_ -= CHARGE_ATK_STAMINA;
 	if (frame_ <= 0.0f||stamina_<=0.0f)
 	{
-		ChangeState(CommonData::PLAYERSTATE::CRITICALATTACK);
+		ChangeState(SlimeBase::PLAYERSTATE::CRITICALATTACK);
 	}
 }
 
@@ -582,7 +588,7 @@ void Player::CriticalUpdate(void)
 	criticalCnt_--;
 	if (criticalCnt_ <= 0&&pos_.y<=RADIUS)
 	{
-		ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 }
 
@@ -656,7 +662,7 @@ void Player::GetItemUpdate(void)
 		switch (itemType)
 		{
 		case ItemBase::ITEM_TYPE::SPEEKER:
-			ChangeState(CommonData::PLAYERSTATE::WAIDATTACK);
+			ChangeState(SlimeBase::PLAYERSTATE::WAIDATTACK);
 			break;
 		case ItemBase::ITEM_TYPE::MAX:
 			break;
@@ -675,7 +681,7 @@ void Player::FallUpdate(void)
 	{
 		Damage(fallDmg_,0);
 		Score(-fallScore_);
-		ChangeState(CommonData::PLAYERSTATE::REVIVAL);
+		ChangeState(SlimeBase::PLAYERSTATE::REVIVAL);
 	}
 }
 
@@ -686,7 +692,7 @@ void Player::RevivalUpdate(void)
 	if (revivalCnt_ <= 0)
 	{
 		SetInvincible(AFTER_REVIVAL_CNT);
-		ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 }
 
@@ -705,7 +711,7 @@ void Player::GuardUpdate(void)
 	{
 		EffectManager::GetEffect().StopEffect(EffectManager::EFF_TYPE::SHIELD, this);
 
-		ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 
 	}
 }
@@ -754,7 +760,7 @@ void Player::WaidAtkUpdate(void)
 	case WAID_ATK::END:
 		if (pos_.y <= RADIUS)
 		{
-			ChangeState(CommonData::PLAYERSTATE::ACTIONABLE);
+			ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 		}
 		break;
 	}
@@ -801,42 +807,42 @@ void Player::StateUpdate(void)
 	if (stamina_ < 0.0f)return;
 	switch (state_)
 	{
-	case CommonData::PLAYERSTATE::COOL:
+	case SlimeBase::PLAYERSTATE::COOL:
 		CoolUpdate();
 		break;
-	case CommonData::PLAYERSTATE::DEBUFF:
+	case SlimeBase::PLAYERSTATE::DEBUFF:
 		break;
-	case CommonData::PLAYERSTATE::ACTIONABLE:
+	case SlimeBase::PLAYERSTATE::ACTIONABLE:
 		ActionableUpdate();
 		break;
-	case CommonData::PLAYERSTATE::STEPKEEP:
+	case SlimeBase::PLAYERSTATE::STEPKEEP:
 		StepKeepUpdate();
 		break;
-	case CommonData::PLAYERSTATE::STEP:
+	case SlimeBase::PLAYERSTATE::STEP:
 		StepUpdate();
 		break;
-	case CommonData::PLAYERSTATE::CHARGE:
+	case SlimeBase::PLAYERSTATE::CHARGE:
 		ChargeUpdate();
 		break;
-	case CommonData::PLAYERSTATE::NORMALATTACK:
+	case SlimeBase::PLAYERSTATE::NORMALATTACK:
 		NormalAttackUpdate();
 		break;
-	case CommonData::PLAYERSTATE::KNOCKBACK:
+	case SlimeBase::PLAYERSTATE::KNOCKBACK:
 		KnockBuckUpdate();
 		break;
-	case CommonData::PLAYERSTATE::GUARD:
+	case SlimeBase::PLAYERSTATE::GUARD:
 		GuardUpdate();
 		break;
-	case CommonData::PLAYERSTATE::WAIDATTACK:
+	case SlimeBase::PLAYERSTATE::WAIDATTACK:
 		WaidAtkUpdate();
 		break;
-	case CommonData::PLAYERSTATE::CRITICALATTACK:
+	case SlimeBase::PLAYERSTATE::CRITICALATTACK:
 		CriticalUpdate();
 		break;
-	case CommonData::PLAYERSTATE::FALL:
+	case SlimeBase::PLAYERSTATE::FALL:
 		FallUpdate();
 		break;
-	case CommonData::PLAYERSTATE::REVIVAL:
+	case SlimeBase::PLAYERSTATE::REVIVAL:
 		RevivalUpdate();
 		break;
 
@@ -844,59 +850,59 @@ void Player::StateUpdate(void)
 }
 
 //状態変化関数
-void Player::ChangeState(CommonData::PLAYERSTATE state)
+void Player::ChangeState(SlimeBase::PLAYERSTATE state)
 {
 	state_=state;
 	atkPow_ = 0;
 	switch (state_)
 	{
-	case CommonData::PLAYERSTATE::ACTIONABLE:
+	case SlimeBase::PLAYERSTATE::ACTIONABLE:
 		frame_ = FRAME_DEFAULT;
 		atkPow_ = 0;
 		break;
-	case CommonData::PLAYERSTATE::STEPKEEP:
+	case SlimeBase::PLAYERSTATE::STEPKEEP:
 		stepFrame_ = STEP_FRAME_MAX;   
 		break;
-	case CommonData::PLAYERSTATE::STEP:
+	case SlimeBase::PLAYERSTATE::STEP:
 		model_->SetStepAnim(modelType_, 0.0f);
 		stepAnim_ = 0.0f;
 		staminaConsum_ -= STEP_STEMINA;
 		sound_->PlaySe(SoundManager::SE_TYPE::SLIMEMOVE, DX_PLAYTYPE_BACK, SE_VOL);
 		StaminaLowLimit(STEP_STEMINA);
 		break;
-	case CommonData::PLAYERSTATE::CHARGE:
+	case SlimeBase::PLAYERSTATE::CHARGE:
 		model_->SetStepAnim(modelType_, 0.0f);
 		stepAnim_ = 0.0f;
 		staminaConsum_ -= CHARGE_STAMINA_VAL;
 		face_ = SLIME_FACE::CHARGE;
 		break;
-	case CommonData::PLAYERSTATE::NORMALATTACK:
+	case SlimeBase::PLAYERSTATE::NORMALATTACK:
 		sound_->PlaySe(SoundManager::SE_TYPE::ATTACK, DX_PLAYTYPE_BACK, SE_VOL);
 		atkPow_ = CHARGE_ATK_POW;
 		model_->SetStepAnim(modelType_, 0.0f);
 		stepAnim_ = 0.0f;
 		face_ = SLIME_FACE::ATTACK;
 		break;
-	case CommonData::PLAYERSTATE::KNOCKBACK:
+	case SlimeBase::PLAYERSTATE::KNOCKBACK:
 		face_ = SLIME_FACE::DAMAGE;
 		StopJoypadVibration(padNum_);
 		break;
-	case CommonData::PLAYERSTATE::GUARD:
+	case SlimeBase::PLAYERSTATE::GUARD:
 		EffectManager::GetEffect().PlayEffect(EffectManager::EFF_TYPE::SHIELD, this, shieldPar_);
 		atkPow_ = PARRY_ATK_POW;
 		 guardCnt_ = GUARD_CNT_MAX;
 		 face_ = SLIME_FACE::DAMAGE;
 		break;
-	case CommonData::PLAYERSTATE::WAIDATTACK:
+	case SlimeBase::PLAYERSTATE::WAIDATTACK:
 		waidChargeCnt_ = 0;
 		ChangeWaidAtkState(WAID_ATK::CHARGE);
 		jumpCnt_ = 0;
 		face_ = SLIME_FACE::ATTACK;
 		break;
-	case CommonData::PLAYERSTATE::CRITICALATTACK:
+	case SlimeBase::PLAYERSTATE::CRITICALATTACK:
 		criticalCnt_ = CRITICAL_CNT_MAX;
 		break;
-	case CommonData::PLAYERSTATE::FALL:
+	case SlimeBase::PLAYERSTATE::FALL:
 		fallCnt_ = FALL_CNT;
 		
 		EffectManager::GetEffect().StopEffect(EffectManager::EFF_TYPE::ITEMGET,this);
@@ -907,7 +913,7 @@ void Player::ChangeState(CommonData::PLAYERSTATE state)
 			item_ = nullptr;
 		}
 		break;
-	case CommonData::PLAYERSTATE::REVIVAL:
+	case SlimeBase::PLAYERSTATE::REVIVAL:
 		revivalCnt_ = REVIVAL_CNT_MAX;
 		SetInvincible(REVIVAL_CNT_MAX);
 		fallDmg_ += FALL_DMG_INCREASE;

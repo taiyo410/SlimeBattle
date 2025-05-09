@@ -118,7 +118,7 @@ public:
 	void DrawDebug(void);
 
 	//状態変化用関数
-	void ChangeState(CommonData::ENEMYSTATE state);
+	void ChangeState(SlimeBase::ENEMYSTATE state);
 
 	//広範囲攻撃用の状態変化用
 	//void ChangeWaidAtkState(const WAID_ATK waidAtk);
@@ -130,14 +130,14 @@ public:
 	void StaminaRecovery(void);
 
 	//敵の状態ゲッタ
-	CommonData::ENEMYSTATE GetState(void);
+	SlimeBase::ENEMYSTATE GetState(void);
 
 
 	//広範囲攻撃状態ヘッダ
 	//Enemy::WAID_ATK GetWaidAtkState(void) const;
 
 	//敵状態のセッター
-	void SetEnemyState(const CommonData::ENEMYSTATE enemyState);
+	void SetEnemyState(const SlimeBase::ENEMYSTATE enemyState);
 	//方向を決める関数
 	void MoveDir(void);
 
@@ -196,7 +196,7 @@ private:
 	int waidChargeCnt_;	//広範囲攻撃の溜めカウント
 	int waidAtkCoolTime_;	//広範囲攻撃のクールタイム
 	float waidAtkRadius_;		//広範囲攻撃の当たり判定を大きくしていく
-	CommonData::ENEMYSTATE state_;	//状態変数
+	SlimeBase::ENEMYSTATE state_;	//状態変数
 	//WAID_ATK waidAtk_;
 	ACT act_;			//行動パターン
 

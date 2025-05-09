@@ -4,6 +4,7 @@
 #include"../Manager/InputManager.h"
 #include"../Manager/EffectManager.h"
 #include"../Manager/ModelManager.h"
+#include"../Manager/SlimeManager.h"
 #include"../Manager/SceneManager.h"
 #include"../Manager/Camera.h"
 #include"../Common/CommonData.h"
@@ -62,7 +63,7 @@ void Enemy::SetParam(void)
 	isStaminaRecov_ = false;
 
 	//状態
-	state_ = CommonData::ENEMYSTATE::NONE;
+	state_ = SlimeBase::ENEMYSTATE::NONE;
 
 	//フレームカウント
 	frame_ = FRAME_DEFAULT;
@@ -111,7 +112,7 @@ void Enemy::Update(void)
 
 	
 	//重力をかける
-	if (state_ != CommonData::ENEMYSTATE::REVIVAL)
+	if (state_ != SlimeBase::ENEMYSTATE::REVIVAL)
 	{
 		AddGravity(gravityPow_);
 	}
@@ -180,7 +181,7 @@ void Enemy::Draw(void)
 
 
 
-	if (state_ == CommonData::ENEMYSTATE::CHARGE)
+	if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
 
@@ -193,7 +194,7 @@ void Enemy::Draw(void)
 	}
 
 	//DrawDebug();
-	//if (state_ == CommonData::ENEMYSTATE::CHARGE)
+	//if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
 	//{
 	//	DrawLine3D(pos_, { pos_.x + frame_,pos_.y,pos_.z },0x000000);
 	//}
@@ -208,45 +209,45 @@ bool Enemy::Release(void)
 //デバッグ関数
 void Enemy::DrawDebug(void)
 {
-	VECTOR playerPos = sceneGame_->GetPlayerPos();
-	VECTOR enemyPos = pos_;
-	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
+	//VECTOR playerPos = slimeMng_->GetPlayerPos();
+	//VECTOR enemyPos = pos_;
+	//VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 
-	
-	
-
-
-
-	if (waidAtk_ == SlimeBase::WAID_ATK::ATK)
-	{
-
-		VECTOR colPos = { pos_.x,pos_.y - RADIUS,pos_.z };
-		DrawSphere3D(colPos, waidAtkRadius_, 16, 0x00ff00, 0xffffff, false);
-	}
-	
-
-	DrawFormatString(0, 130, 0x000000
-		, "EnemyPos(%.1f,%.1f,%.1f)\nFrame(%.1f)\nStamina(%.8f)\nState(%d)\nposE2P(%.2f,%.2f,%.2f)\nACT(%d)\nMoveRoute(%.2f,%.2f,%.2f)"
-		, pos_.x, pos_.y, pos_.z
-		, frame_
-		, stamina_
-		, state_
-		, posE2P.x, posE2P.y, posE2P.z
-		,act_
-		,moveRoute_.x,moveRoute_.y,moveRoute_.z
-	);
-	//DrawFormatString(0, 216, 0x000000, "KnockBack(%d)\nHP(%d)"
-	//	, knockBackCnt_
-	//	,hp_);
-	
-
-	
+	//
+	//
 
 
-	if (state_ == CommonData::ENEMYSTATE::CHARGE)
-	{
-		DrawString(pos_.x, pos_.y - RADIUS, "Charge!!!!", 0xff0000);
-	}
+
+	//if (waidAtk_ == SlimeBase::WAID_ATK::ATK)
+	//{
+
+	//	VECTOR colPos = { pos_.x,pos_.y - RADIUS,pos_.z };
+	//	DrawSphere3D(colPos, waidAtkRadius_, 16, 0x00ff00, 0xffffff, false);
+	//}
+	//
+
+	//DrawFormatString(0, 130, 0x000000
+	//	, "EnemyPos(%.1f,%.1f,%.1f)\nFrame(%.1f)\nStamina(%.8f)\nState(%d)\nposE2P(%.2f,%.2f,%.2f)\nACT(%d)\nMoveRoute(%.2f,%.2f,%.2f)"
+	//	, pos_.x, pos_.y, pos_.z
+	//	, frame_
+	//	, stamina_
+	//	, state_
+	//	, posE2P.x, posE2P.y, posE2P.z
+	//	,act_
+	//	,moveRoute_.x,moveRoute_.y,moveRoute_.z
+	//);
+	////DrawFormatString(0, 216, 0x000000, "KnockBack(%d)\nHP(%d)"
+	////	, knockBackCnt_
+	////	,hp_);
+	//
+
+	//
+
+
+	//if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
+	//{
+	//	DrawString(pos_.x, pos_.y - RADIUS, "Charge!!!!", 0xff0000);
+	//}
 }
 
 //フレームとスタミナ減算処理
@@ -261,7 +262,7 @@ void Enemy::FrameComsumption(void)
 		isStaminaRecov_ = true;
 		if (!isJump_)
 		{
-			ChangeState(CommonData::ENEMYSTATE::NONE);
+			ChangeState(SlimeBase::ENEMYSTATE::NONE);
 		}
 		
 	}
@@ -320,39 +321,39 @@ void Enemy::StateUpdate(void)
 	{
 		switch (state_)
 		{
-		case CommonData::ENEMYSTATE::NONE:
+		case SlimeBase::ENEMYSTATE::NONE:
 			UpdateNone();
 			break;
-		case CommonData::ENEMYSTATE::DEBUFF:
+		case SlimeBase::ENEMYSTATE::DEBUFF:
 			DebuffUpdate();
 			break;
-		case CommonData::ENEMYSTATE::THINK:
+		case SlimeBase::ENEMYSTATE::THINK:
 			UpdateThink();
 			break;
-		case CommonData::ENEMYSTATE::MOVE:
+		case SlimeBase::ENEMYSTATE::MOVE:
 			UpdateMove();
 			break;
-		case CommonData::ENEMYSTATE::STEP:
+		case SlimeBase::ENEMYSTATE::STEP:
 			UpdateStep();
 			break;
-		case CommonData::ENEMYSTATE::CHARGE:
+		case SlimeBase::ENEMYSTATE::CHARGE:
 			UpdateCharge();
 			break;
-		case CommonData::ENEMYSTATE::KNOCKBACK:
+		case SlimeBase::ENEMYSTATE::KNOCKBACK:
 			UpdateKnockBuck();
 			break;
-		case CommonData::ENEMYSTATE::NORMALATTACK:
+		case SlimeBase::ENEMYSTATE::NORMALATTACK:
 			UpdateNormalAttack();
 			break;
-		case CommonData::ENEMYSTATE::WAIDATTACK:
+		case SlimeBase::ENEMYSTATE::WAIDATTACK:
 			UpdateWaidAttack();
 			break;
-		case CommonData::ENEMYSTATE::CRITICALATTACK:
+		case SlimeBase::ENEMYSTATE::CRITICALATTACK:
 			break;
-		case CommonData::ENEMYSTATE::FALL:
+		case SlimeBase::ENEMYSTATE::FALL:
 			FallUpdate();
 			break;
-		case CommonData::ENEMYSTATE::REVIVAL:
+		case SlimeBase::ENEMYSTATE::REVIVAL:
 			RevivalUpdate();
 			break;
 		}
@@ -362,7 +363,7 @@ void Enemy::StateUpdate(void)
 //スタミナ回復処理
 void Enemy::StaminaRecovery(void)
 {
-	if (state_ == CommonData::ENEMYSTATE::THINK||state_==CommonData::ENEMYSTATE::NONE)
+	if (state_ == SlimeBase::ENEMYSTATE::THINK||state_==SlimeBase::ENEMYSTATE::NONE)
 	{
 		if (isStaminaRecov_ && stamina_ < STAMINA_MAX)
 		{
@@ -379,12 +380,12 @@ void Enemy::StaminaRecovery(void)
 	}
 }
 //状態ゲッタ
-CommonData::ENEMYSTATE Enemy::GetState(void)
+SlimeBase::ENEMYSTATE Enemy::GetState(void)
 {
 	return state_;
 }
 
-void Enemy::SetEnemyState(const CommonData::ENEMYSTATE enemyState)
+void Enemy::SetEnemyState(const SlimeBase::ENEMYSTATE enemyState)
 {
 	state_ = enemyState;
 }
@@ -401,51 +402,51 @@ float Enemy::GetWaidCol(void) const
 
 
 
-void Enemy::ChangeState(CommonData::ENEMYSTATE state)
+void Enemy::ChangeState(SlimeBase::ENEMYSTATE state)
 {
 	state_ = state;
 
 	// 状態変化時の初期処理
 	switch (state_)
 	{
-	case CommonData::ENEMYSTATE::NONE:
+	case SlimeBase::ENEMYSTATE::NONE:
 		gravityPow_ = DEFAULT_GRAVITY;
 		break;
-	case CommonData::ENEMYSTATE::THINK:
+	case SlimeBase::ENEMYSTATE::THINK:
 		isWeak_ = false;
 		frame_ = FRAME_DEFAULT;
 		face_ = SLIME_FACE::NORMAL;
 		break;
-	case CommonData::ENEMYSTATE::MOVE:
+	case SlimeBase::ENEMYSTATE::MOVE:
 		break;
-	case CommonData::ENEMYSTATE::STEP:
+	case SlimeBase::ENEMYSTATE::STEP:
 		model_->SetStepAnim(modelType_, 0.0f);
 		sound_->PlaySe(SoundManager::SE_TYPE::SLIMEMOVE, DX_PLAYTYPE_BACK,SE_VOL);
 		break;
-	case CommonData::ENEMYSTATE::CHARGE:
+	case SlimeBase::ENEMYSTATE::CHARGE:
 		face_ = SLIME_FACE::CHARGE;
 		break;
-	case CommonData::ENEMYSTATE::KNOCKBACK:
+	case SlimeBase::ENEMYSTATE::KNOCKBACK:
 		face_ = SLIME_FACE::DAMAGE;
 		break;
-	case CommonData::ENEMYSTATE::NORMALATTACK:
+	case SlimeBase::ENEMYSTATE::NORMALATTACK:
 		sound_->PlaySe(SoundManager::SE_TYPE::ATTACK, DX_PLAYTYPE_BACK, SE_VOL);
 		model_->SetStepAnim(modelType_, 0.0f);
 		face_ = SLIME_FACE::ATTACK;
 		break;
-	case CommonData::ENEMYSTATE::WAIDATTACK:
+	case SlimeBase::ENEMYSTATE::WAIDATTACK:
 		waidAtk_ = SlimeBase::WAID_ATK::CHARGE;
 		waidChargeCnt_ = 0;
 		jumpCnt_ = 0;
 		face_ = SLIME_FACE::ATTACK;
 		ChangeWaidAtkState(SlimeBase::WAID_ATK::CHARGE);
 		break;
-	case CommonData::ENEMYSTATE::CRITICALATTACK:
+	case SlimeBase::ENEMYSTATE::CRITICALATTACK:
 		break;
-	case CommonData::ENEMYSTATE::FALL:
+	case SlimeBase::ENEMYSTATE::FALL:
 		fallCnt_ = FALL_CNT;
 		break;
-	case CommonData::ENEMYSTATE::REVIVAL:
+	case SlimeBase::ENEMYSTATE::REVIVAL:
 		SetInvincible(REVIVAL_CNT_MAX);
 		fallDmg_ += FALL_DMG_INCREASE;
 		fallScore_ += FALL_SCORE_INCREASE;
@@ -466,12 +467,12 @@ void Enemy::UpdateNone(void)
 	if (coolTime_ < 0)
 	{
 		isWeak_ = false;
-		ChangeState(CommonData::ENEMYSTATE::THINK);
+		ChangeState(SlimeBase::ENEMYSTATE::THINK);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(CommonData::ENEMYSTATE::FALL);
+		ChangeState(SlimeBase::ENEMYSTATE::FALL);
 	}
 }
 void Enemy::DebuffUpdate(void)
@@ -481,7 +482,7 @@ void Enemy::DebuffUpdate(void)
 	if (coolTime_ < 0)
 	{
 		isWeak_ = false;
-		ChangeState(CommonData::ENEMYSTATE::THINK);
+		ChangeState(SlimeBase::ENEMYSTATE::THINK);
 	}
 }
 
@@ -499,27 +500,27 @@ void Enemy::UpdateThink(void)
 		marginPos.z = 180;
 		if (waidAtkCoolTime_ < 0)
 		{
-			ChangeState(CommonData::ENEMYSTATE::WAIDATTACK);
+			ChangeState(SlimeBase::ENEMYSTATE::WAIDATTACK);
 		}
 
 		//マジックナンバーを定数に直す
 		else if (posE2P.x >= -180.0f && posE2P.x <= 180.0f && posE2P.z >= -180.0f && posE2P.z <= 180.0f
 			&& act_ == ACT::Attack && MoveLimit())
 		{
-			ChangeState(CommonData::ENEMYSTATE::CHARGE);
+			ChangeState(SlimeBase::ENEMYSTATE::CHARGE);
 		}
 
 		else if ((pos_.x <= -marginPos.x) || (pos_.x >= marginPos.x)
 			|| (pos_.z <= -marginPos.z) || (pos_.z >= marginPos.z))
 		{
 			act_ = ACT::ESCAPE;
-			ChangeState(CommonData::ENEMYSTATE::STEP);
+			ChangeState(SlimeBase::ENEMYSTATE::STEP);
 		}
 		else if ((pos_.x > -marginPos.x) || (pos_.x > marginPos.x)
 			|| (pos_.z > -marginPos.z) || (pos_.z > marginPos.z))
 		{
 			act_ = ACT::Attack;
-			ChangeState(CommonData::ENEMYSTATE::STEP);
+			ChangeState(SlimeBase::ENEMYSTATE::STEP);
 		}
 
 
@@ -529,7 +530,7 @@ void Enemy::UpdateThink(void)
 	}
 	if (!MoveLimit())
 	{
-		ChangeState(CommonData::ENEMYSTATE::FALL);
+		ChangeState(SlimeBase::ENEMYSTATE::FALL);
 	}
 	
 }
@@ -537,7 +538,7 @@ void Enemy::UpdateThink(void)
 void Enemy::UpdateMove(void)
 {
 	MoveDir();
-	ChangeState(CommonData::ENEMYSTATE::THINK);
+	ChangeState(SlimeBase::ENEMYSTATE::THINK);
 }
 
 void Enemy::UpdateStep(void)
@@ -598,7 +599,7 @@ void Enemy::UpdateStep(void)
 	if (frame_ <= 0)
 	{
 		SetCoolTime(SunUtility::DEFAULT_FPS * 0.5);
-		ChangeState(CommonData::ENEMYSTATE::NONE);
+		ChangeState(SlimeBase::ENEMYSTATE::NONE);
 
 	}
 
@@ -659,7 +660,7 @@ void Enemy::UpdateCharge(void)
 	{
 		if (!isJump_)
 		{
-			ChangeState(CommonData::ENEMYSTATE::NORMALATTACK);
+			ChangeState(SlimeBase::ENEMYSTATE::NORMALATTACK);
 		}
 	}
 }
@@ -670,11 +671,11 @@ void Enemy::UpdateKnockBuck(void)
 	KnockBack();
 	if (knockBackCnt_ < 0&&!isWeak_)
 	{
-		ChangeState(CommonData::ENEMYSTATE::NONE);
+		ChangeState(SlimeBase::ENEMYSTATE::NONE);
 	}
 	else if (knockBackCnt_ < 0 && isWeak_)
 	{
-		ChangeState(CommonData::ENEMYSTATE::DEBUFF);
+		ChangeState(SlimeBase::ENEMYSTATE::DEBUFF);
 	}
 }
 
@@ -706,7 +707,7 @@ void Enemy::UpdateNormalAttack(void)
 	if (frame_ <= 0)
 	{
 		SetCoolTime(SunUtility::DEFAULT_FPS*2);
-		ChangeState(CommonData::ENEMYSTATE::NONE);
+		ChangeState(SlimeBase::ENEMYSTATE::NONE);
 
 	}
 	else
@@ -715,7 +716,7 @@ void Enemy::UpdateNormalAttack(void)
 		{
 			isStaminaRecov_ = true;
 			SetCoolTime(STAMINA_RECOV_TIME);
-			ChangeState(CommonData::ENEMYSTATE::NONE);
+			ChangeState(SlimeBase::ENEMYSTATE::NONE);
 		}
 	}
 }
@@ -772,7 +773,7 @@ void Enemy::UpdateWaidAttack(void)
 	case SlimeBase::WAID_ATK::END:
 		if (pos_.y <= RADIUS)
 		{
-			ChangeState(CommonData::ENEMYSTATE::THINK);
+			ChangeState(SlimeBase::ENEMYSTATE::THINK);
 		}
 		break;
 	}
@@ -785,7 +786,7 @@ void Enemy::FallUpdate(void)
 	{
 		Damage(fallDmg_,0);
 		Score(-fallScore_);
-		ChangeState(CommonData::ENEMYSTATE::REVIVAL);
+		ChangeState(SlimeBase::ENEMYSTATE::REVIVAL);
 	}
 
 }
@@ -795,7 +796,7 @@ void Enemy::RevivalUpdate(void)
 	SetPos(revivalPos_);
 	if (revivalCnt_ <= 0)
 	{
-		ChangeState(CommonData::ENEMYSTATE::THINK);
+		ChangeState(SlimeBase::ENEMYSTATE::THINK);
 	}
 
 }

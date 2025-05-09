@@ -136,6 +136,45 @@ public:
 	//SEの音量
 	static constexpr int SE_VOL = 50;
 
+	//列挙型
+	enum class PLAYERSTATE
+	{
+		COOL
+		, DEBUFF
+		, ACTIONABLE
+		, STEPKEEP
+		, STEP
+		, CHARGE
+		, NORMALATTACK
+		, CRITICALATTACK
+		, KNOCKBACK
+		, GUARD
+		, WAIDATTACK
+		, FALL
+		, REVIVAL
+
+	};
+
+	//列挙型
+	enum class ENEMYSTATE
+	{
+		NONE
+		, THINK
+		, DEBUFF
+		, MOVE
+		, STEP
+		, CHARGE
+		, KNOCKBACK
+		, KNOCKBACkSMALL
+		, NORMALATTACK
+		, WAIDATTACK
+		, CRITICALATTACK
+		, FALL
+		, REVIVAL
+	};
+
+
+
 
 	//広範囲攻撃
 	enum class WAID_ATK
@@ -308,7 +347,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	virtual void ChangeState(CommonData::PLAYERSTATE state);
+	virtual void ChangeState(PLAYERSTATE state);
 
 	//スコア加算処理
 	void Score(const int score);
@@ -323,6 +362,7 @@ public:
 
 protected:
 	//ポインタ
+	//SlimeManager& slimeMng_;
 	SceneGame* sceneGame_;
 	ItemBase* item_;
 	GaugeCircle* gaugeCircle_;

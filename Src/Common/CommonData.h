@@ -47,46 +47,6 @@ public:
 		,DRAW
 	};
 
-	//óÒãìå^
-	enum class PLAYERSTATE
-	{
-		COOL
-		, DEBUFF
-		, ACTIONABLE
-		, STEPKEEP
-		, STEP
-		, CHARGE
-		, NORMALATTACK
-		, CRITICALATTACK
-		, KNOCKBACK
-		, GUARD
-		, WAIDATTACK
-		, FALL
-		, REVIVAL
-
-	};
-
-	//óÒãìå^
-	enum class ENEMYSTATE
-	{
-		NONE
-		, THINK
-		, DEBUFF
-		, MOVE
-		, STEP
-		, CHARGE
-		, KNOCKBACK
-		, KNOCKBACkSMALL
-		, NORMALATTACK
-		, WAIDATTACK
-		, CRITICALATTACK
-		, FALL
-		, REVIVAL
-	};
-
-
-
-
 	//èâä˙âªèàóù
 	bool DataInit(void);
 

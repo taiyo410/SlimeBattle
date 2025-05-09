@@ -6,6 +6,7 @@
 #include"./SceneBase.h"
 #include"../Common/CommonData.h"
 #include"../Common/Parameta.h"
+#include"../Object/SlimeBase.h"
 class SlimeBase;
 class CommonData;
 class RuleBase;
@@ -162,7 +163,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	CommonData::PLAYERSTATE GetPlayerState(void);
+	SlimeBase::PLAYERSTATE GetPlayerState(void);
 
 	//プレイヤーのHPゲッタ
 	float GetPlayerHpPercent(void);
@@ -197,7 +198,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	CommonData::PLAYERSTATE GetPlayer2State(void);
+	SlimeBase::PLAYERSTATE GetPlayer2State(void);
 
 	//プレイヤー2のHPゲッタ
 	float GetPlayer2HpPercent(void);
@@ -241,7 +242,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	CommonData::ENEMYSTATE GetEnemyState(void);
+	SlimeBase::ENEMYSTATE GetEnemyState(void);
 
 	//敵のHPゲッタ
 	float GetEnemyHpPercent(void);
@@ -273,7 +274,7 @@ private:
 	RuleBase* ruleBase_;
 	SlimeBase* slime_[SLIME_NUM_MAX];
 	SlimeBase* slimes_;
-	SlimeManager* slimeMng_;
+	//SlimeManager& slimeMng_;
 	Stage* stage_;
 	Player* player_;
 	Player2* player2_;
@@ -344,8 +345,8 @@ private:
 	/// <param name="playerState">プレイヤーの状態</param>
 	/// <param name="enemyDir">敵の方向</param>
 	/// <param name="enemyState">敵の状態</param>
-	void PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTATE playerState
-		, SunUtility::DIR_3D enemyDir, CommonData::ENEMYSTATE enemyState);
+	void PVEKnockBack(SunUtility::DIR_3D playerDir, SlimeBase::PLAYERSTATE playerState
+		, SunUtility::DIR_3D enemyDir, SlimeBase::ENEMYSTATE enemyState);
 
 	/// <summary>
 	/// PVP用のノックバック

@@ -95,36 +95,29 @@ bool SceneGame::Init(void)
 	hitEffectPar_ = { hitEffectPos_,hitEffectRot_,hitEffectscl_ };
 	itemSpornCnt_ = ITEM_SPORN_CNT;
 
-	//slimeMng_ = new SlimeManager(CommonData::GetData().GetMode());
-	//slimeMng_->Init();
+	SlimeManager::CreateInstance(CommonData::GetData().GetMode(), this);
 
 
-
-
-
-
-
-
-		//スライムの初期化
-	for (int s = 0;s < SLIME_NUM_MAX; s++)
-	{
-		switch (type_[s])
-		{
-		case CommonData::TYPE::PLAYER1:
-			player_ = new Player();
-			slime_[s] = player_;
-			break;
-		case CommonData::TYPE::PLAYER2:
-			player2_ = new Player2();
-			slime_[s] = player2_;
-			break;
-		case CommonData::TYPE::ENEMY:
-			enemy_ = new Enemy();
-			slime_[s] = enemy_;
-			break;
-		}
-		slime_[s]->Init(this);
-	}
+	//	//スライムの初期化
+	//for (int s = 0;s < SLIME_NUM_MAX; s++)
+	//{
+	//	switch (type_[s])
+	//	{
+	//	case CommonData::TYPE::PLAYER1:
+	//		player_ = new Player();
+	//		slime_[s] = player_;
+	//		break;
+	//	case CommonData::TYPE::PLAYER2:
+	//		player2_ = new Player2();
+	//		slime_[s] = player2_;
+	//		break;
+	//	case CommonData::TYPE::ENEMY:
+	//		enemy_ = new Enemy();
+	//		slime_[s] = enemy_;
+	//		break;
+	//	}
+	//	slime_[s]->Init(this);
+	//}
 
 	SetRule();
 	DoChangeRule();	//敵のHPをゲットしているから敵の後に置かないとヌルポ
@@ -158,7 +151,7 @@ void SceneGame::Update(void)
 
 	EffectManager::GetEffect().Update();
 
-	//slimeMng_->Update();
+	SlimeManager::GetInstance().Update();
 	//背景処理
 	cloudPos_.x -= SceneTitle::MOVE_SPEED_X;
 	if (cloudPos_.x + Application::SCREEN_SIZE_X / 2 <= 0)
@@ -166,20 +159,22 @@ void SceneGame::Update(void)
 		cloudPos_.x = Application::SCREEN_SIZE_X / 2;
 	}
 
-	for (int s = 0; s < SLIME_NUM_MAX; s++)
-	{
-		slime_[s]->Update();
-	}
+	//for (int s = 0; s < SLIME_NUM_MAX; s++)
+	//{
+	//	slime_[s]->Update();
+	//}
 
 	stage_->Update();
 	ruleBase_->Update();
 
 #pragma region PVE用の当たり判定
+	float playerHp = SlimeManager::GetInstance().GetPlayerHpPercent(PLAYER);
+	float enemyHp = SlimeManager::GetInstance().GetPlayerHpPercent(ENEMY);
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
 		if (CommonData::GetData().GetRule() == CommonData::RULE::HP)
 		{
-			if (GetPlayerHpPercent() <= 0.5f || GetEnemyHpPercent() <= 0.5f)
+			if (playerHp <= 0.5f || enemyHp <= 0.5f)
 			{
 				ChangeBgm(BGM_TYPE::BGM2);
 			}
@@ -215,7 +210,7 @@ void SceneGame::Update(void)
 
 
 		//敵の範囲攻撃
-		if (enemy_->GetState() == CommonData::ENEMYSTATE::WAIDATTACK && enemy_->GetWaidAtkState() == SlimeBase::WAID_ATK::ATK)
+		if (enemy_->GetState() == SlimeBase::ENEMYSTATE::WAIDATTACK && enemy_->GetWaidAtkState() == SlimeBase::WAID_ATK::ATK)
 		{
 			if (IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[ENEMY]->GetPos(), enemy_->GetWaidCol()))
 			{
@@ -225,7 +220,7 @@ void SceneGame::Update(void)
 					slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
 					slime_[PLAYER]->Damage((Speaker::WAID_ATK_COL - waidAtkCol)/2, SlimeBase::INVINCIBLE_TIME);
 					slime_[ENEMY]->Score((Speaker::WAID_ATK_COL - waidAtkCol) / 2);
-					player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+					player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 				}
 			}
 		}
@@ -236,112 +231,112 @@ void SceneGame::Update(void)
 #pragma endregion
 #pragma region PVP
 
-	if (CommonData::GetData().GetMode() == CommonData::MODE::PVP)
-	{
-		if (CommonData::GetData().GetRule() == CommonData::RULE::HP)
-		{
-			if (GetPlayerHpPercent() <= 0.5f || GetPlayer2HpPercent() <= 0.5f)
-			{
-				ChangeBgm(BGM_TYPE::BGM2);
-			}
-			else
-			{
-				ChangeBgm(BGM_TYPE::BGM);
-			}
-		}
-		else
-		{
-			ChangeBgm(BGM_TYPE::BGM);
-		}
-		
-		
-		ProcessItem();
-		for (int s = 0; s < SLIME_NUM_MAX; s++)
-		{
-			for (auto item : items_)
-			{
-				if (IsHitSpheres(slime_[s]->GetPos(), SlimeBase::RADIUS, item->GetPos(), ItemBase::ITEM_RADIUS))
-				{
-					if (!item->GetIsDead() && !item->GetIsGetItem() && !slime_[s]->IsGetItemPtr() && slime_[s]->GetItemReGetCnt() < 0)
-					{
-						slime_[s]->SetItem(item);
-						slime_[s]->SetIsUse(true);
-						//アイテムゲットのエフェクトを流す
-						Parameta par;
-						par.pos = slime_[s]->GetPos();
-						par.rot = { 0.0f,0.0f,0.0f };
-						par.scl = { SlimeBase::RADIUS,SlimeBase::RADIUS,SlimeBase::RADIUS };
-						slime_[s]->SetIsItemGetEffect(true);
-						item->SetIsGetItem(true);
-						itemCnt_--;
-					}
-				}
-			}
+	//if (CommonData::GetData().GetMode() == CommonData::MODE::PVP)
+	//{
+	//	if (CommonData::GetData().GetRule() == CommonData::RULE::HP)
+	//	{
+	//		if (playerHp <= 0.5f || GetPlayer2HpPercent() <= 0.5f)
+	//		{
+	//			ChangeBgm(BGM_TYPE::BGM2);
+	//		}
+	//		else
+	//		{
+	//			ChangeBgm(BGM_TYPE::BGM);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		ChangeBgm(BGM_TYPE::BGM);
+	//	}
+	//	
+	//	
+	//	ProcessItem();
+	//	for (int s = 0; s < SLIME_NUM_MAX; s++)
+	//	{
+	//		for (auto item : items_)
+	//		{
+	//			if (IsHitSpheres(slime_[s]->GetPos(), SlimeBase::RADIUS, item->GetPos(), ItemBase::ITEM_RADIUS))
+	//			{
+	//				if (!item->GetIsDead() && !item->GetIsGetItem() && !slime_[s]->IsGetItemPtr() && slime_[s]->GetItemReGetCnt() < 0)
+	//				{
+	//					slime_[s]->SetItem(item);
+	//					slime_[s]->SetIsUse(true);
+	//					//アイテムゲットのエフェクトを流す
+	//					Parameta par;
+	//					par.pos = slime_[s]->GetPos();
+	//					par.rot = { 0.0f,0.0f,0.0f };
+	//					par.scl = { SlimeBase::RADIUS,SlimeBase::RADIUS,SlimeBase::RADIUS };
+	//					slime_[s]->SetIsItemGetEffect(true);
+	//					item->SetIsGetItem(true);
+	//					itemCnt_--;
+	//				}
+	//			}
+	//		}
 
-		}
-		//通常時
-		if (IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS)
-			&& slime_[PLAYER]->GetInvincibleCnt() <= 0 && slime_[PLAYER2]->GetInvincibleCnt() <= 0)
-		{
-			int p1AtkPow = player_->GetAtkPow();
-			int p2AtkPow = player2_->GetAtkPow();
-			PlaySoundMem(hitSE_, DX_PLAYTYPE_BACK);
-			//プレイヤー1とプレイヤー2の攻撃力を比べる
-			PlAtkPowCompare(p1AtkPow, p2AtkPow);
-			PVPKnockBack(slimeLoseNum_);
-			
-			EffectManager::GetEffect().PlayEffect(EffectManager::EFF_TYPE::HIT, slime_[PLAYER], hitEffectPar_);
-			
-
-
-			isCollision_ = true;
-		}
-		else
-		{
-			isCollision_ = false;
-		}
+	//	}
+	//	//通常時
+	//	if (IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS)
+	//		&& slime_[PLAYER]->GetInvincibleCnt() <= 0 && slime_[PLAYER2]->GetInvincibleCnt() <= 0)
+	//	{
+	//		int p1AtkPow = player_->GetAtkPow();
+	//		int p2AtkPow = player2_->GetAtkPow();
+	//		PlaySoundMem(hitSE_, DX_PLAYTYPE_BACK);
+	//		//プレイヤー1とプレイヤー2の攻撃力を比べる
+	//		PlAtkPowCompare(p1AtkPow, p2AtkPow);
+	//		PVPKnockBack(slimeLoseNum_);
+	//		
+	//		EffectManager::GetEffect().PlayEffect(EffectManager::EFF_TYPE::HIT, slime_[PLAYER], hitEffectPar_);
+	//		
 
 
-		////P1の範囲攻撃
-		for (auto item:items_)
-		{
-			if (item->GetIsAtkAlive())
-			{
-				if (slime_[PLAYER]->IsItemAtk()&&IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[ENEMY]->GetPos(), item->GetWaidAtk()))
-				{
-					if (slime_[PLAYER]->GetInvincibleCnt() <= 0)
-					{
-						float waidAtkCol = item->GetWaidAtk();
-						slime_[PLAYER2]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-						slime_[PLAYER2]->Damage((Speaker::WAID_ATK_COL - waidAtkCol) / 1.5, SlimeBase::INVINCIBLE_TIME);
-						slime_[PLAYER]->Score((Speaker::WAID_ATK_COL - waidAtkCol)*5);
-						player2_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-					}
-				}
+	//		isCollision_ = true;
+	//	}
+	//	else
+	//	{
+	//		isCollision_ = false;
+	//	}
 
 
-
-
-				if (IsHitSpheres(slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER]->GetPos(), item->GetWaidAtk()) && slime_[PLAYER2]->IsItemAtk())
-				{
-					if (slime_[PLAYER]->GetInvincibleCnt() <= 0)
-					{
-						float waidAtkCol = item->GetWaidAtk();
-						slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-						slime_[PLAYER]->Damage((Speaker::WAID_ATK_COL - waidAtkCol)/1.5, SlimeBase::INVINCIBLE_TIME);
-						slime_[PLAYER2]->Score((Speaker::WAID_ATK_COL - waidAtkCol)*5);
-						player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-					}
-				}
-			}
-		}
-		
+	//	////P1の範囲攻撃
+	//	for (auto item:items_)
+	//	{
+	//		if (item->GetIsAtkAlive())
+	//		{
+	//			if (slime_[PLAYER]->IsItemAtk()&&IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[ENEMY]->GetPos(), item->GetWaidAtk()))
+	//			{
+	//				if (slime_[PLAYER]->GetInvincibleCnt() <= 0)
+	//				{
+	//					float waidAtkCol = item->GetWaidAtk();
+	//					slime_[PLAYER2]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
+	//					slime_[PLAYER2]->Damage((Speaker::WAID_ATK_COL - waidAtkCol) / 1.5, SlimeBase::INVINCIBLE_TIME);
+	//					slime_[PLAYER]->Score((Speaker::WAID_ATK_COL - waidAtkCol)*5);
+	//					player2_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+	//				}
+	//			}
 
 
 
 
+	//			if (IsHitSpheres(slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER]->GetPos(), item->GetWaidAtk()) && slime_[PLAYER2]->IsItemAtk())
+	//			{
+	//				if (slime_[PLAYER]->GetInvincibleCnt() <= 0)
+	//				{
+	//					float waidAtkCol = item->GetWaidAtk();
+	//					slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
+	//					slime_[PLAYER]->Damage((Speaker::WAID_ATK_COL - waidAtkCol)/1.5, SlimeBase::INVINCIBLE_TIME);
+	//					slime_[PLAYER2]->Score((Speaker::WAID_ATK_COL - waidAtkCol)*5);
+	//					player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+	//				}
+	//			}
+	//		}
+	//	}
+	//	
 
-	}
+
+
+
+
+	//}
 #pragma endregion
 
 	
@@ -382,13 +377,13 @@ void SceneGame::Draw(void)
 		, false);
 	stage_->Draw();
 	//スライム描画
-	//slimeMng_->Draw();
+	SlimeManager::GetInstance().Draw();
 
 
-	for (int s = 0; s < SLIME_NUM_MAX; s++)
-	{
-		slime_[s]->Draw();
-	}
+	//for (int s = 0; s < SLIME_NUM_MAX; s++)
+	//{
+	//	slime_[s]->Draw();
+	//}
 	
 	for (auto item : items_)
 	{
@@ -459,42 +454,42 @@ void SceneGame::DrawDebug(void)
 
 }
 
-void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTATE playerState, SunUtility::DIR_3D enemyDir, CommonData::ENEMYSTATE enemyState)
+void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, SlimeBase::PLAYERSTATE playerState, SunUtility::DIR_3D enemyDir, SlimeBase::ENEMYSTATE enemyState)
 {
 	//プレイヤー：突進
-	if (playerState == CommonData::PLAYERSTATE::NORMALATTACK)
+	if (playerState == SlimeBase::PLAYERSTATE::NORMALATTACK)
 	{
-		if (enemyState == CommonData::ENEMYSTATE::NORMALATTACK)
+		if (enemyState == SlimeBase::ENEMYSTATE::NORMALATTACK)
 		{
 			
 			slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-			player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+			player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 			slime_[ENEMY]->Score(100);
 			slime_[PLAYER]->Damage(10, SlimeBase::INVINCIBLE_TIME);
 			hitEffectPar_.pos = GetEnemyPos();
 		}
 
-		if (enemyState != CommonData::ENEMYSTATE::NORMALATTACK)
+		if (enemyState != SlimeBase::ENEMYSTATE::NORMALATTACK)
 		{
-			if (enemyState == CommonData::ENEMYSTATE::NONE
-				|| enemy_->GetIsWeak() == true && enemyState == CommonData::ENEMYSTATE::DEBUFF)
+			if (enemyState == SlimeBase::ENEMYSTATE::NONE
+				|| enemy_->GetIsWeak() == true && enemyState == SlimeBase::ENEMYSTATE::DEBUFF)
 			{
 				
 				slime_[ENEMY]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-				enemy_->ChangeState(CommonData::ENEMYSTATE::KNOCKBACK);
+				enemy_->ChangeState(SlimeBase::ENEMYSTATE::KNOCKBACK);
 				slime_[PLAYER]->Score(300);
 				slime_[ENEMY]->Damage(30, SlimeBase::INVINCIBLE_TIME);
 				hitEffectPar_.pos = GetEnemyPos();
 			}
 			//敵：チャージ状態以外の時
-			else if (enemyState != CommonData::ENEMYSTATE::CHARGE && enemyState != CommonData::ENEMYSTATE::WAIDATTACK)
+			else if (enemyState != SlimeBase::ENEMYSTATE::CHARGE && enemyState != SlimeBase::ENEMYSTATE::WAIDATTACK)
 			{
 				
 				slime_[PLAYER]->SetKnockBack(5);
 				slime_[ENEMY]->SetKnockBack(5);
 				slime_[ENEMY]->SetCoolTime(SunUtility::DEFAULT_FPS);
-				player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-				enemy_->ChangeState(CommonData::ENEMYSTATE::KNOCKBACK);
+				player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+				enemy_->ChangeState(SlimeBase::ENEMYSTATE::KNOCKBACK);
 				slime_[PLAYER]->Score(50);
 				slime_[ENEMY]->Damage(5, SlimeBase::INVINCIBLE_TIME);
 				hitEffectPar_.pos = GetEnemyPos();
@@ -504,7 +499,7 @@ void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTA
 			{
 				
 				slime_[PLAYER]->SetKnockBack(5);
-				player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+				player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 				hitEffectPar_.pos = GetEnemyPos();
 
 			}
@@ -514,20 +509,20 @@ void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTA
 	}
 
 	//プレイヤー：突進とガード状態以外　敵：突進中
-	else if (playerState != CommonData::PLAYERSTATE::NORMALATTACK && playerState != CommonData::PLAYERSTATE::GUARD && enemyState == CommonData::ENEMYSTATE::NORMALATTACK)
+	else if (playerState != SlimeBase::PLAYERSTATE::NORMALATTACK && playerState != SlimeBase::PLAYERSTATE::GUARD && enemyState == SlimeBase::ENEMYSTATE::NORMALATTACK)
 	{
 		
 		slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-		player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+		player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 		slime_[ENEMY]->Score(400);
 		slime_[PLAYER]->Damage(30, SlimeBase::INVINCIBLE_TIME);
 		hitEffectPar_.pos = GetEnemyPos();
 	}
 
-	else if (playerState == CommonData::PLAYERSTATE::GUARD && enemyState == CommonData::ENEMYSTATE::NORMALATTACK)
+	else if (playerState == SlimeBase::PLAYERSTATE::GUARD && enemyState == SlimeBase::ENEMYSTATE::NORMALATTACK)
 	{
 		
-		enemy_->ChangeState(CommonData::ENEMYSTATE::KNOCKBACK);
+		enemy_->ChangeState(SlimeBase::ENEMYSTATE::KNOCKBACK);
 		enemy_->SetIsWeak(true);
 		slime_[PLAYER]->Score(50);
 		slime_[ENEMY]->SetCoolTime(SunUtility::DEFAULT_FPS * 3);
@@ -538,19 +533,19 @@ void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTA
 
 
 
-	else if (playerState == CommonData::PLAYERSTATE::STEP && enemyState != CommonData::ENEMYSTATE::NORMALATTACK)
+	else if (playerState == SlimeBase::PLAYERSTATE::STEP && enemyState != SlimeBase::ENEMYSTATE::NORMALATTACK)
 	{
 		
 		slime_[PLAYER]->SetKnockBack(5);
-		player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+		player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 		hitEffectPar_.pos = GetEnemyPos();
 	}
 
-	else if (playerState == CommonData::PLAYERSTATE::CRITICALATTACK && slime_[ENEMY]->GetInvincibleCnt() <= 0)
+	else if (playerState == SlimeBase::PLAYERSTATE::CRITICALATTACK && slime_[ENEMY]->GetInvincibleCnt() <= 0)
 	{
 		
 		slime_[ENEMY]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME + 5);
-		enemy_->ChangeState(CommonData::ENEMYSTATE::KNOCKBACK);
+		enemy_->ChangeState(SlimeBase::ENEMYSTATE::KNOCKBACK);
 		slime_[ENEMY]->SetCoolTime(SunUtility::DEFAULT_FPS);
 		slime_[PLAYER]->Score(1000);
 		slime_[ENEMY]->Damage(50, SlimeBase::INVINCIBLE_TIME);
@@ -560,18 +555,18 @@ void SceneGame::PVEKnockBack(SunUtility::DIR_3D playerDir, CommonData::PLAYERSTA
 
 	else if (slime_[PLAYER]->GetInvincibleCnt()<=0
 		&&(slime_[PLAYER]->GetInvincibleCnt() <= 0
-		&&playerState == CommonData::PLAYERSTATE::ACTIONABLE
-		&& enemyState == CommonData::ENEMYSTATE::NONE
-		|| enemyState == CommonData::ENEMYSTATE::THINK
-		|| enemyState == CommonData::ENEMYSTATE::STEP
-		|| enemyState == CommonData::ENEMYSTATE::DEBUFF))
+		&&playerState == SlimeBase::PLAYERSTATE::ACTIONABLE
+		&& enemyState == SlimeBase::ENEMYSTATE::NONE
+		|| enemyState == SlimeBase::ENEMYSTATE::THINK
+		|| enemyState == SlimeBase::ENEMYSTATE::STEP
+		|| enemyState == SlimeBase::ENEMYSTATE::DEBUFF))
 	{
 		
 		slime_[PLAYER]->SetKnockBack(5);
 		slime_[ENEMY]->SetKnockBack(5);
 		slime_[ENEMY]->SetCoolTime(SunUtility::DEFAULT_FPS);
-		player_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-		enemy_->ChangeState(CommonData::ENEMYSTATE::KNOCKBACK);
+		player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+		enemy_->ChangeState(SlimeBase::ENEMYSTATE::KNOCKBACK);
 		//slime_[ENEMY]->Damage(5, SlimeBase::INVINCIBLE_TIME);
 		hitEffectPar_.pos = GetEnemyPos();
 	}
@@ -587,16 +582,16 @@ void SceneGame::PVPKnockBack(int knockBackNum)
 	{
 		slime_[knockBackNum]->SetKnockBack(5);
 		//slime_[PLAYER2]->SetKnockBack(5);
-		slime_[knockBackNum]->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-		//player2_->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+		slime_[knockBackNum]->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+		//player2_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 		hitEffectPar_.pos = GetPlayerPos();
 	}
 	else if(p1AtkPow==p2AtkPow)
 	{
 		slime_[knockBackNum]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
 		//slime_[PLAYER2]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-		slime_[knockBackNum]->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
-		//slime_[PLAYER2]->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+		slime_[knockBackNum]->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+		//slime_[PLAYER2]->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 		//slime_[PLAYER]->Score(100);
 		//slime_[PLAYER2]->Score(100);
 		slime_[knockBackNum]->Damage(10, SlimeBase::INVINCIBLE_TIME);
@@ -605,20 +600,20 @@ void SceneGame::PVPKnockBack(int knockBackNum)
 	}
 	else
 	{
-		if (player_->GetState() == CommonData::PLAYERSTATE::GUARD || player2_->GetState() == CommonData::PLAYERSTATE::GUARD)
+		if (player_->GetState() == SlimeBase::PLAYERSTATE::GUARD || player2_->GetState() == SlimeBase::PLAYERSTATE::GUARD)
 		{
 			slime_[knockBackNum]->SetIsWeak(true);
 			//player_->Score(50);
 			slime_[knockBackNum]->SetCoolTime(SunUtility::DEFAULT_FPS * 3);
 			slime_[knockBackNum]->SetKnockBack(SlimeBase::KNOCKBACK_PARRY);
-			slime_[knockBackNum]->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+			slime_[knockBackNum]->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 			//player_->SetGuardCoolTime(Player::GUARD_COOLTIME_SUCCESS);
 			hitEffectPar_.pos = GetPlayerPos();
 		}
 		else
 		{
 			slime_[knockBackNum]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-			slime_[knockBackNum]->ChangeState(CommonData::PLAYERSTATE::KNOCKBACK);
+			slime_[knockBackNum]->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 			//slime_[knockBackNum]->Score(300);
 			slime_[knockBackNum]->Damage(30, SlimeBase::INVINCIBLE_TIME);
 			hitEffectPar_.pos = GetPlayerPos();
@@ -665,19 +660,12 @@ SunUtility::DIR_3D SceneGame::GetPlayerDir(void)
 
 
 //プレイヤーの状態
-CommonData::PLAYERSTATE SceneGame::GetPlayerState(void)
+SlimeBase::PLAYERSTATE SceneGame::GetPlayerState(void)
 {
 	return player_->GetState();
 }
 
-float SceneGame::GetPlayerHpPercent(void)
-{
-	if (CommonData::GetData().GetRule() == CommonData::RULE::HP)
-	{
-		return slime_[PLAYER]->GetHpPercent();
-	}
-	
-}
+
 //スコア
 int SceneGame::GetPlayerScore(void)
 {
@@ -707,7 +695,7 @@ VECTOR SceneGame::GetPlayer2Pos(void)
 	return player2Pos;
 }
 
-CommonData::PLAYERSTATE SceneGame::GetPlayer2State(void)
+SlimeBase::PLAYERSTATE SceneGame::GetPlayer2State(void)
 {
 	return player2_->GetState();
 }
@@ -756,7 +744,7 @@ SunUtility::DIR_3D SceneGame::GetEnemyDir(void)
 }
 
 // 敵の状態
-CommonData::ENEMYSTATE SceneGame::GetEnemyState(void)
+SlimeBase::ENEMYSTATE SceneGame::GetEnemyState(void)
 {
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
@@ -873,7 +861,7 @@ void SceneGame::PlAtkPowCompare(int pl1Atknum, int pl2Atknum)
 		slimeLoseNum_ = PLAYER;
 		slimeWinNum_ = PLAYER2;
 		PVPKnockBack(PLAYER);
-		if (player2_->GetState() == CommonData::PLAYERSTATE::GUARD)
+		if (player2_->GetState() == SlimeBase::PLAYERSTATE::GUARD)
 		{
 			player2_->SetGuardCoolTime(Player::GUARD_COOLTIME_SUCCESS);
 			slime_[PLAYER2]->Score(100);
@@ -888,7 +876,7 @@ void SceneGame::PlAtkPowCompare(int pl1Atknum, int pl2Atknum)
 		slimeLoseNum_ = PLAYER2;
 		slimeWinNum_ = PLAYER;
 		PVPKnockBack(1);
-		if (player_->GetState() == CommonData::PLAYERSTATE::GUARD)
+		if (player_->GetState() == SlimeBase::PLAYERSTATE::GUARD)
 		{
 			player_->SetGuardCoolTime(Player::GUARD_COOLTIME_SUCCESS);
 			slime_[PLAYER2]->Score(100);

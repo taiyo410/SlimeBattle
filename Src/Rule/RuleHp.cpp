@@ -1,20 +1,20 @@
 #include"../Application.h"
 #include"../Manager/SceneManager.h"
+#include"../Manager/SlimeManager.h"
 #include"../Scene/SceneGame.h"
 #include "RuleHp.h"
 
 void RuleHp::Init(SceneGame* parent)
 {
 	sceneGame_ = parent;
-	int a = 1;
 }
 
 void RuleHp::Update(void)
 {
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
-		float playerHp = sceneGame_->GetPlayerHpPercent();
-		float enemyHp = sceneGame_->GetEnemyHpPercent();
+		float playerHp = SlimeManager::GetInstance().GetPlayerHpPercent(SlimeManager::PLAYER);
+		float enemyHp = SlimeManager::GetInstance().GetPlayerHpPercent(SlimeManager::ENEMY);
 		if (enemyHp <= 0.0f || playerHp <= 0.0f)
 		{
 			if (enemyHp <= 0.0f && playerHp <= 0.0f)
@@ -37,7 +37,7 @@ void RuleHp::Update(void)
 	}
 	else if (CommonData::GetData().GetMode() == CommonData::MODE::PVP)
 	{
-		float playerHp = sceneGame_->GetPlayerHpPercent();
+		float playerHp = SlimeManager::GetInstance().GetPlayerHpPercent(PLAYER);
 		float player2Hp = sceneGame_->GetPlayer2HpPercent();
 		if (player2Hp <= 0.0f || playerHp <= 0.0f)
 		{
@@ -66,7 +66,7 @@ void RuleHp::Update(void)
 
 void RuleHp::Draw(void)
 {
-	float playerHp = sceneGame_->GetPlayerHpPercent();
+	float playerHp = SlimeManager::GetInstance().GetPlayerHpPercent(PLAYER);
 
 	//プレイヤーのHP表示
 	DrawBox(15, 15, 275, 40, 0x000000, true);
@@ -79,7 +79,7 @@ void RuleHp::Draw(void)
 	}
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
-		float enemyHp = sceneGame_->GetEnemyHpPercent();
+		float enemyHp = SlimeManager::GetInstance().GetPlayerHpPercent(SlimeManager::ENEMY);
 
 		//敵のHP表示
 		//0を下回ったら表示しない
@@ -101,9 +101,7 @@ void RuleHp::Draw(void)
 		{
 			DrawBox(HP_GAUGE_START_X, 16, HP_GAUGE_START_X + player2Hp * 260, 39, 0x2ce70b, true);
 		}
-
 	}
-	
 }
 
 void RuleHp::Release(void)

@@ -6,6 +6,8 @@ class RuleHp :
 {
 public:
     //定数
+    //プレイヤー番号
+    static constexpr int PLAYER = 0;
     //HPゲージの視点座標
     static constexpr int HP_GAUGE_START_X = Application::SCREEN_SIZE_X - 275;
 

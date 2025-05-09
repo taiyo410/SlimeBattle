@@ -66,7 +66,7 @@ void Player2::SetParam(void)
 	isStaminaRecov_ = false;
 
 	//プレイヤー状態
-	state_ = CommonData::PLAYERSTATE::ACTIONABLE;
+	state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
 
 	//フレームカウント
 	frame_ = FRAME_DEFAULT;
@@ -130,7 +130,7 @@ void Player2::Update(void)
 	SlimeBase::Update();
 
 	//重力をかける
-	if (state_ != CommonData::PLAYERSTATE::REVIVAL)
+	if (state_ != SlimeBase::PLAYERSTATE::REVIVAL)
 	{
 		AddGravity(gravityPow_);
 	}
@@ -222,7 +222,7 @@ void Player2::Draw(void)
 	DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaPercent_ * 260, 74, 0x9d370e, true);
 	DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaConsumPercent_ * 260, 74, 0xED784A, true);
 
-	if (state_ == CommonData::PLAYERSTATE::CHARGE)
+	if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
 		VECTOR framePos = VECTOR();
@@ -259,12 +259,12 @@ void Player2::KnockBuckUpdate(void)
 	KnockBack();
 	if (!MoveLimit())
 	{
-		ChangeState(CommonData::PLAYERSTATE::FALL);
+		ChangeState(SlimeBase::PLAYERSTATE::FALL);
 	}
 	if (knockBackCnt_ < 0)
 	{
 		SetCoolTime(KNOCKBACK_AFTER_CNT);
-		ChangeState(CommonData::PLAYERSTATE::COOL);
+		ChangeState(SlimeBase::PLAYERSTATE::COOL);
 	}
 
 
