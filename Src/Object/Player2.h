@@ -29,9 +29,6 @@ public:
 	/// <returns></returns>
 	bool Release(void) override;
 
-	//ÉXÉRÉA
-	void Score(int score);
-
 	void DrawDebug(void)override;
 	
 protected:

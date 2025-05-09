@@ -14,6 +14,8 @@ class ItemBase;
 class Player;
 class Player2;
 class Enemy;
+class SceneManager;
+class SlimeManager;
 class Grid;
 class SceneGame :public SceneBase
 {
@@ -271,6 +273,7 @@ private:
 	RuleBase* ruleBase_;
 	SlimeBase* slime_[SLIME_NUM_MAX];
 	SlimeBase* slimes_;
+	SlimeManager* slimeMng_;
 	Stage* stage_;
 	Player* player_;
 	Player2* player2_;

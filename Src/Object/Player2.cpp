@@ -46,14 +46,7 @@ void Player2::SetParam(void)
 
 	textureFrame_ = LoadGraph((Application::PATH_IMAGE + "CircleFrame.png").c_str());
 
-	//‹——£
-	distance_ = 12.0f;
-
-
-
 	hp_ = MAX_HP;
-
-
 
 	//ƒWƒƒƒ“ƒv—Í
 	jumpPower_ = 0.0f;
@@ -101,15 +94,6 @@ void Player2::SetParam(void)
 
 	fallScore_ = FALL_SCORE_DEFAULT;
 }
-
-//void Player2::Score(int score)
-//{
-//	if (CommonData::GetData().GetRule() == CommonData::RULE::SCORE
-//		&& sceneGame_->GetPlayerInvincible() <= 0)
-//	{
-//		score_ += score;
-//	}
-//}
 
 void Player2::DrawDebug(void)
 {

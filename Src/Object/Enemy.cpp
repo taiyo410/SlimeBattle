@@ -49,13 +49,6 @@ void Enemy::SetParam(void)
 
 	speedAnim_ = ANIM_SPEED_DEFAULT;
 
-
-	//ˆÚ“®‘¬“x
-	speed_ = 15.0f;
-
-	//‹——£
-	distance_ = 12.0f;
-
 	//ƒWƒƒƒ“ƒv—Í
 	jumpPower_ = 0.0f;
 

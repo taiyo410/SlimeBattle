@@ -26,14 +26,13 @@ SlimeBase::~SlimeBase(void)
 }
 
 //初期化処理
-bool SlimeBase::Init(SceneGame* parent)
+bool SlimeBase::Init(SceneGame* _sceneGame)
 {
-	sceneGame_ = parent;
-	
+	sceneGame_ = _sceneGame;
 	//パラメータ設定
 	SetParam();
 
-
+	//モデル生成
 	model_ = new ModelManager();
 	model_->ModelInit();
 	modelHandle_=model_->LoadModel(modelType_);

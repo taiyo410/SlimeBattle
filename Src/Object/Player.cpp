@@ -64,9 +64,6 @@ void Player::SetParam(void)
 	
 	speedAnim_ = ANIM_SPEED_DEFAULT;
 
-	//距離
-	distance_ = 12.0f;
-
 	hp_ = MAX_HP;
 
 	hpPercent_ = static_cast<float>(hp_ / MAX_HP);
@@ -128,6 +125,11 @@ void Player::SetPlayerState(const CommonData::PLAYERSTATE playerState)
 }
 
 
+//bool Player::Init(SceneGame* parent)
+//{
+//	return true;
+//}
+
 //更新処理
 void Player::Update(void)
 {
@@ -175,12 +177,7 @@ void Player::Draw(void)
 	SlimeBase::Draw();
 	//DrawDebug();
 	//デバッグ用の色変更
-	unsigned int color = 0xff0000;
-	if (state_ == CommonData::PLAYERSTATE::GUARD)
-	{
-		color = 0x00ff00;
-	}
-	
+
 	//方向三角形
 	DrawDirTriangle(pos_, dir_, SLIME_COLOR);
 

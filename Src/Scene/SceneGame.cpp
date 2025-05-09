@@ -6,6 +6,7 @@
 #include"../Scene/SceneTitle.h"
 #include"../Object/Grid.h"
 #include"../Manager/SceneManager.h"
+#include"../Manager/SlimeManager.h"
 #include"../Manager/SoundManager.h"
 #include"../Manager/EffectManager.h"
 #include"../Common/CommonData.h"
@@ -94,6 +95,16 @@ bool SceneGame::Init(void)
 	hitEffectPar_ = { hitEffectPos_,hitEffectRot_,hitEffectscl_ };
 	itemSpornCnt_ = ITEM_SPORN_CNT;
 
+	//slimeMng_ = new SlimeManager(CommonData::GetData().GetMode());
+	//slimeMng_->Init();
+
+
+
+
+
+
+
+
 		//スライムの初期化
 	for (int s = 0;s < SLIME_NUM_MAX; s++)
 	{
@@ -115,8 +126,6 @@ bool SceneGame::Init(void)
 		slime_[s]->Init(this);
 	}
 
-
-
 	SetRule();
 	DoChangeRule();	//敵のHPをゲットしているから敵の後に置かないとヌルポ
 	stage_ = new Stage();
@@ -130,10 +139,7 @@ bool SceneGame::Init(void)
 	cloudImage_ = LoadGraph((Application::PATH_IMAGE + "BgMoveImage.png").c_str());
 	cloudPos_ = { Application::SCREEN_SIZE_X / 2,Application::SCREEN_SIZE_Y / 2 };
 
-
 	sound_ = new SoundManager();
-
-
 	sound_->BGMInit();
 	sound_->SEInit();
 	sound_->LoadBgm(SoundManager::BGM_TYPE::GAME);
@@ -152,6 +158,7 @@ void SceneGame::Update(void)
 
 	EffectManager::GetEffect().Update();
 
+	//slimeMng_->Update();
 	//背景処理
 	cloudPos_.x -= SceneTitle::MOVE_SPEED_X;
 	if (cloudPos_.x + Application::SCREEN_SIZE_X / 2 <= 0)
@@ -159,16 +166,6 @@ void SceneGame::Update(void)
 		cloudPos_.x = Application::SCREEN_SIZE_X / 2;
 	}
 
-
-
-	if (InputManager::GetInput().IsKeyPush(KEY_INPUT_SPACE))
-	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAMEOVER, true);
-	}
-
-	//VECTOR playerPos = player_->GetPos();
-	
-	//VECTOR posE2P = { playerPos.x - enemyPos.x, SlimeBase::RADIUS, playerPos.z - enemyPos.z };
 	for (int s = 0; s < SLIME_NUM_MAX; s++)
 	{
 		slime_[s]->Update();
@@ -176,9 +173,6 @@ void SceneGame::Update(void)
 
 	stage_->Update();
 	ruleBase_->Update();
-	
-	
-	
 
 #pragma region PVE用の当たり判定
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
@@ -388,6 +382,9 @@ void SceneGame::Draw(void)
 		, false);
 	stage_->Draw();
 	//スライム描画
+	//slimeMng_->Draw();
+
+
 	for (int s = 0; s < SLIME_NUM_MAX; s++)
 	{
 		slime_[s]->Draw();
@@ -415,6 +412,7 @@ bool SceneGame::Release(void)
 	}
 	
 
+
 	stage_->Release();
 	delete stage_;
 	stage_ = nullptr;
@@ -422,6 +420,9 @@ bool SceneGame::Release(void)
 	ruleBase_->Release();
 	delete ruleBase_;
 	ruleBase_ = nullptr;
+
+	//delete slimeMng_;
+	//slimeMng_ = nullptr;
 
 	for (int s = 0; s < 2; s++)
 	{
@@ -649,11 +650,9 @@ void SceneGame::ChangeBgm(BGM_TYPE bgm)
 //プレイヤー座標
 VECTOR SceneGame::GetPlayerPos(void)
 {
-
 	VECTOR playerPos;
 	playerPos = slime_[PLAYER]->GetPos();
 	return playerPos;
-	
 }
 
 //プレイヤーの方向

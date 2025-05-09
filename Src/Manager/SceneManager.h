@@ -16,15 +16,25 @@ class SceneManager
 {
 
 public:
-	//メンバー関数
+	//定数
+	//************************************
+	//各シーンのカメラ座標と角度
+	//ゲームシーン
+	static constexpr VECTOR GAME_CAMERA_POS = { 0.0f,600.0f,-200.0f };
+	static constexpr VECTOR GAME_CAMERA_ANGLE = { 75.0f * DX_PI_F / 180.0f,0.0f,0.0f };
+
+	//タイトルシーン
+	static constexpr VECTOR TITLE_CAMERA_POS = { 0.0f,100.0f,-200.0f };
+	static constexpr VECTOR TITLE_CAMERA_ANGLE = { 20.0f * DX_PI_F / 180.0f,0.0f,0.0f };
+
+	//************************************
 	//列挙型
 	enum class SCENE_ID
 	{
 		NONE		//未設定
 		,TITLE		//タイトル
 		,GAME		//ゲーム
-		,GAMEOVER	//ゲームオーバー
-		,RESULT
+		,RESULT		//リザルト
 		,MAX
 	};
 
@@ -106,12 +116,6 @@ private:
 	//対戦状態
 	TYPE type_;
 	CommonData::MODE mode_;
-
-	//BGM格納
-	VECTOR cameraPos_;		//カメラ座標
-	VECTOR cameraAngle_;		//カメラ角度
-	
-	
 	
 	
 	/// <summary>

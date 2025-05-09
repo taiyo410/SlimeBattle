@@ -195,20 +195,12 @@ void SceneManager::DoChangeScene(void)
 		scene_ = new SceneTitle();
 		break;
 	case SCENE_ID::GAME:
-		cameraPos_ = { 0.0f,600.0f,-200.0f };
-		cameraAngle_ = { 75.0f * DX_PI_F / 180.0f,0.0f,0.0f };
-		camera_->SetCameraWork(cameraPos_, cameraAngle_);
+		camera_->SetCameraWork(GAME_CAMERA_POS, GAME_CAMERA_ANGLE);
 		scene_ = new SceneGame();
 		break;
-	case SCENE_ID::GAMEOVER:
-		scene_ = new SceneGameOver();
-		break;
 	case SCENE_ID::RESULT:
-		cameraPos_ = { 0.0f,100.0f,-200.0f };
-		cameraAngle_ = { 20.0f * DX_PI_F / 180.0f,0.0f,0.0f };
-		camera_->SetCameraWork(cameraPos_, cameraAngle_);
+		camera_->SetCameraWork(TITLE_CAMERA_POS, TITLE_CAMERA_ANGLE);
 		scene_ = new ResultScene();
-		
 	default:
 		break;
 	}

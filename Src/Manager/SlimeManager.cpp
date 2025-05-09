@@ -29,21 +29,31 @@ SlimeManager& SlimeManager::GetInstance(void)
 
 void SlimeManager::Init(void)
 {
-	slime_[0] = std::make_unique<Player>();
-	if (mode_ == MODE::PVE)
-	{
-		slime_[1] = std::make_unique<Enemy>();
-	}
-	else if (mode_ == MODE::PVP)
-	{
-		slime_[1] = std::make_unique<Player>();
-	}
+	//slime_[0] = std::make_unique<Player>();
+	//slime_[0]->Init();
+	//if (mode_ == MODE::PVE)
+	//{
+	//	slime_[1] = std::make_unique<Enemy>();
+	//}
+	//else if (mode_ == MODE::PVP)
+	//{
+	//	slime_[1] = std::make_unique<Player>();
+	//}
+	//slime_[1]->Init();
 }
 
 void SlimeManager::Update(void)
 {
+	for (int i = 0; i < SLIME_NUM; i++)
+	{
+		slime_[i]->Update();
+	}
 }
 
 void SlimeManager::Draw(void)
 {
+	for (int i = 0; i < SLIME_NUM; i++)
+	{
+		slime_[i]->Draw();
+	}
 }

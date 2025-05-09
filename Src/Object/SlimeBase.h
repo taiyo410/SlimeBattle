@@ -177,7 +177,7 @@ public:
 	/// </summary>
 	/// <param name="parent"></param>
 	/// <returns></returns>
-	virtual bool Init(SceneGame* parent);
+	virtual bool Init(SceneGame* _sceneGame);
 
 	/// <summary>
 	/// 更新処理
@@ -393,9 +393,6 @@ protected:
 	int atkPow_;	//状態ごとの重ねつけ
 
 	int textureFrame_;	 //フレーム枠画像
-
-	//距離
-	float distance_;
 
 	//ジャンプ力
 	float jumpPower_;
