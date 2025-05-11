@@ -150,13 +150,12 @@ public:
 	/// <returns></returns>
 	SunUtility::DIR_3D GetPlayerDir(void);
 
-
 	/// <summary>
 	/// プレイヤー座標をゲームシーンからゲットするとき
 	/// </summary>
-	/// <param name=""></param>
+	/// <param name="_num">プレイヤー番号</param>
 	/// <returns></returns>
-	VECTOR GetPlayerPos(void);
+	VECTOR GetPlayerPos(int _num);
 
 	/// <summary>
 	/// プレイヤーの状態ゲッター
@@ -166,7 +165,7 @@ public:
 	SlimeBase::PLAYERSTATE GetPlayerState(void);
 
 	//プレイヤーのHPゲッタ
-	float GetPlayerHpPercent(void);
+	float GetPlayerHpPercent(int _num);
 
 	//プレイヤーのスコアゲッタ
 	int GetPlayerScore(void);

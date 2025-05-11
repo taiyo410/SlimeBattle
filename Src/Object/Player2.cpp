@@ -11,7 +11,7 @@
 #include "Player2.h"
 
 
-void Player2::SetParam(void)
+void Player2::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 {
 
 	modelType_ = ModelManager::MODEL_TYPE::YUUHI;
@@ -277,7 +277,7 @@ void Player2::KnockBack(void)
 	VECTOR diff;
 
 	//座標でノックバックを判定する
-	diff = VSub(pos_, sceneGame_->GetPlayerPos());	//相手から自分を引くと相手への方向を向く。
+	diff = VSub(pos_, sceneGame_->GetPlayerPos(SceneGame::PLAYER));	//相手から自分を引くと相手への方向を向く。
 
 	//ノックバックは自分とは逆だから（自分ー相手）
 	auto dir = VNorm(diff);

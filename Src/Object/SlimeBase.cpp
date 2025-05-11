@@ -16,7 +16,6 @@
 //デフォルトコンストラクタ
 SlimeBase::SlimeBase(void)
 {
-	SetParam();
 }
 
 //デストラクタ
@@ -26,11 +25,11 @@ SlimeBase::~SlimeBase(void)
 }
 
 //初期化処理
-bool SlimeBase::Init(SceneGame* _sceneGame)
+bool SlimeBase::Init(SceneGame* _sceneGame, VECTOR _initPos, int _padNum, int _enemyNum)
 {
 	sceneGame_ = _sceneGame;
 	//パラメータ設定
-	SetParam();
+	SetParam(_initPos,_padNum,_enemyNum);
 
 	//モデル生成
 	model_ = new ModelManager();
@@ -40,9 +39,9 @@ bool SlimeBase::Init(SceneGame* _sceneGame)
 
 	//音楽ファイルのロード
 	stepSE_ = LoadSoundMem((Application::PATH_SOUND + "MoveSlime.mp3").c_str());
-
 	attackSE_ = LoadSoundMem((Application::PATH_SOUND + "Attack.mp3").c_str());
 
+	//スライム状態画像の後ろの雲画像
 	backSlimefaceImg_ = LoadGraph((Application::PATH_IMAGE + "Clowd.png").c_str());
 
 
@@ -155,7 +154,7 @@ float SlimeBase::GetHpPercent(void)
 	return hpPercent_;
 }
 
-void SlimeBase::SetParam(void)
+void SlimeBase::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 {
 	waidAtkPar_.pos = { 0.0f,0.0f,0.0f };
 	waidAtkPar_.rot = { 0.0f,0.0f,0.0f };

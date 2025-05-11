@@ -16,7 +16,7 @@
 #include"../Object/Player.h"
 #include"../Object/Enemy.h"
 
-void Enemy::SetParam(void)
+void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 {
 #pragma region パラメタの初期化
 	pos_ = { Stage::STAGE_ONE_SQUARE * 3,RADIUS,0.0f };
@@ -271,7 +271,7 @@ void Enemy::FrameComsumption(void)
 //DIRを考える処理
 void Enemy::MoveDir(void)
 {
-	VECTOR playerPos = sceneGame_->GetPlayerPos();
+	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 	VECTOR enemyPos = pos_;
 	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 
@@ -490,7 +490,7 @@ void Enemy::UpdateThink(void)
 {
 	if (!isJump_)
 	{
-		VECTOR playerPos = sceneGame_->GetPlayerPos();
+		VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 		VECTOR enemyPos = pos_;
 		VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 
@@ -546,7 +546,7 @@ void Enemy::UpdateStep(void)
 	model_->ChangeAnim(modelType_, ModelManager::ANIM_TYPE::STEP);
 
 
-	VECTOR playerPos = sceneGame_->GetPlayerPos();
+	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 	VECTOR enemyPos = pos_;
 	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 
@@ -566,7 +566,7 @@ void Enemy::UpdateStep(void)
 	case Enemy::ACT::Attack:
 	{
 		//座標でノックバックを判定する
-		diff = VSub(sceneGame_->GetPlayerPos(), pos_);	//相手から自分を引くと相手への方向を向く。
+		diff = VSub(sceneGame_->GetPlayerPos(SceneGame::PLAYER), pos_);	//相手から自分を引くと相手への方向を向く。
 		//敵に向かって進む（相手-自分）
 		dir = VNorm(diff);
 		//無限にある方向を４方向に限定する
@@ -607,7 +607,7 @@ void Enemy::UpdateStep(void)
 
 void Enemy::UpdateCharge(void)
 {
-	VECTOR playerPos = sceneGame_->GetPlayerPos();
+	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 	VECTOR enemyPos = pos_;
 	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 	if (!isJump_)
@@ -685,7 +685,7 @@ void Enemy::KnockBack(void)
 {
 
 	//座標でノックバックを判定する
-	auto diff = VSub(pos_, sceneGame_->GetPlayerPos());	//相手から自分を引くと相手への方向を向く。
+	auto diff = VSub(pos_, sceneGame_->GetPlayerPos(SceneGame::PLAYER));	//相手から自分を引くと相手への方向を向く。
 	//ノックバックは自分とは逆だから（自分ー相手）
 	auto dir = VNorm(diff);
 	//無限にある方向を４方向に限定する

@@ -22,6 +22,8 @@ public:
 
 	//移動上限
 	static constexpr float MOVE_LIMIT = Stage::STAGE_ONE_SQUARE * 5.8 - Stage::STAGE_ONE_SQUARE / 2;
+
+
 	enum class SLIME_FACE
 	{
 		NORMAL
@@ -36,6 +38,13 @@ public:
 	// 
 	//半径
 	static constexpr float RADIUS = 25.0f;
+
+	//初期座標
+	//左側
+	static constexpr VECTOR INIT_LEFT_POS = { -Stage::STAGE_ONE_SQUARE * 3, RADIUS, 0.0f };
+
+	static constexpr VECTOR INIT_RIGHT_POS = { Stage::STAGE_ONE_SQUARE * 3,RADIUS,0.0f };
+	//重力
 	//重力
 	static constexpr float DEFAULT_GRAVITY = 0.25f;
 
@@ -216,7 +225,7 @@ public:
 	/// </summary>
 	/// <param name="parent"></param>
 	/// <returns></returns>
-	virtual bool Init(SceneGame* _sceneGame);
+	virtual bool Init(SceneGame* _sceneGame,VECTOR _initPos,int _padNum,int _enemyNum);
 
 	/// <summary>
 	/// 更新処理
@@ -384,7 +393,7 @@ protected:
 	int modelHandle_;	//モデルハンドル
 
 	//スライムの状態画像
-	std::map<SLIME_FACE, int>slimeFaceImg_;
+	std::map<SLIME_FACE, int>slimeFaceImg_;	//画像格納
 	SLIME_FACE face_;	//スライム状態
 	Vector2 facePos_;	//状態画像の座標
 
@@ -421,65 +430,50 @@ protected:
 	int attackSE_;
 
 	//チャージSE
-	int chargeSE_;
-	//広範囲攻撃のパラメタ
-
-
-
-	//溜め割合
-	float chargePer_;
+	int chargeSE_;	//溜め割合
+	float chargePer_;	//割合
 	float gaugeRate_;	//デバッグ用のゲージ変化
 
 	int atkPow_;	//状態ごとの重ねつけ
 
 	int textureFrame_;	 //フレーム枠画像
 
-	//ジャンプ力
-	float jumpPower_;
+	float jumpPower_;	//ジャンプ力
 
 	float gravityPow_;	//重力変数
 
-	//ジャンプ中判定
-	bool isJump_;
+	bool isJump_;	//ジャンプ中判定
 
 	bool isWeak_;	//弱体状態フラグ
 
 	bool isItemUse_;	//アイテム使用フラグ
 
-	//体力
-	int hp_;
+	int hp_;			//体力
 
-	//スコア
-	int score_;
-	//Hpの割合
-	float hpPercent_;	
+	int score_;			//スコア
+	
+	float hpPercent_;	//Hpの割合
 
-	//プレイヤーのスタミナ
-	float stamina_;
+	float stamina_;		//プレイヤーのスタミナ
 
-	//クールタイム
-	int coolTime_;
+	
+	int coolTime_;		//クールタイム
 
-	//落ちている時間のカウント
-	int fallCnt_;
+	
+	int fallCnt_;		//落ちている時間のカウント
 
-	//落ちた時のダメージ
-	int fallDmg_;
+	
+	int fallDmg_;		//落ちた時のダメージ
 
-	//落ちたときのスコア減算
-	int fallScore_;
+	int fallScore_;		//落ちたときのスコア減算
 
-	//復活中カウント
-	int revivalCnt_;
+	int revivalCnt_;	//復活中カウント
 
 	P_OR_E judge_;		//プレイヤーかエネミーか
 
+	SunUtility::DIR_3D dir_;//プレイヤーの方向
 
-	//プレイヤーの方向
-	SunUtility::DIR_3D dir_;
-
-	//ノックバック方向
-	SunUtility::DIR_3D knockBackDir_;
+	SunUtility::DIR_3D knockBackDir_;//ノックバック方向
 
 
 	
@@ -493,38 +487,30 @@ protected:
 	//無敵時間
 	int invincibleCnt_;
 
-
-	int waidChargeCnt_;	//広範囲攻撃の溜めカウント
-	
-
-	WAID_ATK waidAtk_;
 	//広範囲攻撃
+	int waidChargeCnt_;	//広範囲攻撃の溜めカウント
+	WAID_ATK waidAtk_;	//広範囲攻撃状態
 	
-
-
 	int waidAtkCoolTime_;	//広範囲攻撃のクールタイム
 	int slimeNum_;		//スライム番号
 	
 	float jumpCnt_;		//広範囲攻撃のジャンプカウント
 
-
-
-
 	//フレームカウント
 	//----------------------------------------
-	//フレーム
 	float frame_;
 
-	//ノックバックカウント
-	int knockBackCnt_;	
+	
+	int knockBackCnt_;	//ノックバックカウント
 
-	//溜めが終わった後のフレーム保管用
-	float frameNum_;
+	float frameNum_;	//溜めが終わった後のフレーム保管用
 
 	bool isUseItem_;	//アイテム使用状態
 
+	int enemyNum_;		//敵のスライム番号
+
 	//初期化処理
-	virtual void SetParam(void);
+	virtual void SetParam(VECTOR _initPos, int _padNum, int _enemyNum);
 
 	/// <summary>
 	/// ジャンプ操作

@@ -29,17 +29,17 @@ SlimeManager& SlimeManager::GetInstance(void)
 
 void SlimeManager::Init(SceneGame* _sceneGame)
 {
-	slime_[0] = new Player();
-	slime_[0]->Init(_sceneGame);
-	if (mode_ == CommonData::MODE::PVE)
-	{
-		slime_[1] = new Enemy();
-	}
-	else if (mode_ == CommonData::MODE::PVP)
-	{
-		slime_[1] = new Player();
-	}
-	slime_[1]->Init(_sceneGame);
+	//slime_[0] = new Player();
+	//slime_[0]->Init(_sceneGame);
+	//if (mode_ == CommonData::MODE::PVE)
+	//{
+	//	slime_[1] = new Enemy();
+	//}
+	//else if (mode_ == CommonData::MODE::PVP)
+	//{
+	//	slime_[1] = new Player();
+	//}
+	//slime_[1]->Init(_sceneGame);
 }
 
 void SlimeManager::Update(void)

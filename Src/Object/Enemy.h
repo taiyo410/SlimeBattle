@@ -209,7 +209,7 @@ private:
 	VECTOR moveRoute_;	//行先の座標
 	
 	//パラメタの初期化
-	void SetParam(void)override;		
+	void SetParam(VECTOR _initPos, int _padNum, int _enemyNum)override;
 
 	//ノックバック処理
 	void KnockBack(void);

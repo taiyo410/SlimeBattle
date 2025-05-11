@@ -17,7 +17,7 @@
 #include"Player.h"
 
 //パラメタの初期化
-void Player::SetParam(void)
+void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum)
 {
 #pragma region パラメタの初期化
 	//modelFileName_ = "SilmeAnimKokage.mv1";
@@ -35,10 +35,11 @@ void Player::SetParam(void)
 	backSlimefacePos_ = facePos_;
 	face_ = SLIME_FACE::NORMAL;
 
-	pos_ = INIT_POS;
+	pos_ = _initPos;
 	scale_ = { 1.0f,1.0f,1.0f };
 	rot_ = { 0.0f,0.0f,0.0f };
-	padNum_ = DX_INPUT_KEY_PAD1;
+	padNum_ = _padNum;
+	enemyNum_ = _enemyNum;
 
 	revivalPos_ = { -Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
 
@@ -387,7 +388,7 @@ void Player::KnockBack(void)
 	else if(ins.GetMode() == CommonData::MODE::PVP)
 	{
 		//座標でノックバックを判定する
-		diff = VSub(pos_, sceneGame_->GetPlayer2Pos());	//相手から自分を引くと相手への方向を向く。
+		diff = VSub(pos_, sceneGame_->GetPlayerPos(enemyNum_));	//相手から自分を引くと相手への方向を向く。
 	}
 	
 	//ノックバックは自分とは逆だから（自分ー相手）

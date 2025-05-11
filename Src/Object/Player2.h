@@ -41,7 +41,7 @@ protected:
 	/// ƒpƒ‰ƒƒ^‚Ì‰Šú‰»
 	/// </summary>
 	/// <param name=""></param>
-	void SetParam(void)override;
+	void SetParam(VECTOR _initPos, int _padNum, int _enemyNum)override;
 
 	
 

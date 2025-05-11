@@ -190,7 +190,7 @@ protected:
 /// <summary>
 /// 座標の初期化
 /// </summary>
-	void SetParam(void) override;
+	void SetParam(VECTOR _initPos,int _padNum,int _enemyNum) override;
 
 	//ステップフレームカウント
 	int stepFrame_;
