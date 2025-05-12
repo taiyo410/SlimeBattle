@@ -10,6 +10,19 @@ public:
 	//アニメーションデフォルトの速度
 	static constexpr float ANIM_SPEED_DEFAULT = SunUtility::DEFAULT_FPS;
 
+	//角度
+	//前
+	static constexpr float FLONT_DEG = 180.0f;
+	//後ろ
+	static constexpr float BACK_DEG = 0.0f;
+	//右
+	static constexpr float RIGHT_DEG = 270.0f;
+	//左
+	static constexpr float LEFT_DEG = 180.0f;
+
+	//アニメーションの終わり
+	static constexpr float END_ANIM = 59.0F;
+
 	//読み込むものがどういうものか
 	enum class OBJECT
 	{

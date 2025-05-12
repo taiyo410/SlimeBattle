@@ -16,6 +16,77 @@
 //デフォルトコンストラクタ
 SlimeBase::SlimeBase(void)
 {
+	//modelFileName_ = "SilmeAnimKokage.mv1";
+	modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
+	dir_ = {};
+
+	//スライム状態画像のロード
+	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalK.png").c_str());
+	slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "Tukare.png").c_str());
+	slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageK.png").c_str());
+	slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + "ChargeK.png").c_str());
+	slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + "AttackK.png").c_str());
+
+	facePos_ = {};
+	backSlimefacePos_ = facePos_;
+	face_ = SLIME_FACE::NORMAL;
+
+	pos_ = {};
+	scale_ = { 1.0f,1.0f,1.0f };
+	rot_ = { 0.0f,0.0f,0.0f };
+
+	enemyNum_ = 0;
+
+	revivalPos_ = { -Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
+
+	waidChargeCnt_ = 0;
+
+	waidAtkPar_.pos = { 0.0f,0.0f,0.0f };
+	waidAtkPar_.rot = { 0.0f,0.0f,0.0f };
+	waidAtkPar_.scl = { 0.0f,0.0f,0.0f };
+
+	waidChargePar_.pos = SunUtility::VECTOR_ZERO;
+	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
+	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };
+
+	slimeNum_ = 0;
+
+	score_ = 0;
+
+	isUseItem_ = false;
+
+	//ジャンプ力
+	jumpPower_ = 0.0f;
+
+	//ジャンプ判定
+	isJump_ = false;
+
+	//スタミナ
+	stamina_ = STAMINA_MAX;
+
+	//スタミナが減ってるか
+	isStaminaRecov_ = false;
+
+	//プレイヤー状態
+	pState_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
+
+	//フレームカウント
+	frame_ = FRAME_DEFAULT;
+
+	guardCoolTime_ = 0;
+
+	invincibleCnt_ = 0;
+
+	coolTime_ = 0;
+
+	itemReGetCnt_ = 0;
+
+	gravityPow_ = DEFAULT_GRAVITY;
+
+	fallDmg_ = FALL_DMG_DEFAULT;
+
+	fallScore_ = FALL_SCORE_DEFAULT;
+
 }
 
 //デストラクタ
@@ -25,11 +96,11 @@ SlimeBase::~SlimeBase(void)
 }
 
 //初期化処理
-bool SlimeBase::Init(SceneGame* _sceneGame, VECTOR _initPos, int _padNum, int _enemyNum)
+bool SlimeBase::Init(SceneGame* _sceneGame, VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::MODEL_TYPE _modelType,SunUtility::DIR_3D _dir)
 {
 	sceneGame_ = _sceneGame;
 	//パラメータ設定
-	SetParam(_initPos,_padNum,_enemyNum);
+	SetParam(_initPos,_padNum,_enemyNum,_modelType,_dir);
 
 	//モデル生成
 	model_ = new ModelManager();
@@ -61,11 +132,12 @@ bool SlimeBase::Init(SceneGame* _sceneGame, VECTOR _initPos, int _padNum, int _e
 //更新処理
 void  SlimeBase::Update(void)
 {
+	//状態更新
 	StateUpdate();
+
+	//アニメーション更新
 	model_->AnimUpdate(modelType_, frameNum_);
-
 	model_->Animation(modelType_, pos_, scale_, dir_);
-
 
 	//移動処理
 	Jump();
@@ -154,7 +226,7 @@ float SlimeBase::GetHpPercent(void)
 	return hpPercent_;
 }
 
-void SlimeBase::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
+void SlimeBase::SetParam(VECTOR _initPos, int _padNum, int _enemyNum,ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir)
 {
 	waidAtkPar_.pos = { 0.0f,0.0f,0.0f };
 	waidAtkPar_.rot = { 0.0f,0.0f,0.0f };
@@ -168,11 +240,9 @@ void SlimeBase::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 //プレイヤーのジャンプ操作
 void SlimeBase::ProcessJump(void)
 {
-	if (!isJump_)
-	{
-		SetJumpPower(MAX_JUMP_POWER);
-		isJump_ = true;
-	}
+	if (isJump_)return;
+	SetJumpPower(MAX_JUMP_POWER);
+	isJump_ = true;
 }
 
 //ジャンプ
@@ -201,6 +271,21 @@ void SlimeBase::SetJumpPower(float power)
 	{
 		jumpPower_ = MAX_JUMP_POWER;
 	}
+}
+
+void SlimeBase::SetGuardCoolTime(const int guardCooltime)
+{
+	guardCoolTime_ = guardCooltime;
+}
+
+void SlimeBase::ChangePlayerState(PLAYERSTATE _pState)
+{
+	//スタブ
+}
+
+void SlimeBase::ChangeEnemyState(ENEMYSTATE _state)
+{
+	//スタブ
 }
 
 //減衰制御（ジャンプ：重力加速度）
@@ -301,36 +386,9 @@ int SlimeBase::GetInvincible(void)
 void SlimeBase::Ground(void)
 {
 	//地面
-	if (pos_.y < RADIUS && MoveLimit())
-	{
-		pos_.y = RADIUS;
-		isJump_ = false;
-	}
-}
-
-
-
-void SlimeBase::EndAnimation(void)
-{
-	switch (anim_)
-	{
-	case SlimeBase::ANIM::IDLE:
-		stepAnim_ = 0.0f;
-		break;
-	case SlimeBase::ANIM::STEP:
-		stepAnim_ = ANIM_END;
-		break;
-	case SlimeBase::ANIM::CHARGE:
-		stepAnim_ = ANIM_END;
-		break;
-	case SlimeBase::ANIM::ATTACK:
-		stepAnim_ = ANIM_END;
-		break;
-	case SlimeBase::ANIM::MAX:
-		break;
-	default:
-		break;
-	}
+	if (pos_.y >= RADIUS && !MoveLimit())return;
+	pos_.y = RADIUS;
+	isJump_ = false;
 }
 
 void SlimeBase::DrawDirTriangle(VECTOR _pos, SunUtility::DIR_3D _dir, int _color)
@@ -338,12 +396,6 @@ void SlimeBase::DrawDirTriangle(VECTOR _pos, SunUtility::DIR_3D _dir, int _color
 	VECTOR attackPos;
 	VECTOR attackPos2;
 	VECTOR attackPos3;
-
-	//三角形のYの高さ
-	static float HIGH = 12.5f;
-
-	//頂点座標
-	static float VERTEX = 60.0f;
 
 	switch (_dir)
 	{
@@ -375,11 +427,6 @@ void SlimeBase::DrawDirTriangle(VECTOR _pos, SunUtility::DIR_3D _dir, int _color
 	}
 }
 
-float SlimeBase::GetWaidCol(void)
-{
-	return item_->GetWaidAtk();
-}
-
 bool SlimeBase::IsGetItemPtr(void)
 {
 	if (item_ == nullptr)
@@ -396,17 +443,11 @@ bool SlimeBase::IsItemAtk(void)
 		return item_->GetIsAtkAlive();
 	}
 	return false;
-	
 }
 
 int SlimeBase::GetAtkPow(void)
 {
 	return atkPow_;
-}
-
-void SlimeBase::ChangeState(SlimeBase::PLAYERSTATE state)
-{
-
 }
 
 bool SlimeBase::GetIsWeak(void)
@@ -455,17 +496,12 @@ SlimeBase::WAID_ATK SlimeBase::GetWaidAtkState(void)
 	return waidAtk_;
 }
 
-bool SlimeBase::GetIsUse(void)
-{
-	return isUseItem_;
-}
-
 int SlimeBase::GetItemReGetCnt(void)
 {
 	return itemReGetCnt_;
 }
 
-void SlimeBase::Score(const int score)
+void SlimeBase::AddScore(const int score)
 {
 	score_ += score;
 }
@@ -473,9 +509,4 @@ void SlimeBase::Score(const int score)
 void SlimeBase::SetIsItemGetEffect(const bool isItemGetEff)
 {
 	itemGetEffPlay_ = isItemGetEff;
-}
-
-ModelManager::MODEL_TYPE SlimeBase::GetModelType(void)
-{
-	return modelType_;
 }

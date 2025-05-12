@@ -4,12 +4,24 @@
 class Camera
 {
 public:
+	//定数
+	//初期座標
+	static constexpr VECTOR INIT_POS = { 0.0f,600.0f,-200.0f };
 
+	//初期座標
+	static constexpr VECTOR INIT_ANGLES = { 75.0f * DX_PI_F / 180.0f,0.0f,0.0f };
+
+	//カメラが見える範囲
+	static constexpr float CAMERA_NEAR = 10.0f;
+
+	//遠く
+	static constexpr float CAMERA_FAR = 10.0f;
 	//コンストラクタ
 	Camera(void);
 
 	//デストラクタ
 	~Camera();
+
 
 	enum class SHAKE_STATE
 	{

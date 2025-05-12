@@ -127,8 +127,8 @@ void SlimeManager::Update(void)
 	//					float waidAtkCol = item->GetWaidAtk();
 	//					slime_[PLAYER2]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
 	//					slime_[PLAYER2]->Damage((Speaker::WAID_ATK_COL - waidAtkCol) / 1.5, SlimeBase::INVINCIBLE_TIME);
-	//					slime_[PLAYER]->Score((Speaker::WAID_ATK_COL - waidAtkCol) * 5);
-	//					player2_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+	//					slime_[PLAYER]->AddScore((Speaker::WAID_ATK_COL - waidAtkCol) * 5);
+	//					player2_->ChangePlayerState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 	//				}
 	//			}
 
@@ -142,8 +142,8 @@ void SlimeManager::Update(void)
 	//					float waidAtkCol = item->GetWaidAtk();
 	//					slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
 	//					slime_[PLAYER]->Damage((Speaker::WAID_ATK_COL - waidAtkCol) / 1.5, SlimeBase::INVINCIBLE_TIME);
-	//					slime_[PLAYER2]->Score((Speaker::WAID_ATK_COL - waidAtkCol) * 5);
-	//					player_->ChangeState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+	//					slime_[PLAYER2]->AddScore((Speaker::WAID_ATK_COL - waidAtkCol) * 5);
+	//					player_->ChangePlayerState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 	//				}
 	//			}
 	//		}

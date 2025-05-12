@@ -17,8 +17,6 @@ class GaugeCircle;
 class SlimeBase
 {
 public:
-	//アニメーションの終わり
-	static constexpr float ANIM_END = 59.0f;
 
 	//移動上限
 	static constexpr float MOVE_LIMIT = Stage::STAGE_ONE_SQUARE * 5.8 - Stage::STAGE_ONE_SQUARE / 2;
@@ -52,7 +50,7 @@ public:
 	static constexpr float MAX_JUMP_POWER =10.0f;
 
 	//移動ジャンプパワー
-	static constexpr float STEP_JUMP_POWER = 0.4;
+	static constexpr float STEP_JUMP_POWER = 0.4f;
 
 	//フレーム時間
 	static constexpr float FLAME_TIME = 1 / 60;
@@ -99,13 +97,6 @@ public:
 	//敵とプレイヤーの座標マージン
 	static constexpr float POS_MARGIN = 5.0f;
 
-	//アニメーション最大時間
-	static constexpr float ANIM_CNT_MAX = 60;
-
-	//アニメーションデフォルトの速度
-	static constexpr float ANIM_SPEED_DEFAULT = SunUtility::DEFAULT_FPS;
-
-
 
 	//広範囲攻撃ジャンプパワー
 	static constexpr float WIDE_JUMP_POWER = 50.0f;
@@ -144,6 +135,12 @@ public:
 
 	//SEの音量
 	static constexpr int SE_VOL = 50;
+
+	//三角形のYの高さ
+	static constexpr float HIGH = 12.5f;
+
+	//頂点座標
+	static constexpr float VERTEX = 60.0f;
 
 	//列挙型
 	enum class PLAYERSTATE
@@ -194,26 +191,12 @@ public:
 		, ATK
 		, END
 	};
-
-	//列挙型
-	enum class ANIM
-	{
-		IDLE
-		,STEP
-		,CHARGE
-		,ATTACK
-		,MAX
-	};
-
 	enum class P_OR_E
 	{
 		PLAYER
 		,ENEMY
 	};
 	
-
-	
-
 	//デフォルトコンストラクタ
 	SlimeBase(void);
 
@@ -225,7 +208,7 @@ public:
 	/// </summary>
 	/// <param name="parent"></param>
 	/// <returns></returns>
-	virtual bool Init(SceneGame* _sceneGame,VECTOR _initPos,int _padNum,int _enemyNum);
+	virtual bool Init(SceneGame* _sceneGame,VECTOR _initPos,int _padNum,int _enemyNum,ModelManager::MODEL_TYPE _modelType,SunUtility::DIR_3D _dir);
 
 	/// <summary>
 	/// 更新処理
@@ -246,20 +229,14 @@ public:
 	/// <returns></returns>
 	virtual bool Release(void);
 
-	//プレイヤーの座標の座標ゲッター
-
-	/// <summary>
-	/// 敵とプレイヤーの座標ゲッタ
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns></returns>
+	
+	//ゲッタ
+	//********************************************************
+	// 敵とプレイヤーの座標ゲッタ
 	VECTOR GetPos(void);
 
-	/// <summary>
-	/// プレイヤーの方向ゲッター
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns>プレイヤーの方向</returns>
+
+	// プレイヤーの方向ゲッター
 	SunUtility::DIR_3D GetDir(void);
 
 	//ノックバックカウントのセッタ
@@ -271,11 +248,6 @@ public:
 	/// <param name="dmg">ダメージ</param>
 	/// <param name="invincibleCnt">無敵時間</param>
 	void Damage(const int dmg, const int invincibleCnt);
-
-	/// <summary>
-	/// ジャンプ
-	/// </summary>
-	void Jump(void);
 
 	//表示用スコアゲッタ
 	int GetScore(void);
@@ -306,11 +278,6 @@ public:
 	//弱体状態のセッタ
 	void SetIsWeak(bool isWeak);
 
-	/// <summary>
-	/// ジャンプ力の設定
-	/// </summary>
-	/// <param name="power"></param>
-	void SetJumpPower(float power);
 
 	/// <summary>
 	/// 重力をかける
@@ -323,11 +290,8 @@ public:
 	//アイテム使用状態セッタ
 	void SetIsUse(const bool isUseItem);
 
-
 	//アイテム再取得カウントゲッタ
 	int GetItemReGetCnt(void);
-
-	
 
 	//広範囲攻撃チャージカウントゲッタ
 	int GetChargeCnt(void);
@@ -336,11 +300,6 @@ public:
 	void SetChargeCnt(int cnt);
 
 	WAID_ATK GetWaidAtkState(void);
-
-	bool GetIsUse(void);
-
-	//広範囲攻撃の半径ゲッタ
-	float GetWaidCol(void);
 
 	//プレイヤーがアイテムのポインターを持っているか
 	bool IsGetItemPtr(void);	
@@ -351,23 +310,26 @@ public:
 	//攻撃状態重み付けゲッタ
 	int GetAtkPow(void);
 
-	/// <summary>
-	/// 状態変化関数
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns></returns>
-	virtual void ChangeState(PLAYERSTATE state);
-
 	//スコア加算処理
-	void Score(const int score);
+	void AddScore(const int score);
 
+	//プレイヤーの状態ゲッタ
+	PLAYERSTATE GetPlayerState(void) { return pState_; }
+
+	//------------------------------------------------
 	//エフェクトを再生セッタ
 	void SetIsItemGetEffect(const bool isItemGetEff);
 
-	ModelManager::MODEL_TYPE GetModelType(void);
+	// ジャンプ力の設定
+	void SetJumpPower(float power);
 
+	void SetGuardCoolTime(const int guardCooltime);
 
+	//プレイヤーの状態変更(ゲームシーンで継承スライム配列で変更できるように)
+	virtual void ChangePlayerState(PLAYERSTATE _pState);
 
+	//CPUの状態変更
+	virtual void ChangeEnemyState(ENEMYSTATE _state);
 
 protected:
 	//ポインタ
@@ -401,28 +363,6 @@ protected:
 	int backSlimefaceImg_;	//画像
 	Vector2 backSlimefacePos_;	//座標
 
-	//アニメーションのアタッチ番号
-	int animAttachNo_;
-
-	//アニメ番号
-	int animNo_;
-
-	//アニメ遷移用
-	ANIM anim_;
-
-	//アニメーションの総再生時間
-	float animTotalTime_;
-
-	//再生中のアニメーション時間
-	float stepAnim_;
-
-	//アニメーション速度
-	float speedAnim_;
-
-	//アニメ終わった判定
-	bool endAnim_;
-
-
 	//ステップSEの格納
 	int stepSE_;
 
@@ -430,53 +370,38 @@ protected:
 	int attackSE_;
 
 	//チャージSE
+	int hp_;			//体力
+	int score_;			//スコア
 	int chargeSE_;	//溜め割合
 	float chargePer_;	//割合
 	float gaugeRate_;	//デバッグ用のゲージ変化
-
+	float jumpPower_;	//ジャンプ力
+	bool isJump_;	//ジャンプ中判定
+	float gravityPow_;	//重力変数
 	int atkPow_;	//状態ごとの重ねつけ
+	SunUtility::DIR_3D dir_;//プレイヤーの方向
 
 	int textureFrame_;	 //フレーム枠画像
-
-	float jumpPower_;	//ジャンプ力
-
-	float gravityPow_;	//重力変数
-
-	bool isJump_;	//ジャンプ中判定
 
 	bool isWeak_;	//弱体状態フラグ
 
 	bool isItemUse_;	//アイテム使用フラグ
 
-	int hp_;			//体力
-
-	int score_;			//スコア
-	
 	float hpPercent_;	//Hpの割合
 
 	float stamina_;		//プレイヤーのスタミナ
 
-	
 	int coolTime_;		//クールタイム
 
-	
+	//落ちる関係
 	int fallCnt_;		//落ちている時間のカウント
-
-	
 	int fallDmg_;		//落ちた時のダメージ
-
 	int fallScore_;		//落ちたときのスコア減算
-
 	int revivalCnt_;	//復活中カウント
 
-	P_OR_E judge_;		//プレイヤーかエネミーか
-
-	SunUtility::DIR_3D dir_;//プレイヤーの方向
 
 	SunUtility::DIR_3D knockBackDir_;//ノックバック方向
 
-
-	
 
 	//スタミナ減少中判定
 	bool isStaminaRecov_;
@@ -490,27 +415,27 @@ protected:
 	//広範囲攻撃
 	int waidChargeCnt_;	//広範囲攻撃の溜めカウント
 	WAID_ATK waidAtk_;	//広範囲攻撃状態
-	
 	int waidAtkCoolTime_;	//広範囲攻撃のクールタイム
 	int slimeNum_;		//スライム番号
-	
 	float jumpCnt_;		//広範囲攻撃のジャンプカウント
 
 	//フレームカウント
 	//----------------------------------------
 	float frame_;
-
-	
 	int knockBackCnt_;	//ノックバックカウント
-
 	float frameNum_;	//溜めが終わった後のフレーム保管用
-
 	bool isUseItem_;	//アイテム使用状態
 
-	int enemyNum_;		//敵のスライム番号
+	//プレイヤー関連
+	int enemyNum_;		//各スライムにとって敵であるスライムの番号
+
+
+
+	SlimeBase::PLAYERSTATE pState_;		//プレイヤーの状態
+	int guardCoolTime_;					//ガードクールタイム
 
 	//初期化処理
-	virtual void SetParam(VECTOR _initPos, int _padNum, int _enemyNum);
+	virtual void SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir);
 
 	/// <summary>
 	/// ジャンプ操作
@@ -525,21 +450,19 @@ protected:
 	//広範囲攻撃用の状態変化用
 	virtual void ChangeWaidAtkState(const WAID_ATK waidAtk);
 
-	
-
-
-	
+	//ジャンプ
+	void Jump(void);
 
 	/// <summary>
 	/// クリティカルしたときの関数
 	/// </summary>
-	void CriticalAttack(void);
+	//void CriticalAttack(void);
 
 	/// <summary>
 	/// 通常ダメージ
 	/// </summary>
 	/// <param name=""></param>
-	void NormalAttack(void);
+	//void NormalAttack(void);
 
 	/// <summary>
 	/// 方向ごとの処理
@@ -571,12 +494,6 @@ protected:
 	//ステージ上にいるかどうか
 	bool isInStage_;
 
-	//アニメーション処理
-	void Animation(void);
-	
-	//アニメーションが終わった時の処理
-	void EndAnimation(void);
-	
 	//方向を表す三角形描画
 	void DrawDirTriangle(VECTOR _pos,SunUtility::DIR_3D _dir,int _color);
 
@@ -586,11 +503,5 @@ protected:
 	
 	Parameta itemGetPar_;	//アイテムゲットしたとき
 	bool itemGetEffPlay_;
-
-	
-
 private:
-	
-
-
 };

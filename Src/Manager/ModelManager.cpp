@@ -32,16 +32,16 @@ void ModelManager::SetRotation(SunUtility::DIR_3D dir, MODEL_TYPE model)
 	switch (dir)
 	{
 	case SunUtility::DIR_3D::FLONT:
-		rot_.y = 180.0f * (DX_PI_F / 180.0f);
+		rot_.y = FLONT_DEG * (DX_PI_F / 180.0f);
 		break;
 	case SunUtility::DIR_3D::BACK:
-		rot_.y = 0.0f * (DX_PI_F / 180.0f);
+		rot_.y = BACK_DEG * (DX_PI_F / 180.0f);
 		break;
 	case SunUtility::DIR_3D::RIGHT:
-		rot_.y = 270.0f * (DX_PI_F / 180.0f);
+		rot_.y = RIGHT_DEG * (DX_PI_F / 180.0f);
 		break;
 	case SunUtility::DIR_3D::LEFT:
-		rot_.y = 90.0f * (DX_PI_F / 180.0f);
+		rot_.y = LEFT_DEG * (DX_PI_F / 180.0f);
 		break;
 	}
 
@@ -123,13 +123,13 @@ void ModelManager::EndAnimation(MODEL_TYPE model)
 		stepAnim_[model] = 0.0f;
 		break;
 	case ModelManager::ANIM_TYPE::STEP:
-		stepAnim_[model] = 59.0f;
+		stepAnim_[model] = END_ANIM;
 		break;
 	case ModelManager::ANIM_TYPE::CHARGE:
-		stepAnim_[model] = 59.0f;
+		stepAnim_[model] = END_ANIM;
 		break;
 	case ModelManager::ANIM_TYPE::ATTACK:
-		stepAnim_[model] = 59.0f;
+		stepAnim_[model] = END_ANIM;
 		break;
 	case ModelManager::ANIM_TYPE::WIN:
 		stepAnim_[model] = 0.0f;

@@ -21,12 +21,12 @@ Camera::~Camera(void)
 void Camera::Init(void)
 {
 	//カメラの位置
-	pos_ = { 0.0f,600.0f,-200.0f };
+	pos_ = INIT_POS;
 	//pos_ = { 0.0f,450.0f,-300.0f };
 	//pos_ = { 0.0f,570.0f,-900.0f };
 
 	//カメラの角度
-	angles_ = { 75.0f * DX_PI_F / 180.0f,0.0f,0.0f };
+	angles_ = INIT_ANGLES;
 	//angles_ = { 60.0f * DX_PI_F / 180.0f,0.0f,0.0f };
 	//angles_ = { 20.0f * DX_PI_F / 180.0f,0.0f,0.0f };
 
@@ -49,7 +49,7 @@ void Camera::Update(void)
 void Camera::SetBeforeDraw(void)
 {
 	//クリップ距離を設定する(SetDrawScreenでリセット)
-	SetCameraNearFar(10.0f, 30000.0f);
+	SetCameraNearFar(CAMERA_NEAR, CAMERA_FAR);
 	//カメラの設定(位置と角度による制御)
 	SetCameraPositionAndAngle
 	(

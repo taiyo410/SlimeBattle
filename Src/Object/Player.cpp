@@ -13,16 +13,15 @@
 #include"ItemBase.h"
 #include"GaugeCircle.h"
 #include"Speaker.h"
-#include"Player2.h"
 #include"Player.h"
 
 //パラメタの初期化
-void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum)
+void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::MODEL_TYPE _modelType,SunUtility::DIR_3D _initDir)
 {
 #pragma region パラメタの初期化
 	//modelFileName_ = "SilmeAnimKokage.mv1";
-	modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
-	dir_ = SunUtility::DIR_3D::RIGHT;
+	modelType_ = _modelType;
+	dir_ = _initDir;
 
 	//スライム状態画像のロード
 	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalK.png").c_str());
@@ -62,8 +61,6 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum)
 
 	//ガードクールタイムゲージサイズ初期化
 	guardCoolTimeGaugeSize_ = GUARD_GAUGE_SIZE_DEFAULT;
-	
-	speedAnim_ = ANIM_SPEED_DEFAULT;
 
 	hp_ = MAX_HP;
 
@@ -90,7 +87,7 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum)
 	isStaminaRecov_ = false;
 
 	//プレイヤー状態
-	state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
+	pState_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
 
 	//フレームカウント
 	frame_ = FRAME_DEFAULT;
@@ -122,14 +119,8 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum)
 //プレイヤー状態セッタ
 void Player::SetPlayerState(const SlimeBase::PLAYERSTATE playerState)
 {
-	state_ = playerState;
+	pState_ = playerState;
 }
-
-
-//bool Player::Init(SceneGame* parent)
-//{
-//	return true;
-//}
 
 
 //更新処理
@@ -138,7 +129,7 @@ void Player::Update(void)
 	SlimeBase::Update();
 
 	//重力をかける
-	if (state_ != SlimeBase::PLAYERSTATE::REVIVAL)
+	if (pState_ != SlimeBase::PLAYERSTATE::REVIVAL)
 	{
 		AddGravity(gravityPow_);
 	}
@@ -177,13 +168,11 @@ void Player::Update(void)
 void Player::Draw(void)
 {
 	SlimeBase::Draw();
-	//DrawDebug();
-	//デバッグ用の色変更
 
 	//方向三角形
 	DrawDirTriangle(pos_, dir_, SLIME_COLOR);
 
-	if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
+	if (pState_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
 		VECTOR framePos = VECTOR();
@@ -197,16 +186,33 @@ void Player::Draw(void)
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::CHARGE, pos, GAUGE_SIZE, GAUGE_SIZE, chargePer_, true);
 	}
 
-	//パリィクールタイムゲージの描画
-	VECTOR parryPos;
-	parryPos = ConvWorldPosToScreenPos(PARRY_POS);
-	
-	gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_K, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_,false);
-	
-	//スタミナゲージ
-	DrawBox(15, 50, 275, 75, 0x000000, true);
-	DrawBox(274, 51, 274  - staminaPercent_ * 260, 74, 0x9d370e, true);
-	DrawBox(274, 51, 274  - staminaConsumPercent_ * 260, 74, 0xED784A, true);
+	if (modelType_ == ModelManager::MODEL_TYPE::KOKAGE)
+	{
+		//パリィクールタイムゲージの描画
+		VECTOR parryPos;
+		parryPos = ConvWorldPosToScreenPos(PARRY_POS_BLUE);
+
+		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_K, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
+
+		//スタミナゲージ
+		DrawBox(15, 50, 275, 75, 0x000000, true);
+		DrawBox(274, 51, 274 - staminaPercent_ * 260, 74, 0x9d370e, true);
+		DrawBox(274, 51, 274 - staminaConsumPercent_ * 260, 74, 0xED784A, true);
+	}
+	else
+	{
+		//パリィクールタイムゲージの描画
+		VECTOR parryPos;
+		parryPos = ConvWorldPosToScreenPos(PARRY_POS_ORANGE);
+
+		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_Y, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
+
+
+		DrawBox(Application::SCREEN_SIZE_X - 275, 50, Application::SCREEN_SIZE_X - 15, 75, 0x000000, true);
+		DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaPercent_ * 260, 74, 0x9d370e, true);
+		DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaConsumPercent_ * 260, 74, 0xED784A, true);
+	}
+
 }
 //解放処理
 bool Player::Release(void)
@@ -218,12 +224,6 @@ bool Player::Release(void)
 const VECTOR Player::GetPos(void)const 
 {
 	return pos_;
-}
-
-//プレイヤーの状態ゲッタ
-SlimeBase::PLAYERSTATE Player::GetState(void)
-{
-	return state_;
 }
 
 /// <summary>
@@ -243,7 +243,7 @@ void Player::DrawDebug(void)
 		, pos_.x, pos_.y, pos_.z
 		, frame_
 		, stamina_
-		, state_
+		, pState_
 		, stepFrame_
 		, staminaConsum_
 		, hp_
@@ -257,17 +257,15 @@ void Player::DrawDebug(void)
 
 }
 
-
 //スタミナ初期化
 void Player::FrameUpdate(void)
 {
-	if (stamina_ <= 0.0f)
-	{
-		frame_ = FRAME_DEFAULT;
-		stamina_ = 0.0f;
-		state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
-		isStaminaRecov_ = true;
-	}
+	if (stamina_ > 0.0f)return;
+	frame_ = FRAME_DEFAULT;
+	stamina_ = 0.0f;
+	pState_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
+	isStaminaRecov_ = true;
+
 }
 
 //スタミナ回復処理
@@ -334,18 +332,16 @@ void Player::ProcessMove(void)
 	if (InputManager::GetInput().IsPadRelease(padNum_, PAD_INPUT_A))
 	{
 		frameNum_ = frame_;
-		if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
+		if (pState_ == SlimeBase::PLAYERSTATE::CHARGE)
 		{
 			StopJoypadVibration(padNum_, -1);
-			ChangeState(SlimeBase::PLAYERSTATE::NORMALATTACK);
+			ChangePlayerState(SlimeBase::PLAYERSTATE::NORMALATTACK);
 		}
 		else
 		{
-			ChangeState(SlimeBase::PLAYERSTATE::STEP);
+			ChangePlayerState(SlimeBase::PLAYERSTATE::STEP);
 		}
-
 	}
-
 }
 
 //ノックバック処理
@@ -366,11 +362,11 @@ void Player::KnockBuckUpdate(void)
 	if (!MoveLimit())
 	{
 		StopJoypadVibration(padNum_, -1);
-		ChangeState(SlimeBase::PLAYERSTATE::FALL);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::FALL);
 	}
 	if (knockBackCnt_ < 0)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::COOL);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::COOL);
 	}
 }
 
@@ -405,10 +401,10 @@ void Player::KnockBack(void)
 //チャージとステップを決める処理
 void Player::MoveDecide(void)
 {
-	ChangeState(SlimeBase::PLAYERSTATE::STEPKEEP);
+	ChangePlayerState(SlimeBase::PLAYERSTATE::STEPKEEP);
 	if (stepFrame_ < 0)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -452,12 +448,12 @@ void Player::CoolUpdate(void)
 	if (coolTime_ <= 0)
 	{
 		coolTime_ = 0;
-		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::FALL);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::FALL);
 	}
 }
 
@@ -479,12 +475,12 @@ void Player::ActionableUpdate(void)
 	//Eキーを押すとガード状態
 	if (ins.IsPadKeep(padNum_, PAD_INPUT_6) && guardCoolTime_ == 0)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::GUARD);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::GUARD);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::FALL);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::FALL);
 	}
 
 	GetItemUpdate();
@@ -498,7 +494,7 @@ void Player::StepKeepUpdate(void)
 	ProcessMove();
 	if (stepFrame_ < 0)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -516,15 +512,14 @@ void Player::StepUpdate(void)
 		frame_--;
 		if (frame_ <= 0)
 		{
-			ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+			ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 		}
 		//ステップ中スタミナを減らす
 		stamina_--;
-		
 	}
 	else
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::CHARGE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::CHARGE);
 	}
 }
 
@@ -555,16 +550,13 @@ void Player::ChargeUpdate(void)
 	}
 	StaminaLowLimit(CHARGE_STAMINA_PER_FRAME);
 
-	
-	
-
 	ProcessMove();
 
 	//溜めキャンセル
 	if (ins.IsPadKeep(padNum_,PAD_INPUT_5))
 	{
 		StopJoypadVibration(padNum_, -1);
-		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 
 }
@@ -580,7 +572,7 @@ void Player::NormalAttackUpdate(void)
 	stamina_ -= CHARGE_ATK_STAMINA;
 	if (frame_ <= 0.0f||stamina_<=0.0f)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::CRITICALATTACK);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::CRITICALATTACK);
 	}
 }
 
@@ -589,7 +581,7 @@ void Player::CriticalUpdate(void)
 	criticalCnt_--;
 	if (criticalCnt_ <= 0&&pos_.y<=RADIUS)
 	{
-		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 }
 
@@ -663,7 +655,7 @@ void Player::GetItemUpdate(void)
 		switch (itemType)
 		{
 		case ItemBase::ITEM_TYPE::SPEEKER:
-			ChangeState(SlimeBase::PLAYERSTATE::WAIDATTACK);
+			ChangePlayerState(SlimeBase::PLAYERSTATE::WAIDATTACK);
 			break;
 		case ItemBase::ITEM_TYPE::MAX:
 			break;
@@ -677,12 +669,11 @@ void Player::GetItemUpdate(void)
 void Player::FallUpdate(void)
 {
 	fallCnt_--;
-	
 	if (fallCnt_ <= 0)
 	{
 		Damage(fallDmg_,0);
-		Score(-fallScore_);
-		ChangeState(SlimeBase::PLAYERSTATE::REVIVAL);
+		AddScore(-fallScore_);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::REVIVAL);
 	}
 }
 
@@ -693,7 +684,7 @@ void Player::RevivalUpdate(void)
 	if (revivalCnt_ <= 0)
 	{
 		SetInvincible(AFTER_REVIVAL_CNT);
-		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+		ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 }
 
@@ -711,9 +702,7 @@ void Player::GuardUpdate(void)
 	if (guardCnt_ < 0 || InputManager::GetInput().IsPadRelease(padNum_,PAD_INPUT_6) || sceneGame_->GetIsCollision())
 	{
 		EffectManager::GetEffect().StopEffect(EffectManager::EFF_TYPE::SHIELD, this);
-
-		ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
-
+		ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 	}
 }
 
@@ -761,14 +750,11 @@ void Player::WaidAtkUpdate(void)
 	case WAID_ATK::END:
 		if (pos_.y <= RADIUS)
 		{
-			ChangeState(SlimeBase::PLAYERSTATE::ACTIONABLE);
+			ChangePlayerState(SlimeBase::PLAYERSTATE::ACTIONABLE);
 		}
 		break;
 	}
 }
-
-
-
 
 void Player::ChangeWaidAtkState(const WAID_ATK waidAtk)
 {
@@ -806,7 +792,7 @@ void Player::ChangeWaidAtkState(const WAID_ATK waidAtk)
 void Player::StateUpdate(void)
 {
 	if (stamina_ < 0.0f)return;
-	switch (state_)
+	switch (pState_)
 	{
 	case SlimeBase::PLAYERSTATE::COOL:
 		CoolUpdate();
@@ -851,11 +837,11 @@ void Player::StateUpdate(void)
 }
 
 //状態変化関数
-void Player::ChangeState(SlimeBase::PLAYERSTATE state)
+void Player::ChangePlayerState(SlimeBase::PLAYERSTATE state)
 {
-	state_=state;
+	pState_=state;
 	atkPow_ = 0;
-	switch (state_)
+	switch (pState_)
 	{
 	case SlimeBase::PLAYERSTATE::ACTIONABLE:
 		frame_ = FRAME_DEFAULT;
@@ -866,14 +852,12 @@ void Player::ChangeState(SlimeBase::PLAYERSTATE state)
 		break;
 	case SlimeBase::PLAYERSTATE::STEP:
 		model_->SetStepAnim(modelType_, 0.0f);
-		stepAnim_ = 0.0f;
 		staminaConsum_ -= STEP_STEMINA;
 		sound_->PlaySe(SoundManager::SE_TYPE::SLIMEMOVE, DX_PLAYTYPE_BACK, SE_VOL);
 		StaminaLowLimit(STEP_STEMINA);
 		break;
 	case SlimeBase::PLAYERSTATE::CHARGE:
 		model_->SetStepAnim(modelType_, 0.0f);
-		stepAnim_ = 0.0f;
 		staminaConsum_ -= CHARGE_STAMINA_VAL;
 		face_ = SLIME_FACE::CHARGE;
 		break;
@@ -881,7 +865,6 @@ void Player::ChangeState(SlimeBase::PLAYERSTATE state)
 		sound_->PlaySe(SoundManager::SE_TYPE::ATTACK, DX_PLAYTYPE_BACK, SE_VOL);
 		atkPow_ = CHARGE_ATK_POW;
 		model_->SetStepAnim(modelType_, 0.0f);
-		stepAnim_ = 0.0f;
 		face_ = SLIME_FACE::ATTACK;
 		break;
 	case SlimeBase::PLAYERSTATE::KNOCKBACK:
@@ -902,6 +885,7 @@ void Player::ChangeState(SlimeBase::PLAYERSTATE state)
 		break;
 	case SlimeBase::PLAYERSTATE::CRITICALATTACK:
 		criticalCnt_ = CRITICAL_CNT_MAX;
+		atkPow_ = PARRY_ATK_POW;
 		break;
 	case SlimeBase::PLAYERSTATE::FALL:
 		fallCnt_ = FALL_CNT;

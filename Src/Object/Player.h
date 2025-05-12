@@ -106,7 +106,8 @@ public:
 	//----------------------------------------------
 	
 	//パリィクールタイムゲージ
-	static constexpr VECTOR PARRY_POS = { -400.0f,50.0f,40.0f };
+	static constexpr VECTOR PARRY_POS_BLUE = { -400.0f,50.0f,40.0f };
+	static constexpr VECTOR PARRY_POS_ORANGE = { 400.0f,50.0f,40.0f };
 
 	//シールドエフェクト
 	static constexpr float SHIELD_SCALE = 10.0f;
@@ -147,7 +148,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
-	void ChangeState(SlimeBase::PLAYERSTATE state)override;
+	void ChangePlayerState(SlimeBase::PLAYERSTATE state)override;
 
 	/// <summary>
 	/// チャージ開始
@@ -160,9 +161,6 @@ public:
 
 	//プレイヤー座標のゲッター
 	const VECTOR GetPos(void)const;
-
-	//プレイヤーの状態ゲッタ
-	SlimeBase::PLAYERSTATE GetState(void);
 
 	/// <summary>
 	/// プレイヤー状態のセッター
@@ -190,7 +188,7 @@ protected:
 /// <summary>
 /// 座標の初期化
 /// </summary>
-	void SetParam(VECTOR _initPos,int _padNum,int _enemyNum) override;
+	void SetParam(VECTOR _initPos,int _padNum,int _enemyNum, ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir) override;
 
 	//ステップフレームカウント
 	int stepFrame_;
@@ -201,8 +199,6 @@ protected:
 	//ガードカウント
 	int guardCnt_;
 
-	//ガードクールタイム
-	int guardCoolTime_;
 
 	//ガードクールタイム割合
 	float guardCoolTimePercent_;	
@@ -328,21 +324,16 @@ protected:
 
 	UP_AND_DOWN updown_;
 
-
 	//落ちている状態
 	void FallUpdate(void);
 
 	//復活処理
 	void RevivalUpdate(void);
 
-
-	SlimeBase::PLAYERSTATE state_;		//プレイヤーの状態
 	SlimeBase::PLAYERSTATE colState_;	//プレイヤーが当たった時の保管用変数
 
 #pragma endregion
 
 private:
-	////ポインタ格納領域
-	Player2* player2_;
 };
 

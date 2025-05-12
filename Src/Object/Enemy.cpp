@@ -16,7 +16,7 @@
 #include"../Object/Player.h"
 #include"../Object/Enemy.h"
 
-void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
+void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir)
 {
 #pragma region パラメタの初期化
 	pos_ = { Stage::STAGE_ONE_SQUARE * 3,RADIUS,0.0f };
@@ -48,7 +48,7 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };;
 
-	speedAnim_ = ANIM_SPEED_DEFAULT;
+	//speedAnim_ = ANIM_SPEED_DEFAULT;
 
 	//ジャンプ力
 	jumpPower_ = 0.0f;
@@ -77,7 +77,8 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 	//動く方向初期化
 	moveDir_ = SunUtility::DIR_3D::MAX;
 
-	dir_ = SunUtility::DIR_3D::LEFT;
+	//方向
+	dir_ = _dir;
 
 	//HP
 	hp_ = MAX_HP;
@@ -194,7 +195,7 @@ void Enemy::Draw(void)
 	}
 
 	//DrawDebug();
-	//if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
+	//if (pState_ == SlimeBase::ENEMYSTATE::CHARGE)
 	//{
 	//	DrawLine3D(pos_, { pos_.x + frame_,pos_.y,pos_.z },0x000000);
 	//}
@@ -231,7 +232,7 @@ void Enemy::DrawDebug(void)
 	//	, pos_.x, pos_.y, pos_.z
 	//	, frame_
 	//	, stamina_
-	//	, state_
+	//	, pState_
 	//	, posE2P.x, posE2P.y, posE2P.z
 	//	,act_
 	//	,moveRoute_.x,moveRoute_.y,moveRoute_.z
@@ -244,7 +245,7 @@ void Enemy::DrawDebug(void)
 	//
 
 
-	//if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
+	//if (pState_ == SlimeBase::ENEMYSTATE::CHARGE)
 	//{
 	//	DrawString(pos_.x, pos_.y - RADIUS, "Charge!!!!", 0xff0000);
 	//}
@@ -262,7 +263,7 @@ void Enemy::FrameComsumption(void)
 		isStaminaRecov_ = true;
 		if (!isJump_)
 		{
-			ChangeState(SlimeBase::ENEMYSTATE::NONE);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 		}
 		
 	}
@@ -317,47 +318,47 @@ void Enemy::MoveDir(void)
 
 void Enemy::StateUpdate(void)
 {
-	if (stamina_ > 0.0f)
+	if (stamina_ <= 0.0f)return;
+
+	switch (state_)
 	{
-		switch (state_)
-		{
-		case SlimeBase::ENEMYSTATE::NONE:
-			UpdateNone();
-			break;
-		case SlimeBase::ENEMYSTATE::DEBUFF:
-			DebuffUpdate();
-			break;
-		case SlimeBase::ENEMYSTATE::THINK:
-			UpdateThink();
-			break;
-		case SlimeBase::ENEMYSTATE::MOVE:
-			UpdateMove();
-			break;
-		case SlimeBase::ENEMYSTATE::STEP:
-			UpdateStep();
-			break;
-		case SlimeBase::ENEMYSTATE::CHARGE:
-			UpdateCharge();
-			break;
-		case SlimeBase::ENEMYSTATE::KNOCKBACK:
-			UpdateKnockBuck();
-			break;
-		case SlimeBase::ENEMYSTATE::NORMALATTACK:
-			UpdateNormalAttack();
-			break;
-		case SlimeBase::ENEMYSTATE::WAIDATTACK:
-			UpdateWaidAttack();
-			break;
-		case SlimeBase::ENEMYSTATE::CRITICALATTACK:
-			break;
-		case SlimeBase::ENEMYSTATE::FALL:
-			FallUpdate();
-			break;
-		case SlimeBase::ENEMYSTATE::REVIVAL:
-			RevivalUpdate();
-			break;
-		}
+	case SlimeBase::ENEMYSTATE::NONE:
+		UpdateNone();
+		break;
+	case SlimeBase::ENEMYSTATE::DEBUFF:
+		DebuffUpdate();
+		break;
+	case SlimeBase::ENEMYSTATE::THINK:
+		UpdateThink();
+		break;
+	case SlimeBase::ENEMYSTATE::MOVE:
+		UpdateMove();
+		break;
+	case SlimeBase::ENEMYSTATE::STEP:
+		UpdateStep();
+		break;
+	case SlimeBase::ENEMYSTATE::CHARGE:
+		UpdateCharge();
+		break;
+	case SlimeBase::ENEMYSTATE::KNOCKBACK:
+		UpdateKnockBuck();
+		break;
+	case SlimeBase::ENEMYSTATE::NORMALATTACK:
+		UpdateNormalAttack();
+		break;
+	case SlimeBase::ENEMYSTATE::WAIDATTACK:
+		UpdateWaidAttack();
+		break;
+	case SlimeBase::ENEMYSTATE::CRITICALATTACK:
+		break;
+	case SlimeBase::ENEMYSTATE::FALL:
+		FallUpdate();
+		break;
+	case SlimeBase::ENEMYSTATE::REVIVAL:
+		RevivalUpdate();
+		break;
 	}
+
 }
 
 //スタミナ回復処理
@@ -402,7 +403,7 @@ float Enemy::GetWaidCol(void) const
 
 
 
-void Enemy::ChangeState(SlimeBase::ENEMYSTATE state)
+void Enemy::ChangeEnemyState(SlimeBase::ENEMYSTATE state)
 {
 	state_ = state;
 
@@ -467,12 +468,12 @@ void Enemy::UpdateNone(void)
 	if (coolTime_ < 0)
 	{
 		isWeak_ = false;
-		ChangeState(SlimeBase::ENEMYSTATE::THINK);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::THINK);
 	}
 
 	if (!MoveLimit())
 	{
-		ChangeState(SlimeBase::ENEMYSTATE::FALL);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::FALL);
 	}
 }
 void Enemy::DebuffUpdate(void)
@@ -482,7 +483,7 @@ void Enemy::DebuffUpdate(void)
 	if (coolTime_ < 0)
 	{
 		isWeak_ = false;
-		ChangeState(SlimeBase::ENEMYSTATE::THINK);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::THINK);
 	}
 }
 
@@ -500,37 +501,32 @@ void Enemy::UpdateThink(void)
 		marginPos.z = 180;
 		if (waidAtkCoolTime_ < 0)
 		{
-			ChangeState(SlimeBase::ENEMYSTATE::WAIDATTACK);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::WAIDATTACK);
 		}
 
 		//マジックナンバーを定数に直す
 		else if (posE2P.x >= -180.0f && posE2P.x <= 180.0f && posE2P.z >= -180.0f && posE2P.z <= 180.0f
 			&& act_ == ACT::Attack && MoveLimit())
 		{
-			ChangeState(SlimeBase::ENEMYSTATE::CHARGE);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::CHARGE);
 		}
 
 		else if ((pos_.x <= -marginPos.x) || (pos_.x >= marginPos.x)
 			|| (pos_.z <= -marginPos.z) || (pos_.z >= marginPos.z))
 		{
 			act_ = ACT::ESCAPE;
-			ChangeState(SlimeBase::ENEMYSTATE::STEP);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
 		}
 		else if ((pos_.x > -marginPos.x) || (pos_.x > marginPos.x)
 			|| (pos_.z > -marginPos.z) || (pos_.z > marginPos.z))
 		{
 			act_ = ACT::Attack;
-			ChangeState(SlimeBase::ENEMYSTATE::STEP);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
 		}
-
-
-
-
-		
 	}
 	if (!MoveLimit())
 	{
-		ChangeState(SlimeBase::ENEMYSTATE::FALL);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::FALL);
 	}
 	
 }
@@ -538,7 +534,7 @@ void Enemy::UpdateThink(void)
 void Enemy::UpdateMove(void)
 {
 	MoveDir();
-	ChangeState(SlimeBase::ENEMYSTATE::THINK);
+	ChangeEnemyState(SlimeBase::ENEMYSTATE::THINK);
 }
 
 void Enemy::UpdateStep(void)
@@ -588,80 +584,71 @@ void Enemy::UpdateStep(void)
 	}
 
 
-
+	//スタミナが0以上だったら移動させる
 	if (stamina_ >= 0)
 	{
 		DirUpdate(dir_);
 		FrameComsumption();
 	}
 
-
+	//移動フレームが０以下人あったら移動クールタイムへ
 	if (frame_ <= 0)
 	{
 		SetCoolTime(SunUtility::DEFAULT_FPS * 0.5);
-		ChangeState(SlimeBase::ENEMYSTATE::NONE);
-
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 	}
 
 }
 
 void Enemy::UpdateCharge(void)
 {
+	if (isJump_)return;
 	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 	VECTOR enemyPos = pos_;
 	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
-	if (!isJump_)
+	
+	model_->ChangeAnim(modelType_, ModelManager::ANIM_TYPE::CHARGE);
+	moveDir_ = SunUtility::DIR_3D::MAX;
+
+
+	//大きさをとる
+	float size = sqrtf(posE2P.x * posE2P.x + posE2P.z * posE2P.z);
+	VECTOR direction({ posE2P.x / size, RADIUS, posE2P.z / size });
+	if (abs(direction.x) < abs(direction.z))
 	{
-		model_->ChangeAnim(modelType_, ModelManager::ANIM_TYPE::CHARGE);
-		moveDir_ = SunUtility::DIR_3D::MAX;
-		
 
-		//大きさをとる
-		float size = sqrtf(posE2P.x * posE2P.x + posE2P.z * posE2P.z);
-		VECTOR direction({ posE2P.x / size, RADIUS, posE2P.z / size });
-		if (abs(direction.x) < abs(direction.z))
+		if (direction.z > 0.0f)
 		{
-
-			if (direction.z > 0.0f)
-			{
-				dir_ = SunUtility::DIR_3D::FLONT;
-			}
-			else
-			{
-				dir_ = SunUtility::DIR_3D::BACK;
-			}
+			dir_ = SunUtility::DIR_3D::FLONT;
 		}
 		else
 		{
-			if (direction.x < 0.0f)
-			{
-				dir_ = SunUtility::DIR_3D::LEFT;
-			}
-			else
-			{
-				dir_ = SunUtility::DIR_3D::RIGHT;
-			}
+			dir_ = SunUtility::DIR_3D::BACK;
 		}
-
-		frame_ += SlimeBase::CHARGE_SPEED;
-		chargePer_ = frame_ / FRAME_MAX;
-
-
-		if (chargePer_ >= 0.9999999)
-		{
-			chargePer_ = 100.0f;
-		}
-		
 	}
-	
-	//プレイヤーのサイズ内にルート座標が入ったら攻撃する
-	if (((moveRoute_.x<= playerPos.x+RADIUS)&&(moveRoute_.x >= playerPos.x - RADIUS)
-		||(moveRoute_.z <= playerPos.z+RADIUS)&&(moveRoute_.z >= playerPos.z - RADIUS))||(frame_ >= FRAME_MAX))
+	else
 	{
-		if (!isJump_)
+		if (direction.x < 0.0f)
 		{
-			ChangeState(SlimeBase::ENEMYSTATE::NORMALATTACK);
+			dir_ = SunUtility::DIR_3D::LEFT;
 		}
+		else
+		{
+			dir_ = SunUtility::DIR_3D::RIGHT;
+		}
+	}
+
+	frame_ += SlimeBase::CHARGE_SPEED;
+	chargePer_ = frame_ / FRAME_MAX;
+
+
+	//プレイヤーのサイズ内にルート座標が入ったら攻撃する
+	if (((moveRoute_.x <= playerPos.x + RADIUS) && (moveRoute_.x >= playerPos.x - RADIUS)
+		|| (moveRoute_.z <= playerPos.z + RADIUS) && (moveRoute_.z >= playerPos.z - RADIUS)) || (frame_ >= FRAME_MAX))
+	{
+		if (isJump_)return;
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NORMALATTACK);
+
 	}
 }
 
@@ -671,11 +658,11 @@ void Enemy::UpdateKnockBuck(void)
 	KnockBack();
 	if (knockBackCnt_ < 0&&!isWeak_)
 	{
-		ChangeState(SlimeBase::ENEMYSTATE::NONE);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 	}
 	else if (knockBackCnt_ < 0 && isWeak_)
 	{
-		ChangeState(SlimeBase::ENEMYSTATE::DEBUFF);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::DEBUFF);
 	}
 }
 
@@ -696,7 +683,7 @@ void Enemy::KnockBack(void)
 void Enemy::UpdateNormalAttack(void)
 {
 	model_->ChangeAnim(modelType_, ModelManager::ANIM_TYPE::ATTACK);
-	
+
 	if (stamina_ >= 0)
 	{
 		DirUpdate(dir_);
@@ -706,26 +693,23 @@ void Enemy::UpdateNormalAttack(void)
 
 	if (frame_ <= 0)
 	{
-		SetCoolTime(SunUtility::DEFAULT_FPS*2);
-		ChangeState(SlimeBase::ENEMYSTATE::NONE);
+		SetCoolTime(SunUtility::DEFAULT_FPS * 2);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 
 	}
 	else
 	{
-		if (stamina_ <= 0.0f)
-		{
-			isStaminaRecov_ = true;
-			SetCoolTime(STAMINA_RECOV_TIME);
-			ChangeState(SlimeBase::ENEMYSTATE::NONE);
-		}
+		if (stamina_ > 0.0f)return;
+
+		isStaminaRecov_ = true;
+		SetCoolTime(STAMINA_RECOV_TIME);
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 	}
 }
 
 void Enemy::UpdateWaidAttack(void)
 {
 	waidChargeCnt_++;
-	//auto camera = SceneManager::GetInstance().GetCamera();
-	//caseの中で変数定義と同時に初期化ができない！！！！！！！！！
 	switch (waidAtk_)
 	{
 	case SlimeBase::WAID_ATK::CHARGE:
@@ -773,7 +757,7 @@ void Enemy::UpdateWaidAttack(void)
 	case SlimeBase::WAID_ATK::END:
 		if (pos_.y <= RADIUS)
 		{
-			ChangeState(SlimeBase::ENEMYSTATE::THINK);
+			ChangeEnemyState(SlimeBase::ENEMYSTATE::THINK);
 		}
 		break;
 	}
@@ -782,31 +766,29 @@ void Enemy::FallUpdate(void)
 {
 	fallCnt_--;
 
-	if (fallCnt_ <= 0)
-	{
-		Damage(fallDmg_,0);
-		Score(-fallScore_);
-		ChangeState(SlimeBase::ENEMYSTATE::REVIVAL);
-	}
+	if (fallCnt_ > 0)return;
+	Damage(fallDmg_, 0);
+	AddScore(-fallScore_);
+	ChangeEnemyState(SlimeBase::ENEMYSTATE::REVIVAL);
 
 }
 void Enemy::RevivalUpdate(void)
 {
 	revivalCnt_--;
 	SetPos(revivalPos_);
-	if (revivalCnt_ <= 0)
-	{
-		ChangeState(SlimeBase::ENEMYSTATE::THINK);
-	}
+	if (revivalCnt_ > 0)return;
+	ChangeEnemyState(SlimeBase::ENEMYSTATE::THINK);
+	
 
 }
 void Enemy::ChangeWaidAtkState(const SlimeBase::WAID_ATK waidAtk)
 {
 	waidAtk_ = waidAtk;
+	const int VOL = 60;
 	switch (waidAtk_)
 	{
 	case SlimeBase::WAID_ATK::CHARGE:
-		sound_->PlaySe(SoundManager::SE_TYPE::WAIDATKCHARGE, DX_PLAYTYPE_BACK, 60);
+		sound_->PlaySe(SoundManager::SE_TYPE::WAIDATKCHARGE, DX_PLAYTYPE_BACK, VOL);
 		EffectManager::GetEffect().PlayEffect(EffectManager::EFF_TYPE::WAIDCHARGE, this, waidChargePar_);
 		break;
 	case SlimeBase::WAID_ATK::JUMP:
@@ -816,7 +798,7 @@ void Enemy::ChangeWaidAtkState(const SlimeBase::WAID_ATK waidAtk)
 		break;
 	case SlimeBase::WAID_ATK::ATK:
 		EffectManager::GetEffect().PlayEffect(EffectManager::EFF_TYPE::WAIDATK, this, waidAtkPar_);
-		sound_->PlaySe(SoundManager::SE_TYPE::WAIDATK, DX_PLAYTYPE_BACK, 60);
+		sound_->PlaySe(SoundManager::SE_TYPE::WAIDATK, DX_PLAYTYPE_BACK, VOL);
 		waidAtkRadius_ = 0;
 		waidAtkPar_.scl = { 0.0f,0.0f,0.0f };
 		break;
@@ -828,8 +810,3 @@ void Enemy::ChangeWaidAtkState(const SlimeBase::WAID_ATK waidAtk)
 	}
 }
 #pragma endregion
-
-
-
-
-

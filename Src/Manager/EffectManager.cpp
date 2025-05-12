@@ -10,49 +10,37 @@
 //input_の初期化処理
 EffectManager* EffectManager::effect_ = nullptr;
 
+//ID定数
+//ヒットエフェクト
+const std::string HIT_EFECT = "Tktk03/ToonHit.efkefc";
+const std::string SHIELD_EFECT = "MaterialBasic/Falloff.efkefc";
+const std::string WAID_ATK_CHARGE_EFECT = "Pierre01/PhantasmMeteor_Single.efkefc";
+const std::string WAID_ATK_EFECT = "Suzuki/aura.efkefc";
+const std::string ITEM_GET_EFECT = "MAGICALxSPIRAL/MagicArea.efkefc";
 
-//
-//void EffectManager::PlayEffect(EFF_TYPE effect, Parameta par)
-//{
-//	EFF_DATA data;
-//	//エフェクトの再生
-//	int resID = data.resId_;
-//	int hitResId = effDatas_[EFF_TYPE::HIT].resId_;
-//	int effHandle = PlayEffekseer3DEffect(hitResId);	// エフェクトハンドル
-//
-//	// pushBackの後ろはかっこが1つじゃない？
-//	//effDatas_[effect].playIds_.emplace_back(PlayEffekseer3DEffect(effDatas_[effect].resId_));
-//	effDatas_[effect].playIds_.emplace_back(effHandle);
-//
-//	// data.playIds_.push_back(data.resId_)(PlayEffekseer3DEffect(effDatas_[EFF_TYPE::HIT].resId_));
-//
-//	//以降、再生するエフェクトの制御は必ずプレイハンドルIDを使用する
-//	//エフェクトの大きさを設定
-//	SetScalePlayingEffekseer3DEffect(effDatas_[effect].playIds_.back(), par.scl.x, par.scl.y, par.scl.z);
-//	//角度を設定
-//	SetRotationPlayingEffekseer3DEffect(effDatas_[effect].playIds_.back(), par.rot.x, par.rot.y, par.rot.z);
-//	//エフェクトの位置を設定
-//	SetPosPlayingEffekseer3DEffect(effDatas_[effect].playIds_.back(), par.pos.x, par.pos.y, par.pos.z);
-//}
 
 void EffectManager::LoadEffect(void)
 {
 
 	EFF_DATA data;
 	//ヒットエフェクトのロード
-	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + "Tktk03/ToonHit.efkefc").c_str());
+	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + HIT_EFECT).c_str());
 	effDatas_.emplace(EFF_TYPE::HIT, data);
 
-	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + "MaterialBasic/Falloff.efkefc").c_str());
+	//シールド
+	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + SHIELD_EFECT).c_str());
 	effDatas_.emplace(EFF_TYPE::SHIELD, data);
 
-	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + "Pierre01/PhantasmMeteor_Single.efkefc").c_str());
+	//広範囲攻撃の溜め
+	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + WAID_ATK_CHARGE_EFECT).c_str());
 	effDatas_.emplace(EFF_TYPE::WAIDCHARGE, data);
 
-	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + "Suzuki/aura.efkefc").c_str());
+	//広範囲攻撃
+	data.resId_ = LoadEffekseerEffect((Application::PATH_EFFECT + WAID_ATK_EFECT).c_str());
 	effDatas_.emplace(EFF_TYPE::WAIDATK, data);
 
-	data.resId_= LoadEffekseerEffect((Application::PATH_EFFECT + "MAGICALxSPIRAL/MagicArea.efkefc").c_str());
+	//アイテムゲットエフェクト
+	data.resId_= LoadEffekseerEffect((Application::PATH_EFFECT + ITEM_GET_EFECT).c_str());
 	effDatas_.emplace(EFF_TYPE::ITEMGET, data);
 
 	for (auto& data : effDatas_)

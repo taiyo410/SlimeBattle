@@ -9,7 +9,8 @@ class SlimeBase;
 class EffectManager
 {
 public:
-	
+	//定数
+	//ヒットエフェクトID
 	void Init(void);
 	void Update(void);
 	void Draw(void);

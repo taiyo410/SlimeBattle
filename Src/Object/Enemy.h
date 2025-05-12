@@ -118,7 +118,7 @@ public:
 	void DrawDebug(void);
 
 	//状態変化用関数
-	void ChangeState(SlimeBase::ENEMYSTATE state);
+	void ChangeEnemyState(SlimeBase::ENEMYSTATE state)override;
 
 	//広範囲攻撃用の状態変化用
 	//void ChangeWaidAtkState(const WAID_ATK waidAtk);
@@ -209,7 +209,7 @@ private:
 	VECTOR moveRoute_;	//行先の座標
 	
 	//パラメタの初期化
-	void SetParam(VECTOR _initPos, int _padNum, int _enemyNum)override;
+	void SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir)override;
 
 	//ノックバック処理
 	void KnockBack(void);

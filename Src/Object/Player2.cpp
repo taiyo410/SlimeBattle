@@ -19,7 +19,9 @@ void Player2::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 	scale_ = { 1.0f,1.0f,1.0f };
 	rot_ = { 0.0f,0.0f,0.0f };
 	padNum_ = DX_INPUT_PAD2;
-	dir_ = SunUtility::DIR_3D::LEFT;
+	
+	
+	dir_= SunUtility::DIR_3D::LEFT;
 
 	revivalPos_ = { Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
 	
@@ -66,7 +68,7 @@ void Player2::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 	isStaminaRecov_ = false;
 
 	//プレイヤー状態
-	state_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
+	pState_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
 
 	//フレームカウント
 	frame_ = FRAME_DEFAULT;
@@ -102,7 +104,7 @@ void Player2::DrawDebug(void)
 		, pos_.x, pos_.y, pos_.z
 		, frame_
 		, stamina_
-		, state_
+		, pState_
 		, stepFrame_
 		, staminaConsum_
 		, hp_
@@ -130,7 +132,7 @@ void Player2::Update(void)
 	SlimeBase::Update();
 
 	//重力をかける
-	if (state_ != SlimeBase::PLAYERSTATE::REVIVAL)
+	if (pState_ != SlimeBase::PLAYERSTATE::REVIVAL)
 	{
 		AddGravity(gravityPow_);
 	}
@@ -218,11 +220,9 @@ void Player2::Draw(void)
 
 	DrawDirTriangle(pos_, dir_, SLIME_COLOR);
 
-	DrawBox(Application::SCREEN_SIZE_X - 275, 50, Application::SCREEN_SIZE_X - 15, 75, 0x000000, true);
-	DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaPercent_ * 260, 74, 0x9d370e, true);
-	DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaConsumPercent_ * 260, 74, 0xED784A, true);
 
-	if (state_ == SlimeBase::PLAYERSTATE::CHARGE)
+
+	if (pState_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
 		VECTOR framePos = VECTOR();
