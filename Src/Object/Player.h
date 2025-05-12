@@ -20,9 +20,6 @@ public:
 	//***********************************************
 	//初期座標
 	static constexpr VECTOR INIT_POS = { -Stage::STAGE_ONE_SQUARE * 3, RADIUS, 0.0f };
-	//スライムの色 
-	static constexpr int SLIME_COLOR = 0x5195E1;
-
 	//クールタイム
 	static constexpr int COOL_TIME = 30;
 
@@ -93,10 +90,14 @@ public:
 
 	//描画関係
 	//*********************************************************
-	//スライム状態画像の座標
-	static constexpr int FACE_POS_X = 130;
-	static constexpr int FACE_POS_Y = 144;
-	
+	//青スライム状態画像の座標
+	static constexpr int BLUE_SLIME_FACE_POS_X = 130;
+	static constexpr int BLUE_SLIME_FACE_POS_Y = 144;
+
+	//オレンジスライム状態画像
+	static constexpr int ORANGE_SLIME_FACE_POS_X = 1070;
+	static constexpr int ORANGE_SLIME_FACE_POS_Y = 144;
+
 	//チャージゲージ
 	//----------------------------------------------
 	//相対座標

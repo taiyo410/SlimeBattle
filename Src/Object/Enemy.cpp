@@ -19,10 +19,10 @@
 void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir)
 {
 #pragma region パラメタの初期化
-	pos_ = { Stage::STAGE_ONE_SQUARE * 3,RADIUS,0.0f };
+	pos_ = _initPos;
 
 	//modelFileName_ = "SilmeAnimYuuhi.mv1";
-	modelType_ = ModelManager::MODEL_TYPE::YUUHI;
+	modelType_ = _modelType;
 
 	//スライム状態画像のロード
 	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalY.png").c_str());
@@ -34,7 +34,7 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::
 	facePos_ = { Application::SCREEN_SIZE_X - 60 - 70,40 + 74 + 30 };
 	backSlimefacePos_ = facePos_;
 
-	revivalPos_ = { Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
+	revivalPos_ = _initPos;
 
 	scale_ = { 1.0f,1.0f,1.0f };
 	rot_ = { 0.0f,0.0f,0.0f };
@@ -147,39 +147,7 @@ void Enemy::Update(void)
 void Enemy::Draw(void)
 {
 	SlimeBase::Draw();
-
-	VECTOR attackPos;
-	VECTOR attackPos2;
-	VECTOR attackPos3;
-	switch (dir_)
-	{
-	case SunUtility::DIR_3D::FLONT:
-		attackPos = { pos_.x - RADIUS,12.5f,pos_.z };
-		attackPos2 = { pos_.x + RADIUS,12.5f,pos_.z };
-		attackPos3 = { pos_.x,12.5f,moveRoute_.z };
-		//3Dの三角形は裏表があるから時計回りに指定する（2番目に移動先の座標を定める）
-		DrawTriangle3D(attackPos, attackPos3, attackPos2, 0xED784A, true);
-		break;
-	case SunUtility::DIR_3D::BACK:
-		attackPos = { pos_.x - RADIUS,12.5f,pos_.z };
-		attackPos2 = { pos_.x + RADIUS,12.5f,pos_.z };
-		attackPos3 = { pos_.x,12.5f,moveRoute_.z };
-		DrawTriangle3D(attackPos2, attackPos3, attackPos, 0xED784A, true);
-		break;
-	case SunUtility::DIR_3D::RIGHT:
-		attackPos = { pos_.x,12.5f,pos_.z - RADIUS };
-		attackPos2 = { pos_.x,12.5f,pos_.z + RADIUS };
-		attackPos3 = { moveRoute_.x,12.5f,pos_.z };
-		DrawTriangle3D(attackPos2, attackPos3, attackPos, 0xED784A, true);
-		break;
-	case SunUtility::DIR_3D::LEFT:
-		attackPos = { pos_.x,12.5f,pos_.z - RADIUS };
-		attackPos2 = { pos_.x,12.5f,pos_.z + RADIUS };
-		attackPos3 = { moveRoute_.x,12.5f,pos_.z };
-		DrawTriangle3D(attackPos, attackPos3, attackPos2, 0xED784A, true);
-		break;
-	}
-
+	DrawDirTriangle(pos_, dir_, ORANGE_SLIME_COLOR);
 
 
 	if (state_ == SlimeBase::ENEMYSTATE::CHARGE)
@@ -257,16 +225,16 @@ void Enemy::FrameComsumption(void)
 	frame_--;
 	stamina_--;
 	isStaminaRecov_ = false;
-	if (frame_ < 0.0f)
+	if (frame_ >= 0.0f)return;
+
+	frame_ = FRAME_DEFAULT;
+	isStaminaRecov_ = true;
+	if (!isJump_)
 	{
-		frame_ = FRAME_DEFAULT;
-		isStaminaRecov_ = true;
-		if (!isJump_)
-		{
-			ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
-		}
-		
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 	}
+
+
 }
 
 //DIRを考える処理

@@ -116,13 +116,6 @@ private:
 	//コピーコンストラクタを利用不可にする
 	InputManager(const InputManager& ins);
 
-	
-
-
-	//ポインタ宣言
-	//InputManager* inputManager_;
-
-	int testBuf[256];
 
 	//前フレームのキー情報
 	int prePadBuf_[PAD_NUM];

@@ -9,7 +9,9 @@ CommonData* CommonData::data_ = nullptr;
 //デフォルトコンストラクタ
 CommonData::CommonData(void)
 {
-
+	mode_ = MODE::PVE;
+	win_ = WINPATTERN::P1WIN;
+	playerScore_ = 0;
 }
 
 //デストラクタ

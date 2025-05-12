@@ -1,4 +1,5 @@
 #include<DxLib.h>
+#include<string>
 #include<EffekseerForDXLib.h>
 #include"../Application.h"
 #include"../Utility/SunUtility.h"
@@ -14,24 +15,50 @@
 #include"GaugeCircle.h"
 #include"Speaker.h"
 #include"Player.h"
+//青スライムの状態画像
+const std::string BLUE_NORMAL_FACE = "NormalK.png";
+const std::string BLUE_TIRED_FACE = "Tukare.png";
+const std::string BLUE_DAMAGE_FACE = "DamageK.png";
+const std::string BLUE_CHARGE_FACE = "ChargeK.png";
+const std::string BLUE_ATTACK_FACE = "AttackK.png";
+
+//オレンジスライム状態画像
+const std::string ORANGE_NORMAL_FACE = "NormalY.png";
+const std::string ORANGE_TIRED_FACE = "TukareY.png";
+const std::string ORANGE_DAMAGE_FACE = "DamageY.png";
+const std::string ORANGE_CHARGE_FACE = "ChargeY.png";
+const std::string ORANGE_ATTACK_FACE = "AttackY.png";
+
 
 //パラメタの初期化
 void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::MODEL_TYPE _modelType,SunUtility::DIR_3D _initDir)
 {
 #pragma region パラメタの初期化
-	//modelFileName_ = "SilmeAnimKokage.mv1";
 	modelType_ = _modelType;
 	dir_ = _initDir;
 
 	//スライム状態画像のロード
-	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "Tukare.png").c_str());
-	slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::CHARGE]=LoadGraph((Application::PATH_IMAGE + "ChargeK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::ATTACK]=LoadGraph((Application::PATH_IMAGE + "AttackK.png").c_str());
+	if (modelType_ == ModelManager::MODEL_TYPE::KOKAGE)
+	{
+		facePos_ = { BLUE_SLIME_FACE_POS_X,BLUE_SLIME_FACE_POS_Y };
+		backSlimefacePos_ = facePos_;
+		slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + BLUE_NORMAL_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + BLUE_TIRED_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + BLUE_DAMAGE_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + BLUE_CHARGE_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + BLUE_ATTACK_FACE).c_str());
+	}
+	else if (modelType_ == ModelManager::MODEL_TYPE::YUUHI)
+	{
+		facePos_ = { ORANGE_SLIME_FACE_POS_X,ORANGE_SLIME_FACE_POS_Y };
+		backSlimefacePos_ = facePos_;
+		slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + ORANGE_NORMAL_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + ORANGE_TIRED_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_DAMAGE_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_CHARGE_FACE).c_str());
+		slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + ORANGE_ATTACK_FACE).c_str());
+	}
 
-	facePos_ = { FACE_POS_X,FACE_POS_Y };
-	backSlimefacePos_ = facePos_;
 	face_ = SLIME_FACE::NORMAL;
 
 	pos_ = _initPos;
@@ -40,7 +67,7 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 	padNum_ = _padNum;
 	enemyNum_ = _enemyNum;
 
-	revivalPos_ = { -Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
+	revivalPos_ = _initPos;
 
 	auto& ins = EffectManager::GetEffect();
 	//エフェクトのロード
@@ -170,7 +197,7 @@ void Player::Draw(void)
 	SlimeBase::Draw();
 
 	//方向三角形
-	DrawDirTriangle(pos_, dir_, SLIME_COLOR);
+	DrawDirTriangle(pos_, dir_, BLUE_SLIME_COLOR);
 
 	if (pState_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
@@ -188,6 +215,9 @@ void Player::Draw(void)
 
 	if (modelType_ == ModelManager::MODEL_TYPE::KOKAGE)
 	{
+		facePos_ = { BLUE_SLIME_FACE_POS_X,BLUE_SLIME_FACE_POS_Y };
+		backSlimefacePos_ = facePos_;
+
 		//パリィクールタイムゲージの描画
 		VECTOR parryPos;
 		parryPos = ConvWorldPosToScreenPos(PARRY_POS_BLUE);
@@ -201,6 +231,8 @@ void Player::Draw(void)
 	}
 	else
 	{
+		facePos_ = { ORANGE_SLIME_FACE_POS_X,ORANGE_SLIME_FACE_POS_Y };
+		backSlimefacePos_ = facePos_;
 		//パリィクールタイムゲージの描画
 		VECTOR parryPos;
 		parryPos = ConvWorldPosToScreenPos(PARRY_POS_ORANGE);

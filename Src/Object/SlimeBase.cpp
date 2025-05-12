@@ -31,13 +31,13 @@ SlimeBase::SlimeBase(void)
 	backSlimefacePos_ = facePos_;
 	face_ = SLIME_FACE::NORMAL;
 
-	pos_ = {};
+	pos_ = { 0.0f,0.0f,0.0f };
 	scale_ = { 1.0f,1.0f,1.0f };
 	rot_ = { 0.0f,0.0f,0.0f };
 
 	enemyNum_ = 0;
 
-	revivalPos_ = { -Stage::STAGE_ONE_SQUARE * 3,RADIUS * 5,0.0f };
+	revivalPos_ = { 0.0f,0.0f,0.0f };
 
 	waidChargeCnt_ = 0;
 
@@ -142,9 +142,6 @@ void  SlimeBase::Update(void)
 	//ˆÚ“®ˆ—
 	Jump();
 
-	//ˆÚ“®§ŒÀ
-	MoveLimit();
-
 	//–³“GŽžŠÔŒ¸ŽZˆ—
 	InvincibleConsum();
 
@@ -158,7 +155,7 @@ void  SlimeBase::Update(void)
 //•`‰æˆ—
 void SlimeBase::Draw(void)
 {
-	if (((invincibleCnt_ / 3) % 2) == 0)
+	if (((invincibleCnt_ / BLINK_INTERVAL) % BLINK_PATTERN) == 0)
 	{
 		model_->DrawModel(modelType_);
 	}
@@ -386,9 +383,11 @@ int SlimeBase::GetInvincible(void)
 void SlimeBase::Ground(void)
 {
 	//’n–Ê
-	if (pos_.y >= RADIUS && !MoveLimit())return;
-	pos_.y = RADIUS;
-	isJump_ = false;
+	if (pos_.y < RADIUS && MoveLimit())
+	{
+		pos_.y = RADIUS;
+		isJump_ = false;
+	}
 }
 
 void SlimeBase::DrawDirTriangle(VECTOR _pos, SunUtility::DIR_3D _dir, int _color)

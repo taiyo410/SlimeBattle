@@ -7,6 +7,13 @@ ItemBase::ItemBase(void)
 {
 	pos_.x = GetRand(Stage::STAGE_ALL_SIZE_X-Stage::STAGE_ONE_SQUARE) - Stage::STATE_HALF_SIZE_X;
 	pos_.z = GetRand(Stage::STAGE_ALL_SIZE_Z - Stage::STAGE_ONE_SQUARE) - Stage::STATE_HALF_SIZE_Z;
+
+	pos_ = { pos_.x,ITEM_RADIUS,pos_.z };
+	isDead_ = false;
+	isGetItem_ = false;
+	isAtkAlive_ = false;
+	isAtkEnd_ = false;
+	itype_ = ITEM_TYPE::SPEEKER;
 }
 
 ItemBase::~ItemBase(void)

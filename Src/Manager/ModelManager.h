@@ -18,7 +18,7 @@ public:
 	//右
 	static constexpr float RIGHT_DEG = 270.0f;
 	//左
-	static constexpr float LEFT_DEG = 180.0f;
+	static constexpr float LEFT_DEG = 90.0f;
 
 	//アニメーションの終わり
 	static constexpr float END_ANIM = 59.0F;

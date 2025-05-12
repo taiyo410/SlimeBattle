@@ -3,6 +3,8 @@
 class Stage
 {
 public:
+	static constexpr VECTOR SCALE = { 1.0f,0.1f,1.0f };
+
 	//１マス
 	static constexpr int STAGE_ONE_SQUARE = 60;
 	//マスの数

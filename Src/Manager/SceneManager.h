@@ -103,19 +103,12 @@ private:
 	bool isSceneChanging_;	//シーン遷移中かどうか（true:遷移中）
 	//管理マネージャ
 	SceneBase* scene_;		//シーンインスタンス
-	SceneTitle* title_;		//タイトル
-	SceneGame* game_;       //ゲーム
-
-	InputManager* inputManager_;	//操作制御インスタンス
-	CommonData* data_;
 	Fader* fader_;					//フェードインスタンス
 	Camera* camera_;				//カメラインスタンス
 	Grid* grid_;					//グリッドインスタンス
-	ModelManager* model_;			//モデルインスタンス
 	//メンバー変数
 	//対戦状態
 	TYPE type_;
-	CommonData::MODE mode_;
 	
 	
 	/// <summary>

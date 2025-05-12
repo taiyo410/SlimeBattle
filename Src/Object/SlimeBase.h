@@ -18,22 +18,15 @@ class SlimeBase
 {
 public:
 
+	//定数
+	//--------------------------------------
 	//移動上限
 	static constexpr float MOVE_LIMIT = Stage::STAGE_ONE_SQUARE * 5.8 - Stage::STAGE_ONE_SQUARE / 2;
 
+	//スライムの色 
+	static constexpr int BLUE_SLIME_COLOR = 0x5195E1;
+	static constexpr int ORANGE_SLIME_COLOR = 0xED784A;
 
-	enum class SLIME_FACE
-	{
-		NORMAL
-		, DAMAGE
-		, TIRED
-		, CHARGE
-		, ATTACK
-	};
-	//定数
-	//--------------------------------------
-	
-	// 
 	//半径
 	static constexpr float RADIUS = 25.0f;
 
@@ -142,7 +135,24 @@ public:
 	//頂点座標
 	static constexpr float VERTEX = 60.0f;
 
+	//スライムモデルの点滅カウント
+	static constexpr int BLINK_INTERVAL = 3;
+	static constexpr int BLINK_PATTERN = 2;
+
+	//スライムモデルの
+
+
 	//列挙型
+	enum class SLIME_FACE
+	{
+		NORMAL
+		, DAMAGE
+		, TIRED
+		, CHARGE
+		, ATTACK
+	};
+
+
 	enum class PLAYERSTATE
 	{
 		COOL

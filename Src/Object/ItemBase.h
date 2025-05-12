@@ -60,9 +60,6 @@ protected:
 	SlimeBase* slime_[SceneGame::SLIME_NUM_MAX];
 	ITEM_TYPE itype_;	//アイテムタイプ
 	VECTOR pos_;
-	VECTOR rot_;
-	VECTOR scl_;
-
 	float waidAtkCol_;
 	float waidAtkRadius_;		//広範囲攻撃の当たり判定を大きくしていく
 

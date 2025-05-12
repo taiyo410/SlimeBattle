@@ -26,17 +26,7 @@ SceneManager::SceneManager(void)
 	fader_ = new Fader();
 	fader_->Init();
 	isSceneChanging_ = false;
-}
 
-//デストラクタ
-SceneManager::~SceneManager(void)
-{
-
-}
-//初期化処理
-bool SceneManager::Init(void)		
-{
-	Init3D();
 	//フェードインスタンス生成
 	fader_ = new Fader();
 	fader_->Init();
@@ -49,10 +39,7 @@ bool SceneManager::Init(void)
 	grid_ = new Grid();
 	grid_->Init();
 
-	
-
-
-
+	scene_ = nullptr;
 
 	//データインスタンス生成
 	CommonData::CreateData();
@@ -60,21 +47,35 @@ bool SceneManager::Init(void)
 	//インスタンス生成処理がない
 	sceneID_ = SCENE_ID::NONE;
 	waitSceneID_ = SCENE_ID::TITLE;
-	//DoChangeScene();
-
-	ChangeScene(SCENE_ID::TITLE, false);
-
-	//タイトルシーンからフェードインで表示
-	fader_->SetFade(Fader::STATE::FADE_IN);
 
 	//シーン切り替え状態の初期化
 	isSceneChanging_ = true;
 
 	//対戦状態
 	type_ = TYPE::PVE;
+}
 
-	//title_ = new SceneTitle;
-	//game_ = new SceneGame;
+//デストラクタ
+SceneManager::~SceneManager(void)
+{
+
+}
+//初期化処理
+bool SceneManager::Init(void)		
+{
+	Init3D();
+
+	//データインスタンス生成
+	CommonData::CreateData();
+
+	//インスタンス生成処理がない
+	sceneID_ = SCENE_ID::NONE;
+	waitSceneID_ = SCENE_ID::TITLE;
+
+	ChangeScene(SCENE_ID::TITLE, false);
+
+	//タイトルシーンからフェードインで表示
+	fader_->SetFade(Fader::STATE::FADE_IN);
 
 	return true;
 }
@@ -153,16 +154,18 @@ bool SceneManager::Release(void)
 	ReleaseScene(sceneID_);
 
 	//データの解放処理
-	data_->ReleaseData();
+	CommonData::GetData().Destroy();
+
+	grid_->Release();
+	delete grid_;
+	grid_ = nullptr;
 
 	camera_->Release();
 	delete camera_;
 	camera_ = nullptr;
 
 	delete fader_;
-	fader_ = nullptr;
-	//シングルトン化
-	Destroy();
+	fader_ = nullptr;	
 	return true;
 }
 

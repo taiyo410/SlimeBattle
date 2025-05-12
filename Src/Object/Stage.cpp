@@ -6,7 +6,7 @@
 void Stage::Init(void)
 {
 	model_ = MV1LoadModel((Application::PATH_MODEL + "EmaBeni3.mv1").c_str());
-	MV1SetScale(model_, { 1.0f,0.1f,1.0f });
+	MV1SetScale(model_, SCALE);
 
 	//3Dモデルの位置(引数は、3D座標)
 	//MV1SetPosition(model_, { -STAGE_ONE_SQUARE / 2,0.0f,-STAGE_ONE_SQUARE / 2 });

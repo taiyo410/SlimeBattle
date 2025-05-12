@@ -65,7 +65,9 @@ SceneGame::SceneGame(void)
 		case CommonData::TYPE::ENEMY:
 			enemy_ = new Enemy();
 			slime_[s] = enemy_;
+			initPos = SlimeBase::INIT_RIGHT_POS;
 			type = ModelManager::MODEL_TYPE::YUUHI;
+			enemyNum = PLAYER;
 			initDir = SunUtility::DIR_3D::LEFT;
 			break;
 		}
@@ -258,7 +260,7 @@ void SceneGame::Update(void)
 		{
 			for (auto item : items_)
 			{
-				if (!IsHitSpheres(slime_[s]->GetPos(), SlimeBase::RADIUS, item->GetPos(), ItemBase::ITEM_RADIUS))return;
+				if (!IsHitSpheres(slime_[s]->GetPos(), SlimeBase::RADIUS, item->GetPos(), ItemBase::ITEM_RADIUS))continue;
 
 				if (!item->GetIsDead() && !item->GetIsGetItem() && !slime_[s]->IsGetItemPtr() && slime_[s]->GetItemReGetCnt() < 0)
 				{
@@ -298,29 +300,32 @@ void SceneGame::Update(void)
 		////P1‚Ì”ÍˆÍUŒ‚
 		for (auto item : items_)
 		{
-			if (!item->GetIsAtkAlive())return;
+			if (!item->GetIsAtkAlive())continue;
 			if (slime_[PLAYER]->IsItemAtk() && IsHitSpheres(slime_[PLAYER]->GetPos(), SlimeBase::RADIUS, slime_[ENEMY]->GetPos(), item->GetWaidAtk()))
 			{
 				if (slime_[PLAYER]->GetInvincibleCnt() <= 0)
 				{
 					float waidAtkCol = item->GetWaidAtk();
 					slime_[PLAYER2]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-					slime_[PLAYER2]->Damage(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) / 1.5), SlimeBase::INVINCIBLE_TIME);
-					slime_[PLAYER]->AddScore(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) * 5));
+					slime_[PLAYER2]->Damage(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) / WAID_ATK_DMG_SCALE), SlimeBase::INVINCIBLE_TIME);
+					slime_[PLAYER]->AddScore(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) * WAID_ATK_ADD_SCORE_SCALE));
 					slime_[PLAYER2]->ChangePlayerState(SlimeBase::PLAYERSTATE::KNOCKBACK);
 				}
 			}
 
-			if (!IsHitSpheres(slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER]->GetPos()
-				, item->GetWaidAtk()) && slime_[PLAYER2]->IsItemAtk())return;
+			if (IsHitSpheres(slime_[PLAYER2]->GetPos(), SlimeBase::RADIUS, slime_[PLAYER]->GetPos()
+				, item->GetWaidAtk()) && slime_[PLAYER2]->IsItemAtk())
+			{
 
-			if (slime_[PLAYER]->GetInvincibleCnt() > 0)return;
+				if (slime_[PLAYER]->GetInvincibleCnt() > 0)return;
 
-			float waidAtkCol = item->GetWaidAtk();
-			slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
-			slime_[PLAYER]->Damage(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) / WAID_ATK_DMG_SCALE), SlimeBase::INVINCIBLE_TIME);
-			slime_[PLAYER2]->AddScore(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) * WAID_ATK_ADD_SCORE_SCALE));
-			slime_[PLAYER]->ChangePlayerState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+				float waidAtkCol = item->GetWaidAtk();
+				slime_[PLAYER]->SetKnockBack(SlimeBase::KNOCKBUCK_FRAME);
+				slime_[PLAYER]->Damage(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) / WAID_ATK_DMG_SCALE), SlimeBase::INVINCIBLE_TIME);
+				slime_[PLAYER2]->AddScore(static_cast<int>((Speaker::WAID_ATK_COL - waidAtkCol) * WAID_ATK_ADD_SCORE_SCALE));
+				slime_[PLAYER]->ChangePlayerState(SlimeBase::PLAYERSTATE::KNOCKBACK);
+			}
+
 		}
 	}
 #pragma endregion

@@ -9,7 +9,17 @@ InputManager* InputManager::input_ = nullptr;
 //デフォルトコンストラクタ
 InputManager::InputManager(void)
 {
-	
+	for (int index = 0; index < KEY_BUF_LEN; index++)
+	{
+		currentKeyBuf_[index] = '\0';
+		preKeyBuf_[index] = '\0';
+	}
+	//入力制御の初期化
+	for (int n = 0; n < PAD_NUM; n++)
+	{
+		currentPadBuf_[n] = 0;
+		prePadBuf_[n] = 0;
+	}
 }
 
 //デストラクタ

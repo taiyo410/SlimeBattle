@@ -44,24 +44,9 @@ public:
 	//落ちている時間
 	static constexpr int FALL_CNT = SunUtility::DEFAULT_FPS * 2;
 
-	//
 
 	//復活カウント
 	static constexpr int REVIVAL_CNT_MAX = SunUtility::DEFAULT_FPS * 2;
-
-
-	
-
-	////敵がプレイヤーに近づく処理
-	//enum class MOVE_DIR
-	//{
-	//	NONE
-	//	, FLONT
-	//	, BACK
-	//	, LEFT
-	//	, RIGHT
-	//	, MAX
-	//};
 
 	//広範囲攻撃
 	enum class WAID_ATK
@@ -79,15 +64,6 @@ public:
 		Attack
 		,ESCAPE
 	};
-
-	
-
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
-	/// <param name="parent"></param>
-	/// <returns></returns>
-	//bool Init (SceneGame* parent)override;
 
 	/// <summary>
 	/// 更新処理
