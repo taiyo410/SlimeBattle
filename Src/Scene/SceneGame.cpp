@@ -6,7 +6,6 @@
 #include"../Scene/SceneTitle.h"
 #include"../Object/Grid.h"
 #include"../Manager/SceneManager.h"
-#include"../Manager/SlimeManager.h"
 #include"../Manager/SoundManager.h"
 #include"../Manager/EffectManager.h"
 #include"../Common/CommonData.h"

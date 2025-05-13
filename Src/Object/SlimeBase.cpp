@@ -41,7 +41,6 @@ SlimeBase::SlimeBase(void)
 	waidChargePar_.pos = SunUtility::VECTOR_ZERO;
 	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };
-	slimeNum_ = 0;
 	score_ = 0;
 	isUseItem_ = false;
 	jumpPower_ = 0.0f;
@@ -445,11 +444,6 @@ int SlimeBase::GetAtkPow(void)
 bool SlimeBase::GetIsWeak(void)
 {
 	return isWeak_;
-}
-
-int SlimeBase::GetSlimeNum(void)
-{
-	return slimeNum_;
 }
 
 void SlimeBase::SetGravityPow(const float gravityPow)

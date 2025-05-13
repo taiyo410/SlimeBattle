@@ -12,6 +12,38 @@ public:
 	static constexpr int SE_VOL = 70;
 
 	static constexpr int MAX_VOLUME_VALUE = 255;
+
+	//パス関係
+	//BGM
+	//---------------------------------
+	const std::string TITLE_BGM = "Title.mp3";
+	//ゲームシーン
+	const std::string GAME_BGM = "GameScene.mp3";
+	//ゲームシーン２つ目
+	const std::string GAME2_BGM = "GameScene2.mp3";
+	//リザルト
+	const std::string RESULT_BGM = "Result.mp3";
+	//---------------------------------
+	//SE
+	//---------------------------------
+	//ステップ
+	const std::string STEP_SE = "MoveSlime.mp3";
+	//攻撃
+	const std::string ATTACK_SE = "Attack.mp3";
+	//広範囲攻撃
+	const std::string WAID_ATK_SE = "WaidAtk.mp3";
+	//広範囲溜め
+	const std::string CHARGE_WAID_ATK_SE = "WaidCharge.mp3";
+	//ボタン
+	const std::string BUTTON_SE = "button.mp3";
+	//キャンセル
+	const std::string CANCEL_SE = "Cancel.mp3";
+	//カーソル動かすとき
+	const std::string MOVE_CURSOR = "Cursor.mp3";
+	//ゲームスタート音
+	const std::string GAME_START_SE = "GameStart.mp3";
+	//リザルトからタイトルへ移るときのSE
+	const std::string RESULT_2_TITLE = "ResultButton.mp3";
 	
 	//列挙型
 	enum class BGM_TYPE
