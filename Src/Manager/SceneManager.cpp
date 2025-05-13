@@ -87,7 +87,7 @@ bool SceneManager::Init(void)
 void SceneManager::Init3D(void)
 {
 	//背景色設定
-	SetBackgroundColor(0, 139, 139);
+	SetBackgroundColor(BG_COLOR_R, BG_COLOR_G, BG_COLOR_B);
 
 	//Zバッファを有効にする)
 	SetUseZBuffer3D(true);

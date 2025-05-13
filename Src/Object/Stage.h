@@ -1,8 +1,11 @@
 #pragma once
 #include<DxLib.h>
+#include<string>
 class Stage
 {
 public:
+	//íËêî
+	const std::string STAGE_ID = "EmaBeni3.mv1";
 	static constexpr VECTOR SCALE = { 1.0f,0.1f,1.0f };
 
 	//ÇPÉ}ÉX

@@ -13,80 +13,77 @@
 #include"./Enemy.h"
 #include"./Player.h"
 
+
+
 //デフォルトコンストラクタ
 SlimeBase::SlimeBase(void)
 {
 	//modelFileName_ = "SilmeAnimKokage.mv1";
 	modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
 	dir_ = {};
-
 	//スライム状態画像のロード
-	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "Tukare.png").c_str());
-	slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + "ChargeK.png").c_str());
-	slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + "AttackK.png").c_str());
-
+	for (int i=0;i<static_cast<int>(SLIME_FACE::MAX);i++)
+	{
+		slimeFaceImgs_[static_cast<SLIME_FACE>(i)] = -1;
+	}
 	facePos_ = {};
 	backSlimefacePos_ = facePos_;
 	face_ = SLIME_FACE::NORMAL;
-
-	pos_ = { 0.0f,0.0f,0.0f };
+	pos_ = SunUtility::VECTOR_ZERO;
 	scale_ = { 1.0f,1.0f,1.0f };
-	rot_ = { 0.0f,0.0f,0.0f };
-
+	rot_ = SunUtility::VECTOR_ZERO;
 	enemyNum_ = 0;
-
-	revivalPos_ = { 0.0f,0.0f,0.0f };
-
+	revivalPos_ = SunUtility::VECTOR_ZERO;
 	waidChargeCnt_ = 0;
-
-	waidAtkPar_.pos = { 0.0f,0.0f,0.0f };
-	waidAtkPar_.rot = { 0.0f,0.0f,0.0f };
-	waidAtkPar_.scl = { 0.0f,0.0f,0.0f };
-
+	waidAtkPar_.pos = SunUtility::VECTOR_ZERO;
+	waidAtkPar_.rot = SunUtility::VECTOR_ZERO;;
+	waidAtkPar_.scl = SunUtility::VECTOR_ZERO;;
 	waidChargePar_.pos = SunUtility::VECTOR_ZERO;
 	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };
-
 	slimeNum_ = 0;
-
 	score_ = 0;
-
 	isUseItem_ = false;
-
-	//ジャンプ力
 	jumpPower_ = 0.0f;
-
-	//ジャンプ判定
 	isJump_ = false;
-
-	//スタミナ
 	stamina_ = STAMINA_MAX;
-
-	//スタミナが減ってるか
 	isStaminaRecov_ = false;
-
-	//プレイヤー状態
 	pState_ = SlimeBase::PLAYERSTATE::ACTIONABLE;
-
-	//フレームカウント
 	frame_ = FRAME_DEFAULT;
-
 	guardCoolTime_ = 0;
-
 	invincibleCnt_ = 0;
-
 	coolTime_ = 0;
-
 	itemReGetCnt_ = 0;
-
 	gravityPow_ = DEFAULT_GRAVITY;
-
 	fallDmg_ = FALL_DMG_DEFAULT;
-
 	fallScore_ = FALL_SCORE_DEFAULT;
-
+	atkPow_ = 0;
+	fallCnt_ = 0;
+	frameNum_ = 0.0f;
+	hp_ = Player::MAX_HP;
+	hpPercent_ = 1.0f;
+	isItemUse_ = false;
+	isWeak_ = false;
+	isJump_ = false;
+	knockBackCnt_ = 0;
+	modelHandle_ = -1;
+	revivalCnt_ = 0;
+	sound_ = nullptr;
+	stamina_ = Player::STAMINA_MAX;
+	staminaRecov_ = 0.0f;
+	backSlimefaceImg_ = -1;
+	chargePer_ = 0.0f;
+	gaugeCircle_ = nullptr;
+	isInStage_ = true;
+	itemGetEffPlay_ = false;
+	item_ = nullptr;
+	jumpCnt_ = 0.0f;
+	knockBackDir_ = SunUtility::DIR_3D::MAX;
+	model_ = nullptr;
+	sceneGame_ = nullptr;
+	textureFrame_ = -1;
+	waidAtkCoolTime_ = 0;
+	waidAtk_ = WAID_ATK::CHARGE;
 }
 
 //デストラクタ
@@ -108,12 +105,8 @@ bool SlimeBase::Init(SceneGame* _sceneGame, VECTOR _initPos, int _padNum, int _e
 	modelHandle_=model_->LoadModel(modelType_);
 	model_->SetModelParam(modelType_,pos_, dir_);
 
-	//音楽ファイルのロード
-	stepSE_ = LoadSoundMem((Application::PATH_SOUND + "MoveSlime.mp3").c_str());
-	attackSE_ = LoadSoundMem((Application::PATH_SOUND + "Attack.mp3").c_str());
-
 	//スライム状態画像の後ろの雲画像
-	backSlimefaceImg_ = LoadGraph((Application::PATH_IMAGE + "Clowd.png").c_str());
+	backSlimefaceImg_ = LoadGraph((Application::PATH_IMAGE + CLOWD_IMG).c_str());
 
 
 	gaugeCircle_ = new GaugeCircle();
@@ -159,8 +152,8 @@ void SlimeBase::Draw(void)
 	{
 		model_->DrawModel(modelType_);
 	}
-	DrawRotaGraph(backSlimefacePos_.x, backSlimefacePos_.y, 1.5f, 0.0f, backSlimefaceImg_, true);
-	DrawRotaGraph(facePos_.x, facePos_.y,0.1f,0.0f, slimeFaceImg_[face_], true);
+	DrawRotaGraph(backSlimefacePos_.x, backSlimefacePos_.y, CLOWD_SCL, 0.0f, backSlimefaceImg_, true);
+	DrawRotaGraph(facePos_.x, facePos_.y,0.1f,0.0f, slimeFaceImgs_[face_], true);
 }
 //解放処理
 bool SlimeBase::Release(void)
@@ -225,9 +218,9 @@ float SlimeBase::GetHpPercent(void)
 
 void SlimeBase::SetParam(VECTOR _initPos, int _padNum, int _enemyNum,ModelManager::MODEL_TYPE _modelType, SunUtility::DIR_3D _dir)
 {
-	waidAtkPar_.pos = { 0.0f,0.0f,0.0f };
-	waidAtkPar_.rot = { 0.0f,0.0f,0.0f };
-	waidAtkPar_.scl = { 0.0f,0.0f,0.0f };
+	waidAtkPar_.pos = SunUtility::VECTOR_ZERO;;
+	waidAtkPar_.rot = SunUtility::VECTOR_ZERO;;
+	waidAtkPar_.scl = SunUtility::VECTOR_ZERO;;
 
 }
 

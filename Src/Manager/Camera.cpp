@@ -1,11 +1,15 @@
 #include<DxLib.h>
 #include<EffekseerForDXLib.h>
+#include"../Utility/SunUtility.h"
 #include"./Camera.h"
 
 //コンストラクタ
 Camera::Camera(void)
 {
-
+	angles_ = SunUtility::VECTOR_ZERO;
+	pos_ = SunUtility::VECTOR_ZERO;
+	shakeCnt_ = 0.0f;
+	shakeState_ = SHAKE_STATE::SHAKE_UP;
 }
 
 //デストラクタ
@@ -22,14 +26,9 @@ void Camera::Init(void)
 {
 	//カメラの位置
 	pos_ = INIT_POS;
-	//pos_ = { 0.0f,450.0f,-300.0f };
-	//pos_ = { 0.0f,570.0f,-900.0f };
 
 	//カメラの角度
 	angles_ = INIT_ANGLES;
-	//angles_ = { 60.0f * DX_PI_F / 180.0f,0.0f,0.0f };
-	//angles_ = { 20.0f * DX_PI_F / 180.0f,0.0f,0.0f };
-
 	shakeState_ = SHAKE_STATE::SHAKE_UP;
 }
 

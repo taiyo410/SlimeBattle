@@ -125,7 +125,7 @@ void ResultScene::Draw(void)
 			, Application::SCREEN_SIZE_Y / 2 + 240, "Push The A Button!", 0xfab75e, font);
 	}
 
-	DrawGraph(curtainPos_.x,curtainPos_.y, /*0.5,0.5,1200, */curtainImg_,false);
+	DrawGraph(curtainPos_.x,curtainPos_.y, curtainImg_,false);
 
 	DeleteFontToHandle(font);
 }

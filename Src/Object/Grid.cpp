@@ -1,4 +1,5 @@
 #include<DxLib.h>
+#include"../Utility/SunUtility.h"
 #include"./Grid.h"
 
 
@@ -31,8 +32,8 @@ void Grid::Draw(void)
 	{
 		sPos.z = dis_z * TERM;
 		ePos.z = dis_z * TERM;
-		DrawLine3D(sPos, ePos, 0xff0000);
-		DrawSphere3D(ePos, 15.0f, 10, 0xff0000, 0xff0000, true);
+		DrawLine3D(sPos, ePos, SunUtility::RED);
+		DrawSphere3D(ePos, RADIUS, DIV_NUM, SunUtility::RED, SunUtility::RED, true);
 	}
 	sPos = { 0.0f,0.0f,-HLEN };
 	ePos = { 0.0f,0.0f,HLEN };
@@ -40,8 +41,8 @@ void Grid::Draw(void)
 	{
 		sPos.x = dis_x * TERM;
 		ePos.x = dis_x * TERM;
-		DrawLine3D(sPos, ePos, 0x0000ff);
-		DrawSphere3D(ePos, 15.0f, 10, 0x0000ff, 0x0000ff, true);
+		DrawLine3D(sPos, ePos, SunUtility::BLUE);
+		DrawSphere3D(ePos, RADIUS, DIV_NUM, SunUtility::BLUE, SunUtility::BLUE, true);
 	}
 	
 }

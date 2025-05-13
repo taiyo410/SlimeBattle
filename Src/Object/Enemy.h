@@ -27,12 +27,12 @@ public:
 	static constexpr int WAID_ATK_COOLTIME_MAX = SunUtility::DEFAULT_FPS * 10;
 
 	//広範囲攻撃チャージ最大値
-	static constexpr float WAID_CHARGE_MAX = SunUtility::DEFAULT_FPS * 1.3;
-	static constexpr float WAID_JUMPCNT_MAX = SunUtility::DEFAULT_FPS * 0.3;
+	static constexpr float WAID_CHARGE_MAX = static_cast<float>(SunUtility::DEFAULT_FPS) * 1.3f;
+	static constexpr float WAID_JUMPCNT_MAX = static_cast<float>(SunUtility::DEFAULT_FPS) * 0.3f;
 	static constexpr float WAID_COL_EXPAND_SPEED = 3.0f;
 
 	//スタミナ回復状態のカウント
-	static constexpr float STAMINA_RECOV_TIME = SunUtility::DEFAULT_FPS * 5;
+	static constexpr int STAMINA_RECOV_TIME = SunUtility::DEFAULT_FPS * 5;
 
 	//突進攻撃が終わった後のクールタイム
 	static constexpr float NORMAL_ATK_COOLTIME = SunUtility::DEFAULT_FPS * 2;
@@ -47,6 +47,40 @@ public:
 
 	//復活カウント
 	static constexpr int REVIVAL_CNT_MAX = SunUtility::DEFAULT_FPS * 2;
+
+	// 敵からプレイヤーへのY軸方向のオフセット値
+	static constexpr float ENEMY_TO_PLAYER_Y_OFFSET = 50.0f;
+
+	// 逃走時のX軸方向のマージン
+	static constexpr float ESCAPE_MARGIN_X = 210.0f;
+	// 逃走時のZ軸方向のマージン
+	static constexpr float ESCAPE_MARGIN_Z = 210.0f;
+
+	//攻撃開始時のプレイヤーとのマージン
+	static constexpr float CHARGE_MARGIN_X = 180.0f;
+	static constexpr float CHARGE_MARGIN_Z = 180.0f;
+
+
+	// 移動終了後のクールタイム (秒)
+	static constexpr float MOVE_END_COOL_TIME_SEC = 0.5f;
+
+	//カメラのシェイクカウント
+	static constexpr float SHAKE_CNT = 10;
+
+	//カメラの制限
+	static constexpr float SHAKE_LIMIT = 10;
+
+	//描画
+	 // スタミナゲージの描画に関する定数
+	static constexpr int STAMINA_GAUGE_X = 15;
+	static constexpr int STAMINA_GAUGE_Y = 50;
+	static constexpr int STAMINA_GAUGE_WIDTH = 260; // 275 - 15
+	static constexpr int STAMINA_GAUGE_HEIGHT = 25;  // 75 - 50
+	static constexpr int STAMINA_GAUGE_INNER_OFFSET = 1; // 背景との隙間
+	static constexpr int STAMINA_GAUGE_BG_COLOR = 0x000000;
+	static constexpr int STAMINA_GAUGE_CURRENT_COLOR = 0x9d370e;
+	static constexpr int STAMINA_GAUGE_CONSUMPTION_COLOR = 0xED784A;
+
 
 	//広範囲攻撃
 	enum class WAID_ATK

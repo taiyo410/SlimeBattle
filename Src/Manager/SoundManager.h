@@ -11,6 +11,7 @@ public:
 	//SE‚Ì‰¹—Ê
 	static constexpr int SE_VOL = 70;
 
+	static constexpr int MAX_VOLUME_VALUE = 255;
 	
 	//—ñ‹“Œ^
 	enum class BGM_TYPE

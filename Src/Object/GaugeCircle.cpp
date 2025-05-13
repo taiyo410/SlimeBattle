@@ -32,11 +32,6 @@ void GaugeCircle::Draw(GAUGE_TYPE type, VECTOR pos, int sizeX, int sizeY, float 
 		//ビルボードのように描画する(フレーム)
 		DrawPolygon2D(frameVertexes_.data(), 8, textureFrame_, true);
 	}
-
-
-	
-	
-	
 }
 
 void GaugeCircle::Release(void)
@@ -85,9 +80,9 @@ void GaugeCircle::MakeCircleVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 		//中心座標
 		vertex.pos = pos;
 		vertex.pos.z = 0.0f;
-		vertex.u = 0.5f;
-		vertex.v = 0.5f;
-		vertex.dif = GetColorU8(255, 255, 255, 255);
+		vertex.u = CENTER_UV;
+		vertex.v = CENTER_UV;
+		vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 		vertex.rhw = 1.0f;
 		vertexes_.emplace_back(vertex);
 
@@ -97,7 +92,7 @@ void GaugeCircle::MakeCircleVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 		vertex.pos.z = 0.0f;
 		vertex.u = (pos1.x + sizeXF) / (sizeXF + sizeXF);
 		vertex.v = (pos1.y + sizeYF) / (sizeYF + sizeYF);
-		vertex.dif = GetColorU8(255, 255, 255, 255);
+		vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 		vertex.rhw = 1.0f;
 		vertexes_.emplace_back(vertex);
 
@@ -106,7 +101,7 @@ void GaugeCircle::MakeCircleVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 		vertex.pos.z = 0.0f;
 		vertex.u = (pos2.x + sizeXF) / (sizeXF + sizeXF);
 		vertex.v = (pos2.y + sizeYF) / (sizeYF + sizeYF);
-		vertex.dif = GetColorU8(255, 255, 255, 255);
+		vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 		vertex.rhw = 1.0f;
 		vertexes_.emplace_back(vertex);
 
@@ -158,9 +153,9 @@ void GaugeCircle::MakeFrameVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 			//中心座標
 			vertex.pos = pos;
 			vertex.pos.z = 0.0f;
-			vertex.u = 0.5f;
-			vertex.v = 0.5f;
-			vertex.dif = GetColorU8(255, 255, 255, 255);
+			vertex.u = CENTER_UV;
+			vertex.v = CENTER_UV;
+			vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 			vertex.rhw = 1.0f;
 			frameVertexes_.emplace_back(vertex);
 
@@ -170,7 +165,7 @@ void GaugeCircle::MakeFrameVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 			vertex.pos.z = 0.0f;
 			vertex.u = (pos1.x + sizeXF) / (sizeXF + sizeXF);
 			vertex.v = (pos1.y + sizeYF) / (sizeYF + sizeYF);
-			vertex.dif = GetColorU8(255, 255, 255, 255);
+			vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 			vertex.rhw = 1.0f;
 			frameVertexes_.emplace_back(vertex);
 
@@ -179,7 +174,7 @@ void GaugeCircle::MakeFrameVertex(VECTOR pos, int sizeX, int sizeY, float rate)
 			vertex.pos.z = 0.0f;
 			vertex.u = (pos2.x + sizeXF) / (sizeXF + sizeXF);
 			vertex.v = (pos2.y + sizeYF) / (sizeYF + sizeYF);
-			vertex.dif = GetColorU8(255, 255, 255, 255);
+			vertex.dif = GetColorU8(COLOR_MAX, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 			vertex.rhw = 1.0f;
 			frameVertexes_.emplace_back(vertex);
 

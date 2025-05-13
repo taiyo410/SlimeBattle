@@ -24,12 +24,13 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::
 	//modelFileName_ = "SilmeAnimYuuhi.mv1";
 	modelType_ = _modelType;
 
-	//スライム状態画像のロード
-	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "TukareY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + "ChargeY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + "AttackY.png").c_str());
+	facePos_ = { ORANGE_SLIME_FACE_POS_X,ORANGE_SLIME_FACE_POS_Y };
+	backSlimefacePos_ = facePos_;
+	slimeFaceImgs_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + ORANGE_NORMAL_FACE).c_str());
+	slimeFaceImgs_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + ORANGE_TIRED_FACE).c_str());
+	slimeFaceImgs_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_DAMAGE_FACE).c_str());
+	slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_CHARGE_FACE).c_str());
+	slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + ORANGE_ATTACK_FACE).c_str());
 
 	facePos_ = { Application::SCREEN_SIZE_X - 60 - 70,40 + 74 + 30 };
 	backSlimefacePos_ = facePos_;
@@ -155,11 +156,11 @@ void Enemy::Draw(void)
 		VECTOR pos = VECTOR();
 
 		//プレイヤーの頭上のワールド座標
-		pos = VAdd(pos_, { 0.0f,0.0f,50.0f });
+		pos = VAdd(pos_, LOCAL_GAUGE_POS);
 
 		//ワールド座標をスクリーン座標に変換
 		pos = ConvWorldPosToScreenPos(pos);
-		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::CHARGE, pos, 46, 46, chargePer_,true);
+		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::CHARGE, pos, GAUGE_SIZE, GAUGE_SIZE, chargePer_,true);
 	}
 
 	//DrawDebug();
@@ -359,17 +360,10 @@ void Enemy::SetEnemyState(const SlimeBase::ENEMYSTATE enemyState)
 	state_ = enemyState;
 }
 
-
-
-
-
 float Enemy::GetWaidCol(void) const
 {
 	return waidAtkRadius_;
 }
-
-
-
 
 void Enemy::ChangeEnemyState(SlimeBase::ENEMYSTATE state)
 {
@@ -457,46 +451,40 @@ void Enemy::DebuffUpdate(void)
 
 void Enemy::UpdateThink(void)
 {
-	if (!isJump_)
+	if (isJump_)return;
+	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
+	VECTOR enemyPos = pos_;
+	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
+
+	if (waidAtkCoolTime_ < 0)
 	{
-		VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
-		VECTOR enemyPos = pos_;
-		VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::WAIDATTACK);
+	}
 
-		VECTOR marginPos;
-		marginPos.x = 180;
-		marginPos.y = 0;
-		marginPos.z = 180;
-		if (waidAtkCoolTime_ < 0)
-		{
-			ChangeEnemyState(SlimeBase::ENEMYSTATE::WAIDATTACK);
-		}
+	else if (posE2P.x >= -CHARGE_MARGIN_X && posE2P.x <= CHARGE_MARGIN_X 
+		&& posE2P.z >= -CHARGE_MARGIN_Z && posE2P.z <= CHARGE_MARGIN_Z
+		&& act_ == ACT::Attack && MoveLimit())
+	{
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::CHARGE);
+	}
 
-		//マジックナンバーを定数に直す
-		else if (posE2P.x >= -180.0f && posE2P.x <= 180.0f && posE2P.z >= -180.0f && posE2P.z <= 180.0f
-			&& act_ == ACT::Attack && MoveLimit())
-		{
-			ChangeEnemyState(SlimeBase::ENEMYSTATE::CHARGE);
-		}
-
-		else if ((pos_.x <= -marginPos.x) || (pos_.x >= marginPos.x)
-			|| (pos_.z <= -marginPos.z) || (pos_.z >= marginPos.z))
-		{
-			act_ = ACT::ESCAPE;
-			ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
-		}
-		else if ((pos_.x > -marginPos.x) || (pos_.x > marginPos.x)
-			|| (pos_.z > -marginPos.z) || (pos_.z > marginPos.z))
-		{
-			act_ = ACT::Attack;
-			ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
-		}
+	else if ((pos_.x <= -CHARGE_MARGIN_X) || (pos_.x >= CHARGE_MARGIN_X)
+		|| (pos_.z <= -CHARGE_MARGIN_Z) || (pos_.z >= CHARGE_MARGIN_Z))
+	{
+		act_ = ACT::ESCAPE;
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
+	}
+	else if ((pos_.x > -CHARGE_MARGIN_X) || (pos_.x > CHARGE_MARGIN_X)
+		|| (pos_.z > -CHARGE_MARGIN_Z) || (pos_.z > CHARGE_MARGIN_Z))
+	{
+		act_ = ACT::Attack;
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
 	}
 	if (!MoveLimit())
 	{
 		ChangeEnemyState(SlimeBase::ENEMYSTATE::FALL);
 	}
-	
+
 }
 
 void Enemy::UpdateMove(void)
@@ -515,9 +503,9 @@ void Enemy::UpdateStep(void)
 	VECTOR posE2P = { playerPos.x - enemyPos.x,RADIUS,playerPos.z - enemyPos.z };
 
 	VECTOR marginPos;
-	marginPos.x = 210;
+	marginPos.x = ESCAPE_MARGIN_X;
 	marginPos.y = 0;
-	marginPos.z = 210;
+	marginPos.z = ESCAPE_MARGIN_Z;
 
 	VECTOR diff;
 	VECTOR dir;
@@ -562,7 +550,7 @@ void Enemy::UpdateStep(void)
 	//移動フレームが０以下人あったら移動クールタイムへ
 	if (frame_ <= 0)
 	{
-		SetCoolTime(SunUtility::DEFAULT_FPS * 0.5);
+		SetCoolTime(static_cast<int>(SunUtility::DEFAULT_FPS * MOVE_END_COOL_TIME_SEC));
 		ChangeEnemyState(SlimeBase::ENEMYSTATE::NONE);
 	}
 
@@ -710,7 +698,7 @@ void Enemy::UpdateWaidAttack(void)
 	{
 		auto camera = SceneManager::GetInstance().GetCamera();
 		camera = SceneManager::GetInstance().GetCamera();
-		camera->CameraShake(10, 10);
+		camera->CameraShake(static_cast<int>(SHAKE_CNT), static_cast<int>(SHAKE_LIMIT));
 	}
 	waidAtkRadius_ += WAID_COL_EXPAND_SPEED;
 	waidAtkPar_.pos = pos_;

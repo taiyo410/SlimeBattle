@@ -9,39 +9,25 @@
 #include"../Manager/SceneManager.h"
 #include"../Scene/SceneTitle.h"
 
+
 //初期化処理
 bool SceneTitle::Init(void)
 {
+	//モード初期化
 	CommonData::GetData().SetMode(CommonData::MODE::PVE);
 	CommonData::GetData().SetRule(CommonData::RULE::HP);
-	//mode_ = 1;
-	//rule_ = 1;
-	circleSlimeImage_ = LoadGraph((Application::PATH_IMAGE + "CircleSlime.png").c_str());
-	bgImage_ = LoadGraph((Application::PATH_IMAGE + "BgImage.png").c_str());
+
+	circleSlimeImage_ = LoadGraph((Application::PATH_IMAGE + CIRCLE_SLIME_IMG).c_str());
+	bgImage_ = LoadGraph((Application::PATH_IMAGE + BG_IMG).c_str());
 	cloudPos_ = { Application::SCREEN_SIZE_X / 2,Application::SCREEN_SIZE_Y / 2 };
-	cloudImage_ = LoadGraph((Application::PATH_IMAGE + "BgMoveImage.png").c_str());
-	kintounImage_ = LoadGraph((Application::PATH_IMAGE + "kintoun.png").c_str());
+	cloudImage_ = LoadGraph((Application::PATH_IMAGE + BG_CLOWD_IMG).c_str());
+	kintounImage_ = LoadGraph((Application::PATH_IMAGE + GOLD_CLOWD_IMG).c_str());
 	kintounPos_ = { Application::SCREEN_SIZE_X * 2 ,Application::SCREEN_SIZE_Y / 2+100 };
-	rogoImage_ = LoadGraph((Application::PATH_IMAGE + "Rogo.png").c_str());
-	modeImage_ = LoadGraph((Application::PATH_IMAGE + "mode2.png").c_str());
-	ruleImage_ = LoadGraph((Application::PATH_IMAGE + "rule.png").c_str());
-	selectImage_ = LoadGraph((Application::PATH_IMAGE + "Select.png").c_str());
-
-	//タガメ剣持（アニメーション）
-	int ret;
-	ret = LoadDivGraph((Application::PATH_IMAGE + "tagame.png").c_str()
-		, TAGAME_ANIME_ALL
-		, TAGAME_ANIME_ALL
-		, TAGAME_ANIME_DIR
-		, TAGAME_SIZE_X
-		, TAGAME_SIZE_Y
-		, & (tagameImg_[0]));
-	if (ret == -1)
-	{
-		return false;
-	}
-	
-
+	rogoImage_ = LoadGraph((Application::PATH_IMAGE + ROGO_IMG).c_str());
+	modeImage_ = LoadGraph((Application::PATH_IMAGE + MODE2_IMG).c_str());
+	ruleImage_ = LoadGraph((Application::PATH_IMAGE + RULE_IMG).c_str());
+	selectImage_ = LoadGraph((Application::PATH_IMAGE + SELECT_IMG).c_str());
+	arrowImg_ = LoadGraph((Application::PATH_IMAGE + ARROW_IMG).c_str());
 
 
 	//titlebgm_ = LoadSoundMem((Application::PATH_SOUND + "Title.mp3").c_str());
@@ -66,8 +52,6 @@ bool SceneTitle::Init(void)
 	ChangeRule(CommonData::RULE::HP);
 
 	speedAnim_ = ANIM_SPEED_DEFAULT;
-
-	//ChangeVolumeSoundMem(255 * 50 / 100, titlebgm_);
 
 	return true;
 }
@@ -195,10 +179,8 @@ void SceneTitle::Draw(void)
 		, false
 		, false);
 
-	int idxAnim = 
-		static_cast<int>(static_cast<float>(cntAnim_) * speedAnim_) % TAGAME_ANIME_ALL;
-	DrawRotaGraph(tagamePos_.x
-		, tagamePos_.y, 1.0f, tagameRot_, tagameImg_[idxAnim], true, false);
+	DrawRotaGraph(arrowPos_.x
+		, arrowPos_.y, 0.2, arrowRot_,arrowImg_, true, false);
 
 
 	
@@ -215,11 +197,19 @@ void SceneTitle::Draw(void)
 //解放処理
 bool SceneTitle::Release(void)
 {
-	//rule_->Release();
 	DeleteGraph(circleSlimeImage_);
 	DeleteGraph(cloudImage_);
 	DeleteGraph(rogoImage_);
 	DeleteGraph(bgImage_);
+	DeleteGraph(kintounImage_);
+	DeleteGraph(modeImage_);
+	DeleteGraph(ruleImage_);
+	DeleteGraph(selectImage_);
+
+	for (int i = 0; i < TAGAME_ANIME_ALL; i++)
+	{
+		DeleteGraph(tagameImg_[i]);
+	}
 
 	sound_->Release();
 	delete sound_;
@@ -286,7 +276,7 @@ void SceneTitle::ModeUpdate(void)
 	switch (mode_)
 	{
 	case CommonData::MODE::PVE:
-		MoveTagame(TAGAME_MOVE_SPEED);
+		MoveArrow(TAGAME_MOVE_SPEED);
 		if (moveFlg_)
 		{
 			modeImgRectPos_.x -= MODE_MOVE_SPEED;
@@ -298,7 +288,7 @@ void SceneTitle::ModeUpdate(void)
 		}
 		break;
 	case CommonData::MODE::PVP:
-		MoveTagame(-TAGAME_MOVE_SPEED);
+		MoveArrow(-TAGAME_MOVE_SPEED);
 		
 		if (moveFlg_)
 		{
@@ -343,7 +333,7 @@ void SceneTitle::RuleUpdate(void)
 	switch (rule_)
 	{
 	case CommonData::RULE::HP:
-		MoveTagame(TAGAME_MOVE_SPEED);
+		MoveArrow(TAGAME_MOVE_SPEED);
 		if (moveFlg_)
 		{
 			ruleImgRectPos_.x -= MODE_MOVE_SPEED;
@@ -355,7 +345,7 @@ void SceneTitle::RuleUpdate(void)
 		}
 		break;
 	case CommonData::RULE::SCORE:
-		MoveTagame(-TAGAME_MOVE_SPEED);
+		MoveArrow(-TAGAME_MOVE_SPEED);
 		if (moveFlg_)
 		{
 			ruleImgRectPos_.x += MODE_MOVE_SPEED;
@@ -419,17 +409,17 @@ void SceneTitle::ChangeRule(const CommonData::RULE rule)
 	switch (rule_)
 	{
 	case CommonData::RULE::HP:
-		tagamePos_ = { selectPos_.x + SELECT_SIZE_X + TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
-		tagameRot_ = -(90.0 * DX_PI_F / 180);
+		arrowPos_ = { selectPos_.x + SELECT_SIZE_X + TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
+		arrowRot_ = RIGHT_DEG;
 		break;
 	case CommonData::RULE::SCORE:
-		tagamePos_ = { selectPos_.x - TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
-		tagameRot_ = 90.0 * DX_PI_F / 180;
+		arrowPos_ = { selectPos_.x - TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
+		arrowRot_ = LEFT_DEG;
 		break;
 	default:
 		break;
 	}
-	startPos_ = tagamePos_;
+	startPos_ = arrowPos_;
 }
 
 void SceneTitle::ChangeMode( CommonData::MODE mode)
@@ -439,32 +429,31 @@ void SceneTitle::ChangeMode( CommonData::MODE mode)
 	switch (mode)
 	{
 	case CommonData::MODE::PVE:
-		tagamePos_ = { selectPos_.x + SELECT_SIZE_X + TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
-		tagameRot_ = -(90.0 * DX_PI_F / 180);
+		arrowPos_ = { selectPos_.x + SELECT_SIZE_X + TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
+		arrowRot_ = RIGHT_DEG;
 		break;
 	case CommonData::MODE::PVP:
-		tagamePos_ = { selectPos_.x - TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
-		
-		tagameRot_ = 90.0 * DX_PI_F / 180;
+		arrowPos_ = { selectPos_.x - TAGAME_SIZE_Y / 2, selectPos_.y + SELECT_SIZE_Y / 2 };
+		arrowRot_ = LEFT_DEG;
 		break;
 	case CommonData::MODE::MAX:
 		break;
 	default:
 		break;
 	}
-	startPos_ = tagamePos_;
+	startPos_ = arrowPos_;
 }
 
-void SceneTitle::MoveTagame(int move)
+void SceneTitle::MoveArrow(int move)
 {
 	moveframe_++;
-	if (moveframe_ < TAGAME_MOVE_FRAME)
+	if (moveframe_ < ARROW_MOVE_FRAME)
 	{
-		tagamePos_.x += move;
+		arrowPos_.x += move;
 	}
 	else
 	{
-		tagamePos_ = startPos_;
+		arrowPos_ = startPos_;
 		moveframe_ = 0;
 	}
 }

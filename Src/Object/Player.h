@@ -37,7 +37,7 @@ public:
 	//ガード関連
 	//-----------------------------------------------
 	//ガードカウントマックス
-	static constexpr int GUARD_CNT_MAX = SunUtility::DEFAULT_FPS * 0.5;
+	static constexpr int GUARD_CNT_MAX = static_cast<int>(SunUtility::DEFAULT_FPS * 0.5f);
 
 	//ガードクールタイム
 	static constexpr int GUARD_COOLTIME = SunUtility::DEFAULT_FPS * 5;
@@ -49,7 +49,7 @@ public:
 	static constexpr int GUARD_GAUGE_SIZE_MARGIN = 10;
 
 	//ガード成功時のクールタイム
-	static constexpr int GUARD_COOLTIME_SUCCESS = SunUtility::DEFAULT_FPS * 2.5;
+	static constexpr int GUARD_COOLTIME_SUCCESS = static_cast<int>(SunUtility::DEFAULT_FPS * 2.5f);
 	//---------------------------------------------------
 
 	//溜め攻撃状態のときの消費量の倍率
@@ -88,30 +88,24 @@ public:
 	//疲れた表情をするスタミナ残量率の基準
 	static constexpr float STAMINA_TIRED = 0.4f;
 
-	//描画関係
-	//*********************************************************
-	//青スライム状態画像の座標
-	static constexpr int BLUE_SLIME_FACE_POS_X = 130;
-	static constexpr int BLUE_SLIME_FACE_POS_Y = 144;
+	// スタミナゲージの描画に関する定数
+	static constexpr int STAMINA_GAUGE_X = 15;
+	static constexpr int STAMINA_GAUGE_Y = 50;
+	static constexpr int STAMINA_GAUGE_WIDTH = 260; 
+	static constexpr int STAMINA_GAUGE_HEIGHT = 25;
 
-	//オレンジスライム状態画像
-	static constexpr int ORANGE_SLIME_FACE_POS_X = 1070;
-	static constexpr int ORANGE_SLIME_FACE_POS_Y = 144;
+	//幅の座標
+	static constexpr int STAMINA_GAUGE_WIDTH_POS_X = STAMINA_GAUGE_WIDTH + STAMINA_GAUGE_X;
+	static constexpr int STAMINA_GAUGE_WIDTH_POS_Y = STAMINA_GAUGE_Y + STAMINA_GAUGE_HEIGHT;
 
-	//チャージゲージ
-	//----------------------------------------------
-	//相対座標
-	static constexpr VECTOR LOCAL_GAUGE_POS = { 0.0f,0.0f,50.0f };
-	//サイズ
-	static constexpr int GAUGE_SIZE = 46;
-	//----------------------------------------------
-	
-	//パリィクールタイムゲージ
-	static constexpr VECTOR PARRY_POS_BLUE = { -400.0f,50.0f,40.0f };
-	static constexpr VECTOR PARRY_POS_ORANGE = { 400.0f,50.0f,40.0f };
 
-	//シールドエフェクト
-	static constexpr float SHIELD_SCALE = 10.0f;
+	static constexpr int STAMINA_GAUGE_INNER_OFFSET = 1; // 背景との隙間
+	static constexpr int STAMINA_GAUGE_BG_COLOR = 0x000000;
+	static constexpr int STAMINA_GAUGE_CURRENT_COLOR = 0x9d370e;
+	static constexpr int STAMINA_GAUGE_CONSUMPTION_COLOR = 0xED784A;
+
+	//アイテムの大きさ
+	static constexpr int ITEM_SCL = 60;
 
 
 

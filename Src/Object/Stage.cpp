@@ -5,7 +5,7 @@
 
 void Stage::Init(void)
 {
-	model_ = MV1LoadModel((Application::PATH_MODEL + "EmaBeni3.mv1").c_str());
+	model_ = MV1LoadModel((Application::PATH_MODEL + STAGE_ID).c_str());
 	MV1SetScale(model_, SCALE);
 
 	//3Dモデルの位置(引数は、3D座標)
@@ -13,7 +13,7 @@ void Stage::Init(void)
 	MV1SetPosition(model_,SunUtility::VECTOR_ZERO);
 
 	//3Dモデルの向き(引数は、x,y,zの回転量。単位はラジアン)
-	MV1SetRotationXYZ(model_, { 0.0f,0.0f/*DX_PI_F / 180*/,0.0f });
+	MV1SetRotationXYZ(model_, SunUtility::VECTOR_ZERO);
 }
 
 void Stage::Update(void)

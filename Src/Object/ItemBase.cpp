@@ -22,8 +22,8 @@ ItemBase::~ItemBase(void)
 
 void ItemBase::Init(SlimeBase* p1, SlimeBase* p2)
 {
-	p1 = slime_[0];
-	p2 = slime_[1];
+	p1 = slime_[SceneGame::PLAYER];
+	p2 = slime_[SceneGame::ENEMY];
 
 	SetParam();
 
@@ -50,8 +50,8 @@ void ItemBase::Draw(void)
 	unsigned color;
 	if (!isGetItem_)
 	{
-		color = 0x00ff00;
-		DrawSphere3D(pos_, ITEM_RADIUS, 8, color, 0xffffff, true);
+		color = SunUtility::GREEN;
+		DrawSphere3D(pos_, ITEM_RADIUS, DIV_NUM, color, 0xffffff, true);
 	}
 	
 }

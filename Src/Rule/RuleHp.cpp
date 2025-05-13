@@ -69,40 +69,26 @@ void RuleHp::Draw(void)
 	float playerHp = sceneGame_->GetPlayerHpPercent(SceneGame::PLAYER);
 
 	//プレイヤーのHP表示
-	DrawBox(15, 15, 275, 40, 0x000000, true);
+	DrawBox(HP_GAUGE_PLAYER1_POS_X, HP_GAUGE_PLAYER1_POS_Y
+		, HP_GAUGE_WIDTH_X, HP_GAUGE_HEIGHT_Y, SunUtility::BLACK, true);
 	if (playerHp >= 0.0f)
 	{
 		DrawBox(274
 			, 16
-			, 274 - playerHp * 260/*バーの長さ*/
+			, 274 - playerHp * HP_GAUGE_WIDTH/*バーの長さ*/
 			, 39, 0x2ce70b, true);
 	}
-	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
+
+	float enemyHp = sceneGame_->GetPlayerHpPercent(SceneGame::ENEMY);
+
+	//敵のHP表示
+	//0を下回ったら表示しない
+	DrawBox(HP_GAUGE_START_X, 15, Application::SCREEN_SIZE_X - 15, 40, 0x000000, true);
+	if (enemyHp >= 0.0f)
 	{
-		float enemyHp = sceneGame_->GetPlayerHpPercent(SceneGame::ENEMY);
-
-		//敵のHP表示
-		//0を下回ったら表示しない
-		DrawBox(HP_GAUGE_START_X, 15, Application::SCREEN_SIZE_X - 15, 40, 0x000000, true);
-		if (enemyHp >= 0.0f)
-		{
-			DrawBox(HP_GAUGE_START_X, 16, HP_GAUGE_START_X + enemyHp * 260, 39, 0x2ce70b, true);
-		}	
+		DrawBox(HP_GAUGE_START_X, 16, HP_GAUGE_START_X + enemyHp * 260, 39, 0x2ce70b, true);
 	}
-
-	else if (CommonData::GetData().GetMode() == CommonData::MODE::PVP)
-	{
-		float player2Hp = sceneGame_->GetPlayer2HpPercent();
-
-		//P2のHP表示
-		DrawBox(HP_GAUGE_START_X, 15/*530 - 32*/, Application::SCREEN_SIZE_X - 15, 40, 0x000000, true);
-		//0を下回ったら表示しない
-		if (player2Hp >= 0.0f)
-		{
-			DrawBox(HP_GAUGE_START_X, 16, HP_GAUGE_START_X + player2Hp * 260, 39, 0x2ce70b, true);
-		}
-	}
-}
+}        
 
 void RuleHp::Release(void)
 {

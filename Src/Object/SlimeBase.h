@@ -98,8 +98,8 @@ public:
 	static constexpr int WAID_ATK_COOLTIME_MAX = SunUtility::DEFAULT_FPS * 10;
 
 	//広範囲攻撃チャージ最大値
-	static constexpr float WAID_CHARGE_MAX = SunUtility::DEFAULT_FPS * 0.5;
-	static constexpr float WAID_JUMPCNT_MAX = SunUtility::DEFAULT_FPS * 0.3;
+	static constexpr float WAID_CHARGE_MAX = SunUtility::DEFAULT_FPS * 0.5f;
+	static constexpr float WAID_JUMPCNT_MAX = SunUtility::DEFAULT_FPS * 0.3f;
 	static constexpr float WAID_COL_EXPAND_SPEED = 3.0f;
 
 	//広範囲攻撃の落下時用の重力
@@ -135,11 +135,54 @@ public:
 	//頂点座標
 	static constexpr float VERTEX = 60.0f;
 
+	//描画関係
+	//*********************************************************
+
+	//チャージゲージ
+	//----------------------------------------------
+	//相対座標
+	static constexpr VECTOR LOCAL_GAUGE_POS = { 0.0f,0.0f,50.0f };
+	//サイズ
+	static constexpr int GAUGE_SIZE = 46;
+	//----------------------------------------------
+
+	//パリィクールタイムゲージ
+	static constexpr VECTOR PARRY_POS_BLUE = { -400.0f,50.0f,40.0f };
+	static constexpr VECTOR PARRY_POS_ORANGE = { 400.0f,50.0f,40.0f };
+
+	//シールドエフェクト
+	static constexpr float SHIELD_SCALE = 10.0f;
+
 	//スライムモデルの点滅カウント
 	static constexpr int BLINK_INTERVAL = 3;
 	static constexpr int BLINK_PATTERN = 2;
 
-	//スライムモデルの
+	//青スライムの状態画像
+	const std::string BLUE_NORMAL_FACE = "NormalK.png";
+	const std::string BLUE_TIRED_FACE = "Tukare.png";
+	const std::string BLUE_DAMAGE_FACE = "DamageK.png";
+	const std::string BLUE_CHARGE_FACE = "ChargeK.png";
+	const std::string BLUE_ATTACK_FACE = "AttackK.png";
+
+	//オレンジスライム状態画像
+	const std::string ORANGE_NORMAL_FACE = "NormalY.png";
+	const std::string ORANGE_TIRED_FACE = "TukareY.png";
+	const std::string ORANGE_DAMAGE_FACE = "DamageY.png";
+	const std::string ORANGE_CHARGE_FACE = "ChargeY.png";
+	const std::string ORANGE_ATTACK_FACE = "AttackY.png";
+
+	//スライム背景の雲画像
+	const std::string CLOWD_IMG = "Clowd.png";
+	static constexpr double CLOWD_SCL = 1.5;
+
+	//青スライム状態画像の座標
+	static constexpr int BLUE_SLIME_FACE_POS_X = 130;
+	static constexpr int BLUE_SLIME_FACE_POS_Y = 144;
+
+	//オレンジスライム状態画像
+	static constexpr int ORANGE_SLIME_FACE_POS_X = 1070;
+	static constexpr int ORANGE_SLIME_FACE_POS_Y = 144;
+
 
 
 	//列挙型
@@ -150,6 +193,7 @@ public:
 		, TIRED
 		, CHARGE
 		, ATTACK
+		, MAX
 	};
 
 
@@ -365,7 +409,7 @@ protected:
 	int modelHandle_;	//モデルハンドル
 
 	//スライムの状態画像
-	std::map<SLIME_FACE, int>slimeFaceImg_;	//画像格納
+	std::map<SLIME_FACE, int>slimeFaceImgs_;	//画像格納
 	SLIME_FACE face_;	//スライム状態
 	Vector2 facePos_;	//状態画像の座標
 
@@ -373,18 +417,10 @@ protected:
 	int backSlimefaceImg_;	//画像
 	Vector2 backSlimefacePos_;	//座標
 
-	//ステップSEの格納
-	int stepSE_;
-
-	//攻撃SE
-	int attackSE_;
-
 	//チャージSE
 	int hp_;			//体力
 	int score_;			//スコア
-	int chargeSE_;	//溜め割合
 	float chargePer_;	//割合
-	float gaugeRate_;	//デバッグ用のゲージ変化
 	float jumpPower_;	//ジャンプ力
 	bool isJump_;	//ジャンプ中判定
 	float gravityPow_;	//重力変数

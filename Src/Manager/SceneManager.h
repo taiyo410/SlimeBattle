@@ -27,6 +27,11 @@ public:
 	static constexpr VECTOR TITLE_CAMERA_POS = { 0.0f,100.0f,-200.0f };
 	static constexpr VECTOR TITLE_CAMERA_ANGLE = { 20.0f * DX_PI_F / 180.0f,0.0f,0.0f };
 
+	//îwåiêF
+	static constexpr int BG_COLOR_R = 0;
+	static constexpr int BG_COLOR_G = 139;
+	static constexpr int BG_COLOR_B = 139;
+
 	//************************************
 	//óÒãìå^
 	enum class SCENE_ID

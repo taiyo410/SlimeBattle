@@ -32,16 +32,16 @@ void ModelManager::SetRotation(SunUtility::DIR_3D dir, MODEL_TYPE model)
 	switch (dir)
 	{
 	case SunUtility::DIR_3D::FLONT:
-		rot_.y = FLONT_DEG * (DX_PI_F / 180.0f);
+		rot_.y = FLONT_DEG * DEG_TO_RAD;
 		break;
 	case SunUtility::DIR_3D::BACK:
-		rot_.y = BACK_DEG * (DX_PI_F / 180.0f);
+		rot_.y = BACK_DEG * DEG_TO_RAD;
 		break;
 	case SunUtility::DIR_3D::RIGHT:
-		rot_.y = RIGHT_DEG * (DX_PI_F / 180.0f);
+		rot_.y = RIGHT_DEG * DEG_TO_RAD;
 		break;
 	case SunUtility::DIR_3D::LEFT:
-		rot_.y = LEFT_DEG * (DX_PI_F / 180.0f);
+		rot_.y = LEFT_DEG * DEG_TO_RAD;
 		break;
 	}
 

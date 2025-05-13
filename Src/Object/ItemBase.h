@@ -9,14 +9,14 @@ public:
 	ItemBase(void);
 	~ItemBase(void);
 
-
-
-
 	//アイテムの当たり判定の大きさ
 	static constexpr float ITEM_RADIUS = 25;
 
 	//範囲攻撃の当たり判定用
 	static constexpr float WAID_ATK_COL = SlimeBase::RADIUS * 6;
+
+	//球の角度の分割数
+	static constexpr int DIV_NUM = 8;
 
 	//アイテム種類
 	enum class ITEM_TYPE

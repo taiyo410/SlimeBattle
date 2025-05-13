@@ -12,7 +12,17 @@ public:
 		,PARRY_K
 		,PARRY_Y
 	};
+
+	//頂点の数
 	static constexpr int DIV_NUM = 8;
+
+	//UVの中心座標
+	static constexpr float CENTER_UV = 0.5f;
+
+	//UVの
+
+	//色最大値
+	static constexpr int COLOR_MAX = 255;
 
 	void Init(void);
 

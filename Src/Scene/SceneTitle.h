@@ -31,7 +31,6 @@ public:
 	static constexpr int SELECT_SIZE_X = 240;
 	static constexpr int SELECT_SIZE_Y = 60;
 
-	//static constexpr int MODE_GOAL_MAX = 200;
 	static constexpr int MODE_GOAL_MAX = 272;
 	static constexpr int RULE_GOAL_MAX = 275;
 
@@ -41,11 +40,29 @@ public:
 	//タガメ剣持のアニメーション数
 	static constexpr int TAGAME_ANIME_ALL = 3;
 	static constexpr int TAGAME_ANIME_DIR = 1;
-	static constexpr int TAGAME_SIZE_X = 80;
+	static constexpr int ARROW_SIZE_X = 80;
 	static constexpr int TAGAME_SIZE_Y = 100;
 	static constexpr float ANIM_SPEED_DEFAULT = 0.25f;
 	static constexpr float TAGAME_MOVE_SPEED = 1.0f;
-	static constexpr int TAGAME_MOVE_FRAME = SunUtility::DEFAULT_FPS * 1.0;
+	static constexpr int ARROW_MOVE_FRAME = static_cast<int>(SunUtility::DEFAULT_FPS * 0.5f);
+
+	//画像
+	const std::string CIRCLE_SLIME_IMG = "CircleSlime.png";
+	const std::string BG_IMG = "BgImage.png";
+	const std::string BG_CLOWD_IMG = "BgMoveImage.png";
+	const std::string GOLD_CLOWD_IMG = "kintoun.png";
+	const std::string ROGO_IMG = "Rogo.png";
+	const std::string MODE2_IMG = "mode2.png";
+	const std::string RULE_IMG = "rule.png";
+	const std::string SELECT_IMG = "Select.png";
+	const std::string ARROW_IMG = "arrow.png";
+
+	//矢印の角度
+	//右
+	static constexpr float RIGHT_DEG = 0.0;
+	static constexpr float LEFT_DEG = 180.0 * DX_PI_F / 180;
+
+
 	//列挙型
 	enum class MODE
 	{
@@ -84,8 +101,6 @@ public:
 
 private:
 	//ポインター宣言
-	InputManager* inputManager_;
-	Grid* grid_;
 	SoundManager* sound_;
 	//RuleBase* ruleBase_;
 	//メンバー変数
@@ -98,6 +113,7 @@ private:
 	int ruleImage_;		//モード選択用画像
 	int selectImage_;	//選択画像
 	int tagameImg_[TAGAME_ANIME_ALL];		//タガメ剣持
+	int arrowImg_;		//矢印
 
 
 	CommonData::MODE mode_;		//モード表示用
@@ -121,17 +137,11 @@ private:
 	Vector2 selectPos_;			//選択画像座標
 	Vector2 startPos_;			//タガメ剣持が動き始める座標
 
-	Vector2 tagamePos_;			//タガメ座標
-	double tagameRot_;			//タガメ
+	Vector2 arrowPos_;			//タガメ座標
+	double arrowRot_;			//タガメ
 
 		//セレクト
 	CommonData::SELECT select_;
-	//モード
-	//CommonData::MODE mode_;
-	//ルール種別
-	//CommonData::RULE rule_;
-
-
 
 	//セレクト更新
 	void ModeUpdate(void);
@@ -143,8 +153,8 @@ private:
 	void ChangeRule(const CommonData::RULE rule);
 	void ChangeMode(const CommonData::MODE mode);
 
-	//タガメ剣持の移動
-	void MoveTagame(int move);
+	//矢印の移動
+	void MoveArrow(int move);
 
 
 

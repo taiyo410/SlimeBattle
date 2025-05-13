@@ -21,6 +21,20 @@ public:
 
 	//À•Wƒ[ƒ
 	static constexpr VECTOR VECTOR_ZERO = { 0.0f,0.0f,0.0f };
+
+	//FŠÖŒW
+	//Ô
+	static constexpr int RED = 0xff0000;
+	//—Î
+	static constexpr int GREEN = 0x00ff00;
+	//Â
+	static constexpr int BLUE = 0x0000ff;
+	//”’
+	static constexpr int WHITE = 0xffffff;
+	//•
+	static constexpr int BLACK = 0x000000;
+
+
 	//2D•ûŒü
 	enum class DIR_2D
 	{

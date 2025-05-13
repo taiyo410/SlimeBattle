@@ -16,6 +16,12 @@ public:
 	static constexpr float WAID_JUMPCNT_MAX = SunUtility::DEFAULT_FPS * 0.3;
 	static constexpr float WAID_COL_EXPAND_SPEED = 3.0f;
 
+	//カメラシェイク関連
+	//時間
+	static constexpr int SHALE_CNT = 10;
+	//振れ幅
+	static constexpr int SHAKE_LIMIT = 10;
+
 	////範囲攻撃の当たり判定用
 	//static constexpr float WAID_ATK_COL = SlimeBase::RADIUS * 3;
 

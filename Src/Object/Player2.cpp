@@ -37,11 +37,11 @@ void Player2::SetParam(VECTOR _initPos, int _padNum, int _enemyNum)
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };
 
 	//スライム状態画像のロード
-	slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "TukareY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + "ChargeY.png").c_str());
-	slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + "AttackY.png").c_str());
+	slimeFaceImgs_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + "NormalY.png").c_str());
+	slimeFaceImgs_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + "TukareY.png").c_str());
+	slimeFaceImgs_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + "DamageY.png").c_str());
+	slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + "ChargeY.png").c_str());
+	slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + "AttackY.png").c_str());
 
 	facePos_ = { Application::SCREEN_SIZE_X - 60 - 70,40 + 74 + 30 };
 	backSlimefacePos_ = facePos_;

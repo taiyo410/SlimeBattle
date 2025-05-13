@@ -32,7 +32,7 @@ void Speaker::UpdateWaidAttack(void)
 			//ƒJƒƒ‰U“®ˆ—
 			auto camera = SceneManager::GetInstance().GetCamera();
 			camera = SceneManager::GetInstance().GetCamera();
-			camera->CameraShake(10, 10);
+			camera->CameraShake(SHALE_CNT, SHAKE_LIMIT);
 
 			//“–‚½‚è”»’è‚ğL‚°‚é
 			waidAtkRadius_ += WAID_COL_EXPAND_SPEED;

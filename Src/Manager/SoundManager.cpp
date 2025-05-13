@@ -38,13 +38,13 @@ void SoundManager::SEInit(void)
 void SoundManager::PlayBgm(BGM_TYPE bgm, int type, int volPer,bool isTopPosition)
 {
 	PlaySoundMem(bgm_[bgm], type,isTopPosition);
-	ChangeVolumeSoundMem(255 * volPer / 100, bgm_[bgm]);
+	ChangeVolumeSoundMem(MAX_VOLUME_VALUE * volPer / VOLUME_MAX, bgm_[bgm]);
 }
 
 void SoundManager::PlaySe(SE_TYPE se, int type, int volPer, bool isTopPosition)
 {
 	PlaySoundMem(se_[se], type, isTopPosition);
-	ChangeVolumeSoundMem(255 * volPer / 100,se_[se]);
+	ChangeVolumeSoundMem(MAX_VOLUME_VALUE * volPer / VOLUME_MAX,se_[se]);
 }
 
 void SoundManager::StopBgm(BGM_TYPE bgm)

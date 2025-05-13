@@ -23,6 +23,9 @@ public:
 	//アニメーションの終わり
 	static constexpr float END_ANIM = 59.0F;
 
+	//ラジアン角に変換
+	static constexpr float DEG_TO_RAD = (DX_PI_F / 180.0f);
+
 	//読み込むものがどういうものか
 	enum class OBJECT
 	{

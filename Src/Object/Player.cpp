@@ -15,19 +15,19 @@
 #include"GaugeCircle.h"
 #include"Speaker.h"
 #include"Player.h"
-//青スライムの状態画像
-const std::string BLUE_NORMAL_FACE = "NormalK.png";
-const std::string BLUE_TIRED_FACE = "Tukare.png";
-const std::string BLUE_DAMAGE_FACE = "DamageK.png";
-const std::string BLUE_CHARGE_FACE = "ChargeK.png";
-const std::string BLUE_ATTACK_FACE = "AttackK.png";
-
-//オレンジスライム状態画像
-const std::string ORANGE_NORMAL_FACE = "NormalY.png";
-const std::string ORANGE_TIRED_FACE = "TukareY.png";
-const std::string ORANGE_DAMAGE_FACE = "DamageY.png";
-const std::string ORANGE_CHARGE_FACE = "ChargeY.png";
-const std::string ORANGE_ATTACK_FACE = "AttackY.png";
+////青スライムの状態画像
+//const std::string BLUE_NORMAL_FACE = "NormalK.png";
+//const std::string BLUE_TIRED_FACE = "Tukare.png";
+//const std::string BLUE_DAMAGE_FACE = "DamageK.png";
+//const std::string BLUE_CHARGE_FACE = "ChargeK.png";
+//const std::string BLUE_ATTACK_FACE = "AttackK.png";
+//
+////オレンジスライム状態画像
+//const std::string ORANGE_NORMAL_FACE = "NormalY.png";
+//const std::string ORANGE_TIRED_FACE = "TukareY.png";
+//const std::string ORANGE_DAMAGE_FACE = "DamageY.png";
+//const std::string ORANGE_CHARGE_FACE = "ChargeY.png";
+//const std::string ORANGE_ATTACK_FACE = "AttackY.png";
 
 
 //パラメタの初期化
@@ -42,21 +42,21 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 	{
 		facePos_ = { BLUE_SLIME_FACE_POS_X,BLUE_SLIME_FACE_POS_Y };
 		backSlimefacePos_ = facePos_;
-		slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + BLUE_NORMAL_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + BLUE_TIRED_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + BLUE_DAMAGE_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + BLUE_CHARGE_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + BLUE_ATTACK_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE +BLUE_NORMAL_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + BLUE_TIRED_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + BLUE_DAMAGE_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + BLUE_CHARGE_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + BLUE_ATTACK_FACE).c_str());
 	}
 	else if (modelType_ == ModelManager::MODEL_TYPE::YUUHI)
 	{
 		facePos_ = { ORANGE_SLIME_FACE_POS_X,ORANGE_SLIME_FACE_POS_Y };
 		backSlimefacePos_ = facePos_;
-		slimeFaceImg_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + ORANGE_NORMAL_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + ORANGE_TIRED_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_DAMAGE_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_CHARGE_FACE).c_str());
-		slimeFaceImg_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + ORANGE_ATTACK_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::NORMAL] = LoadGraph((Application::PATH_IMAGE + ORANGE_NORMAL_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::TIRED] = LoadGraph((Application::PATH_IMAGE + ORANGE_TIRED_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::DAMAGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_DAMAGE_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_CHARGE_FACE).c_str());
+		slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + ORANGE_ATTACK_FACE).c_str());
 	}
 
 	face_ = SLIME_FACE::NORMAL;
@@ -225,9 +225,16 @@ void Player::Draw(void)
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_K, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
 
 		//スタミナゲージ
-		DrawBox(15, 50, 275, 75, 0x000000, true);
-		DrawBox(274, 51, 274 - staminaPercent_ * 260, 74, 0x9d370e, true);
-		DrawBox(274, 51, 274 - staminaConsumPercent_ * 260, 74, 0xED784A, true);
+		//外枠
+		DrawBox(STAMINA_GAUGE_X, STAMINA_GAUGE_Y, STAMINA_GAUGE_WIDTH_POS_X, STAMINA_GAUGE_WIDTH_POS_Y
+			, SunUtility::BLACK, true);
+
+		//内側
+		DrawBox(STAMINA_GAUGE_WIDTH_POS_X- STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_Y+ STAMINA_GAUGE_INNER_OFFSET
+			, STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET - staminaPercent_ * STAMINA_GAUGE_WIDTH, 
+			STAMINA_GAUGE_WIDTH_POS_Y- STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_CURRENT_COLOR, true);
+		DrawBox(STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_Y + STAMINA_GAUGE_INNER_OFFSET
+			, STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET - staminaConsumPercent_ * STAMINA_GAUGE_WIDTH, STAMINA_GAUGE_WIDTH_POS_Y- STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_CONSUMPTION_COLOR, true);
 	}
 	else
 	{
@@ -239,10 +246,19 @@ void Player::Draw(void)
 
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_Y, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
 
+		//外枠
+		DrawBox(Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X, STAMINA_GAUGE_Y
+			, Application::SCREEN_SIZE_X - STAMINA_GAUGE_X, STAMINA_GAUGE_WIDTH_POS_Y, SunUtility::BLACK, true);
 
-		DrawBox(Application::SCREEN_SIZE_X - 275, 50, Application::SCREEN_SIZE_X - 15, 75, 0x000000, true);
-		DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaPercent_ * 260, 74, 0x9d370e, true);
-		DrawBox(Application::SCREEN_SIZE_X - 274, 51, Application::SCREEN_SIZE_X - 274 + staminaConsumPercent_ * 260, 74, 0xED784A, true);
+		//内側
+		DrawBox(Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_Y + STAMINA_GAUGE_INNER_OFFSET
+			, Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET + staminaPercent_ * STAMINA_GAUGE_WIDTH
+			, STAMINA_GAUGE_WIDTH_POS_Y - STAMINA_GAUGE_INNER_OFFSET
+			, STAMINA_GAUGE_CURRENT_COLOR, true);
+		DrawBox(Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET
+			, STAMINA_GAUGE_Y + STAMINA_GAUGE_INNER_OFFSET
+			, Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X - STAMINA_GAUGE_INNER_OFFSET + staminaConsumPercent_ * STAMINA_GAUGE_WIDTH
+			, STAMINA_GAUGE_WIDTH_POS_Y - STAMINA_GAUGE_INNER_OFFSET, STAMINA_GAUGE_CONSUMPTION_COLOR, true);
 	}
 
 }
@@ -647,7 +663,7 @@ void Player::ItemUpdate(void)
 		itemGetPar_.pos = pos_;
 		itemGetPar_.pos.y -= RADIUS;
 		itemGetPar_.rot = SunUtility::VECTOR_ZERO;
-		itemGetPar_.scl = { 60,60,60 };
+		itemGetPar_.scl = { ITEM_SCL,ITEM_SCL,ITEM_SCL };
 		itemGetPar_.isLoop = true;
 		if (itemGetEffPlay_)
 		{
