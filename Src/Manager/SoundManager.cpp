@@ -14,23 +14,23 @@ void SoundManager::LoadSe(const SE_TYPE se)
 
 void SoundManager::BGMInit(void)
 {
-	bgmPass_[BGM_TYPE::TITLE] = "Title.mp3";
-	bgmPass_[BGM_TYPE::GAME] = "GameScene.mp3";
-	bgmPass_[BGM_TYPE::GAME2] = "GameScene2.mp3";
-	bgmPass_[BGM_TYPE::RESULT] = "Result.mp3";
+	bgmPass_[BGM_TYPE::TITLE] = TITLE_BGM;
+	bgmPass_[BGM_TYPE::GAME] = GAME_BGM;
+	bgmPass_[BGM_TYPE::GAME2] = GAME2_BGM;
+	bgmPass_[BGM_TYPE::RESULT] = RESULT_BGM;
 }
 
 void SoundManager::SEInit(void)
 {
-	sePass_[SE_TYPE::SLIMEMOVE] = "MoveSlime.mp3";
-	sePass_[SE_TYPE::ATTACK] = "Attack.mp3";
-	sePass_[SE_TYPE::WAIDATK] = "WaidAtk.mp3";
-	sePass_[SE_TYPE::WAIDATKCHARGE] = "WaidCharge.mp3";
-	sePass_[SE_TYPE::BUTTON] = "button.mp3";
-	sePass_[SE_TYPE::CANCEL] = "Cancel.mp3";
-	sePass_[SE_TYPE::CURSOR] = "Cursor.mp3";
-	sePass_[SE_TYPE::GAMESTART] = "GameStart.mp3";
-	sePass_[SE_TYPE::RESULT_TITLE] = "ResultButton.mp3";
+	sePass_[SE_TYPE::SLIMEMOVE] = STEP_SE;
+	sePass_[SE_TYPE::ATTACK] = ATTACK_SE;
+	sePass_[SE_TYPE::WAIDATK] = WAID_ATK_SE;
+	sePass_[SE_TYPE::WAIDATKCHARGE] = CHARGE_WAID_ATK_SE;
+	sePass_[SE_TYPE::BUTTON] = BUTTON_SE;
+	sePass_[SE_TYPE::CANCEL] = CANCEL_SE;
+	sePass_[SE_TYPE::CURSOR] = MOVE_CURSOR;
+	sePass_[SE_TYPE::GAMESTART] = GAME_START_SE;
+	sePass_[SE_TYPE::RESULT_TITLE] = RESULT_2_TITLE;
 }
 
 

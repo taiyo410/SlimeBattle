@@ -66,9 +66,6 @@ void EffectManager::PlayEffect(EFF_TYPE effect, SlimeBase* slime, Parameta par)
 	int resID = data.resId_;
 	int effHandle = PlayEffekseer3DEffect(resID);	// エフェクトハンドル
 
-	// pushBackの後ろはかっこが1つじゃない？
-	//effDatas_[effect].playIds_.emplace_back(PlayEffekseer3DEffect(effDatas_[effect].resId_));
-
 	EFF_USER play;
 	play.user_ = slime;
 	play.playId_ = effHandle;
@@ -165,17 +162,8 @@ void EffectManager::StopEffect(EFF_TYPE type, SlimeBase* slime)
 
 void EffectManager::DeleteEffect(void)
 {
-	//SetSpeedPlayingEffekseer3DEffect(effectPlayId_, 4000);
+	
 }
-
-//bool EffectManager::IsPlayEffectEnd(void)
-//{
-//	if (IsEffekseer3DEffectPlaying(effectPlayId_) == -1)
-//	{
-//		return false;
-//	}
-//	return true;
-//}
 
 bool EffectManager::IsPlayEffectEnd(EFF_TYPE type, SlimeBase* slime)
 {
@@ -201,11 +189,6 @@ bool EffectManager::IsPlayEffectEnd(EFF_TYPE type, SlimeBase* slime)
 
 }
 
-//void EffectManager::ChangeEffect(EFF_TYPE effect,Parameta par)
-//{
-//	effectEnum_ = effect;
-//	PlayEffect(effect,par);
-//}
 
 EffectManager::EffectManager(void)
 {

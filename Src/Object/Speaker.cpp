@@ -25,27 +25,27 @@ void Speaker::SetParam(void)
 
 void Speaker::UpdateWaidAttack(void)
 {
-	if (!isDead_)
-	{
-		if (isAtkAlive_)
-		{
-			//ƒJƒƒ‰U“®ˆ—
-			auto camera = SceneManager::GetInstance().GetCamera();
-			camera = SceneManager::GetInstance().GetCamera();
-			camera->CameraShake(SHALE_CNT, SHAKE_LIMIT);
+	if (isDead_)return;
 
-			//“–‚½‚è”»’è‚ğL‚°‚é
-			waidAtkRadius_ += WAID_COL_EXPAND_SPEED;
-			if (waidAtkRadius_ >= WAID_ATK_COL)
-			{
-				//¶‘¶”»’è‚ğE‚µ‚Ä‰Šú‰»
-				//waidAtkRadius_ = 0;
-				isAtkAlive_ = false;
-				isAtkEnd_ = true;
-				isDead_ = true;
-			}
-		}
+	if (!isAtkAlive_)return;
+
+	//ƒJƒƒ‰U“®ˆ—
+	auto camera = SceneManager::GetInstance().GetCamera();
+	camera = SceneManager::GetInstance().GetCamera();
+	camera->CameraShake(SHALE_CNT, SHAKE_LIMIT);
+
+	//“–‚½‚è”»’è‚ğL‚°‚é
+	waidAtkRadius_ += WAID_COL_EXPAND_SPEED;
+	if (waidAtkRadius_ >= WAID_ATK_COL)
+	{
+		//¶‘¶”»’è‚ğE‚µ‚Ä‰Šú‰»
+		//waidAtkRadius_ = 0;
+		isAtkAlive_ = false;
+		isAtkEnd_ = true;
+		isDead_ = true;
 	}
+
+
 }
 
 

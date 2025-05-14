@@ -84,8 +84,6 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };
 
-	slimeNum_ = 0;
-
 	//ガードクールタイムゲージサイズ初期化
 	guardCoolTimeGaugeSize_ = GUARD_GAUGE_SIZE_DEFAULT;
 

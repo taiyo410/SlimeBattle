@@ -323,9 +323,6 @@ public:
 	//弱体状態のゲッタ
 	bool GetIsWeak(void);
 
-	//スライム番号の取得
-	int GetSlimeNum(void);
-
 	//重力のセッタ(広範囲攻撃用)
 	void SetGravityPow(const float gravityPow);
 
@@ -462,7 +459,6 @@ protected:
 	int waidChargeCnt_;	//広範囲攻撃の溜めカウント
 	WAID_ATK waidAtk_;	//広範囲攻撃状態
 	int waidAtkCoolTime_;	//広範囲攻撃のクールタイム
-	int slimeNum_;		//スライム番号
 	float jumpCnt_;		//広範囲攻撃のジャンプカウント
 
 	//フレームカウント

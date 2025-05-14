@@ -9,7 +9,6 @@ void Stage::Init(void)
 	MV1SetScale(model_, SCALE);
 
 	//3Dモデルの位置(引数は、3D座標)
-	//MV1SetPosition(model_, { -STAGE_ONE_SQUARE / 2,0.0f,-STAGE_ONE_SQUARE / 2 });
 	MV1SetPosition(model_,SunUtility::VECTOR_ZERO);
 
 	//3Dモデルの向き(引数は、x,y,zの回転量。単位はラジアン)

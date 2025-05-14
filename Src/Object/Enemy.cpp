@@ -4,7 +4,6 @@
 #include"../Manager/InputManager.h"
 #include"../Manager/EffectManager.h"
 #include"../Manager/ModelManager.h"
-#include"../Manager/SlimeManager.h"
 #include"../Manager/SceneManager.h"
 #include"../Manager/Camera.h"
 #include"../Common/CommonData.h"
@@ -91,9 +90,7 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::
 
 	gravityPow_ = DEFAULT_GRAVITY;
 
-	slimeNum_ = 1;
-
-	moveRoute_ = VSub(pos_, {0.0f, 0.0f, 0.0f });
+	moveRoute_ = VSub(pos_, SunUtility::VECTOR_ZERO);
 	fallDmg_ = FALL_DMG_DEFAULT;
 
 	fallScore_ = FALL_SCORE_DEFAULT;

@@ -18,7 +18,7 @@ bool ResultScene::Init(void)
 	sound_->SEInit();
 	sound_->LoadSe(SoundManager::SE_TYPE::RESULT_TITLE);
 	sound_->LoadBgm(SoundManager::BGM_TYPE::RESULT);
-	sound_->PlayBgm(SoundManager::BGM_TYPE::RESULT, DX_PLAYTYPE_LOOP, 50);
+	sound_->PlayBgm(SoundManager::BGM_TYPE::RESULT, DX_PLAYTYPE_LOOP, BGM_VOL);
 	model_ = new ModelManager();
 	model_->ModelInit();
 	
@@ -27,12 +27,12 @@ bool ResultScene::Init(void)
 	modelPos_ = {SunUtility::VECTOR_ZERO};
 	modelRot_ = {SunUtility::VECTOR_ZERO};
 	modelScl_ = {1.0f,1.0f,1.0f};
-	resultImg_ = LoadGraph((Application::PATH_IMAGE + "ResultBack.png").c_str());
-	curtainImg_ = LoadGraph((Application::PATH_IMAGE + "curtain.png").c_str());
-	resultBackImg_ = LoadGraph((Application::PATH_IMAGE + "PastelRainBow.png").c_str());
+	resultImg_ = LoadGraph((Application::PATH_IMAGE + WIN_BG_IMG).c_str());
+	curtainImg_ = LoadGraph((Application::PATH_IMAGE + CURTAIN_IMG).c_str());
+	resultBackImg_ = LoadGraph((Application::PATH_IMAGE + RAINBOW_IMG).c_str());
 	if (CommonData::GetData().GetWinPattern() == CommonData::WINPATTERN::DRAW)
 	{
-		resultImg_= LoadGraph((Application::PATH_IMAGE + "ResultBack(DrawNoback).png").c_str());
+		resultImg_= LoadGraph((Application::PATH_IMAGE + DRAW_IMG).c_str());
 
 		modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
 		modelType2_ = ModelManager::MODEL_TYPE::YUUHI;
@@ -71,12 +71,12 @@ void ResultScene::Update(void)
 {
 	easeStep_++;
 	stringCnt_++;
-	resultBackImgRot_ += 0.05;
-	if (resultBackImgRot_ > 2.0f * DX_PI_F)
+	resultBackImgRot_ += RAINBOW_SPD;
+	if (resultBackImgRot_ > TWO_PI_F)
 	{
 		resultBackImgRot_ = 0.0f;
 	}
-	curtainPos_.y= BackIn(easeStep_,EASING_TOTAL_TIME,0,-800,0.5);
+	curtainPos_.y= BackIn(easeStep_,EASING_TOTAL_TIME,0,EASING_START_POS_Y, BACK_IN_S_VALUE);
 	if (CommonData::GetData().GetWinPattern() == CommonData::WINPATTERN::DRAW)
 	{
 		int i = 0;
@@ -109,8 +109,8 @@ void ResultScene::Update(void)
 
 void ResultScene::Draw(void)
 {
-	int font = CreateFontToHandle("Gill Sans MT", 45, 8, DX_FONTTYPE_EDGE);
-	DrawRotaGraph(Application::SCREEN_SIZE_X/2, Application::SCREEN_SIZE_Y / 2+50, 1.0f, resultBackImgRot_,resultBackImg_, true);
+	int font = CreateFontToHandle("Gill Sans MT", FONT_SIZE, FONT_THICK, DX_FONTTYPE_EDGE);
+	DrawRotaGraph(RESULT_BACK_IMG_POS_X, RESULT_BACK_IMG_POS_Y, 1.0f, resultBackImgRot_,resultBackImg_, true);
 	DrawGraph(0, 0, resultImg_, true);
 	model_->DrawModel(modelType_);
 	if (CommonData::GetData().GetWinPattern() == CommonData::WINPATTERN::DRAW)
@@ -118,11 +118,11 @@ void ResultScene::Draw(void)
 		model_->DrawModel(modelType2_);
 	}
 
-	if (((stringCnt_ / 30) % 2) == 0 && easeStep_ >= EASING_TOTAL_TIME)
+	if (((stringCnt_ / STRING_INTERVAL) % STRING_BLINK) == 0 && easeStep_ >= EASING_TOTAL_TIME)
 	{
 		int stringSize = GetDrawFormatStringWidthToHandle(font, "Push The Botton!");
 		DrawStringToHandle((Application::SCREEN_SIZE_X - stringSize) / 2
-			, Application::SCREEN_SIZE_Y / 2 + 240, "Push The A Button!", 0xfab75e, font);
+			, STRING_POS_Y, "Push The A Button!", STRING_COLOR, font);
 	}
 
 	DrawGraph(curtainPos_.x,curtainPos_.y, curtainImg_,false);

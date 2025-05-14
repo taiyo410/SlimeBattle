@@ -1,6 +1,5 @@
 #include"../Application.h"
 #include"../Manager/SceneManager.h"
-#include"../Manager/SlimeManager.h"
 #include"../Scene/SceneGame.h"
 #include "RuleHp.h"
 
@@ -13,8 +12,8 @@ void RuleHp::Update(void)
 {
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
-		float playerHp = sceneGame_->GetPlayerHpPercent(SlimeManager::PLAYER);
-		float enemyHp = sceneGame_->GetPlayerHpPercent(SlimeManager::ENEMY);
+		float playerHp = sceneGame_->GetPlayerHpPercent(SceneGame::PLAYER);
+		float enemyHp = sceneGame_->GetPlayerHpPercent(SceneGame::ENEMY);
 		if (enemyHp <= 0.0f || playerHp <= 0.0f)
 		{
 			if (enemyHp <= 0.0f && playerHp <= 0.0f)
@@ -37,8 +36,8 @@ void RuleHp::Update(void)
 	}
 	else if (CommonData::GetData().GetMode() == CommonData::MODE::PVP)
 	{
-		float playerHp = sceneGame_->GetPlayerHpPercent(SlimeManager::PLAYER);
-		float player2Hp = sceneGame_->GetPlayerHpPercent(SlimeManager::ENEMY);
+		float playerHp = sceneGame_->GetPlayerHpPercent(SceneGame::PLAYER);
+		float player2Hp = sceneGame_->GetPlayerHpPercent(SceneGame::ENEMY);
 		if (player2Hp <= 0.0f || playerHp <= 0.0f)
 		{
 			if (player2Hp <= 0.0f && playerHp <= 0.0f)
