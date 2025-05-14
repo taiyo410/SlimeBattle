@@ -30,6 +30,9 @@ public:
 	//”¼Œa
 	static constexpr float RADIUS = 25.0f;
 
+	//•œŠˆ‚µ‚½‚Æ‚«‚Ì‚‚³
+	static constexpr float REVIVAL_HEIGHT_POS_Y = RADIUS * 5.0f;
+
 	//‰ŠúÀ•W
 	//¶‘¤
 	static constexpr VECTOR INIT_LEFT_POS = { -Stage::STAGE_ONE_SQUARE * 3, RADIUS, 0.0f };

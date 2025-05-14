@@ -70,6 +70,10 @@ public:
 	//カメラの制限
 	static constexpr float SHAKE_LIMIT = 10;
 
+	//スライム状態画像座標
+	static constexpr int FACE_POS_X = 1070;
+	static constexpr int FACE_POS_Y = 144;
+
 	//描画
 	 // スタミナゲージの描画に関する定数
 	static constexpr int STAMINA_GAUGE_X = 15;

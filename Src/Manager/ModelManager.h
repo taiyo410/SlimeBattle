@@ -36,8 +36,8 @@ public:
 	//読み込むモデル
 	enum class MODEL_TYPE
 	{
-		KOKAGE
-		,YUUHI
+		BLUE_SLIME
+		,ORANGE_SLIME
 	};
 	//アニメーション
 	enum class ANIM_TYPE 

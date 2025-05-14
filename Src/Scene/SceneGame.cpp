@@ -42,7 +42,7 @@ SceneGame::SceneGame(void)
 		int padNum = 0;
 		VECTOR initPos = {};
 		int enemyNum = 0;
-		ModelManager::MODEL_TYPE type = ModelManager::MODEL_TYPE::KOKAGE;
+		ModelManager::MODEL_TYPE type = ModelManager::MODEL_TYPE::BLUE_SLIME;
 		SunUtility::DIR_3D initDir = SunUtility::DIR_3D::RIGHT;
 
 		switch (type_[s])
@@ -58,14 +58,14 @@ SceneGame::SceneGame(void)
 			padNum = DX_INPUT_PAD2;
 			enemyNum = PLAYER;
 			initPos = SlimeBase::INIT_RIGHT_POS;
-			type = ModelManager::MODEL_TYPE::YUUHI;
+			type = ModelManager::MODEL_TYPE::ORANGE_SLIME;
 			initDir = SunUtility::DIR_3D::LEFT;
 			break;
 		case CommonData::TYPE::ENEMY:
 			enemy_ = new Enemy();
 			slime_[s] = enemy_;
 			initPos = SlimeBase::INIT_RIGHT_POS;
-			type = ModelManager::MODEL_TYPE::YUUHI;
+			type = ModelManager::MODEL_TYPE::ORANGE_SLIME;
 			enemyNum = PLAYER;
 			initDir = SunUtility::DIR_3D::LEFT;
 			break;
@@ -176,9 +176,9 @@ void SceneGame::Update(void)
 	ruleBase_->Update();
 
 #pragma region PVE—p‚Ì“–‚½‚è”»’è
-	//auto& slimeMng=SlimeManager::GetInstance();
-	float playerHp = GetPlayerHpPercent(SlimeManager::PLAYER);
-	float enemyHp = GetPlayerHpPercent(SlimeManager::ENEMY);
+	
+	float playerHp = GetPlayerHpPercent(SceneGame::PLAYER);
+	float enemyHp = GetPlayerHpPercent(SceneGame::ENEMY);
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
 		if (CommonData::GetData().GetRule() == CommonData::RULE::HP)

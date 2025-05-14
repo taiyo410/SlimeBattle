@@ -4,8 +4,8 @@
 
 void ModelManager::ModelInit(void)
 {
-	modelFilePass_[MODEL_TYPE::KOKAGE] = "SilmeAnimKokage.mv1";
-	modelFilePass_[MODEL_TYPE::YUUHI] = "SilmeAnimYuuhi.mv1";
+	modelFilePass_[MODEL_TYPE::BLUE_SLIME] = "SilmeAnimKokage.mv1";
+	modelFilePass_[MODEL_TYPE::ORANGE_SLIME] = "SilmeAnimYuuhi.mv1";
 }
 
 int ModelManager::LoadModel(MODEL_TYPE model)

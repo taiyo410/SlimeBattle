@@ -34,8 +34,8 @@ bool ResultScene::Init(void)
 	{
 		resultImg_= LoadGraph((Application::PATH_IMAGE + DRAW_IMG).c_str());
 
-		modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
-		modelType2_ = ModelManager::MODEL_TYPE::YUUHI;
+		modelType_ = ModelManager::MODEL_TYPE::BLUE_SLIME;
+		modelType2_ = ModelManager::MODEL_TYPE::ORANGE_SLIME;
 		modelPar_.pos = { SunUtility::VECTOR_ZERO.x - SlimeBase::RADIUS-SLIME_DISTANCE,SunUtility::VECTOR_ZERO.y,SunUtility::VECTOR_ZERO.z };
 		modelPar_.rot = { SunUtility::VECTOR_ZERO };
 		modelPar_.scl = { 1.0f,1.0f,1.0f };
@@ -48,11 +48,11 @@ bool ResultScene::Init(void)
 	}
 	else if (CommonData::GetData().GetWinPattern() == CommonData::WINPATTERN::P1WIN)
 	{
-		modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
+		modelType_ = ModelManager::MODEL_TYPE::BLUE_SLIME;
 	}
 	else if (CommonData::GetData().GetWinPattern() == CommonData::WINPATTERN::P2WIN)
 	{
-		modelType_ = ModelManager::MODEL_TYPE::YUUHI;
+		modelType_ = ModelManager::MODEL_TYPE::ORANGE_SLIME;
 	}
 	model_->LoadModel(modelType_);
 	model_->LoadModel(modelType2_);
