@@ -73,20 +73,22 @@ void RuleHp::Draw(void)
 		, HP_GAUGE_WIDTH_X, HP_GAUGE_HEIGHT_Y, SunUtility::BLACK, true);
 	if (playerHp >= 0.0f)
 	{
-		DrawBox(274
-			, 16
-			, 274 - playerHp * HP_GAUGE_WIDTH/*バーの長さ*/
-			, 39, 0x2ce70b, true);
+		DrawBox(HP_IN_GAUGE_PLAYER_X
+			, HP_IN_GAUGE_PLAYER_Y
+			, HP_IN_GAUGE_PLAYER_X - playerHp * HP_GAUGE_WIDTH/*バーの長さ*/
+			, HP_IN_GAUGE_WIDTH, HP_GAUGE_ENEMY_COLOR, true);
 	}
 
 	float enemyHp = sceneGame_->GetPlayerHpPercent(SceneGame::ENEMY);
 
 	//敵のHP表示
 	//0を下回ったら表示しない
-	DrawBox(HP_GAUGE_START_X, 15, Application::SCREEN_SIZE_X - 15, 40, 0x000000, true);
+	DrawBox(HP_GAUGE_START_ENEMY_X, HP_GAUGE_ENEMY_POS_X, Application::SCREEN_SIZE_X - HP_GAUGE_ENEMY_POS_X
+		, HP_GAUGE_P2_HEIGHT_Y, 0x000000, true);
 	if (enemyHp >= 0.0f)
 	{
-		DrawBox(HP_GAUGE_START_X, 16, HP_GAUGE_START_X + enemyHp * 260, 39, 0x2ce70b, true);
+		DrawBox(HP_GAUGE_START_ENEMY_X, HP_GAUGE_START_ENEMY_Y
+			, HP_GAUGE_START_ENEMY_X + enemyHp * HP_GAUGE_ENEMY_WIDTH, HP_GAUGE_START_ENEMY_HEGHT, 0x2ce70b, true);
 	}
 }        
 

@@ -119,7 +119,6 @@ void Enemy::Update(void)
 		AddGravity(gravityPow_);
 	}
 	
-
 	//スタミナ回復処理
 	StaminaRecovery();
 
@@ -415,6 +414,7 @@ void Enemy::ChangeEnemyState(SlimeBase::ENEMYSTATE state)
 		fallScore_ += FALL_SCORE_INCREASE;
 		revivalCnt_ = REVIVAL_CNT_MAX;
 		isWeak_ = false;
+		isJump_ = false;
 		break;
 	}
 
@@ -451,6 +451,10 @@ void Enemy::DebuffUpdate(void)
 
 void Enemy::UpdateThink(void)
 {
+	if (!MoveLimit())
+	{
+		ChangeEnemyState(SlimeBase::ENEMYSTATE::FALL);
+	}
 	if (isJump_)return;
 	VECTOR playerPos = sceneGame_->GetPlayerPos(SceneGame::PLAYER);
 	VECTOR enemyPos = pos_;
@@ -479,10 +483,6 @@ void Enemy::UpdateThink(void)
 	{
 		act_ = ACT::Attack;
 		ChangeEnemyState(SlimeBase::ENEMYSTATE::STEP);
-	}
-	if (!MoveLimit())
-	{
-		ChangeEnemyState(SlimeBase::ENEMYSTATE::FALL);
 	}
 
 }
