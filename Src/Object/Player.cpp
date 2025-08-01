@@ -38,7 +38,7 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 	dir_ = _initDir;
 
 	//スライム状態画像のロード
-	if (modelType_ == ModelManager::MODEL_TYPE::KOKAGE)
+	if (modelType_ == ModelManager::MODEL_TYPE::BLUE_SLIME)
 	{
 		facePos_ = { BLUE_SLIME_FACE_POS_X,BLUE_SLIME_FACE_POS_Y };
 		backSlimefacePos_ = facePos_;
@@ -48,7 +48,7 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 		slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + BLUE_CHARGE_FACE).c_str());
 		slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + BLUE_ATTACK_FACE).c_str());
 	}
-	else if (modelType_ == ModelManager::MODEL_TYPE::YUUHI)
+	else if (modelType_ == ModelManager::MODEL_TYPE::ORANGE_SLIME)
 	{
 		facePos_ = { ORANGE_SLIME_FACE_POS_X,ORANGE_SLIME_FACE_POS_Y };
 		backSlimefacePos_ = facePos_;
@@ -67,7 +67,7 @@ void Player::SetParam(VECTOR _initPos, int _padNum,int _enemyNum, ModelManager::
 	padNum_ = _padNum;
 	enemyNum_ = _enemyNum;
 
-	revivalPos_ = _initPos;
+	revivalPos_ = { _initPos.x,REVIVAL_HEIGHT_POS_Y,_initPos.z };
 
 	auto& ins = EffectManager::GetEffect();
 	//エフェクトのロード
@@ -194,9 +194,6 @@ void Player::Draw(void)
 {
 	SlimeBase::Draw();
 
-	//方向三角形
-	DrawDirTriangle(pos_, dir_, BLUE_SLIME_COLOR);
-
 	if (pState_ == SlimeBase::PLAYERSTATE::CHARGE)
 	{
 		VECTOR pos = VECTOR();
@@ -211,7 +208,7 @@ void Player::Draw(void)
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::CHARGE, pos, GAUGE_SIZE, GAUGE_SIZE, chargePer_, true);
 	}
 
-	if (modelType_ == ModelManager::MODEL_TYPE::KOKAGE)
+	if (modelType_ == ModelManager::MODEL_TYPE::BLUE_SLIME)
 	{
 		facePos_ = { BLUE_SLIME_FACE_POS_X,BLUE_SLIME_FACE_POS_Y };
 		backSlimefacePos_ = facePos_;
@@ -221,6 +218,9 @@ void Player::Draw(void)
 		parryPos = ConvWorldPosToScreenPos(PARRY_POS_BLUE);
 
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_K, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
+
+		//方向三角形
+		DrawDirTriangle(pos_, dir_, BLUE_SLIME_COLOR);
 
 		//スタミナゲージ
 		//外枠
@@ -243,6 +243,9 @@ void Player::Draw(void)
 		parryPos = ConvWorldPosToScreenPos(PARRY_POS_ORANGE);
 
 		gaugeCircle_->Draw(GaugeCircle::GAUGE_TYPE::PARRY_Y, parryPos, guardCoolTimeGaugeSize_, guardCoolTimeGaugeSize_, guardCoolTimePercent_, false);
+
+		//方向三角形
+		DrawDirTriangle(pos_, dir_, ORANGE_SLIME_COLOR);
 
 		//外枠
 		DrawBox(Application::SCREEN_SIZE_X - STAMINA_GAUGE_WIDTH_POS_X, STAMINA_GAUGE_Y

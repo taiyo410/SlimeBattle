@@ -31,10 +31,10 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::
 	slimeFaceImgs_[SLIME_FACE::CHARGE] = LoadGraph((Application::PATH_IMAGE + ORANGE_CHARGE_FACE).c_str());
 	slimeFaceImgs_[SLIME_FACE::ATTACK] = LoadGraph((Application::PATH_IMAGE + ORANGE_ATTACK_FACE).c_str());
 
-	facePos_ = { Application::SCREEN_SIZE_X - 60 - 70,40 + 74 + 30 };
+	facePos_ = { FACE_POS_X,FACE_POS_Y };
 	backSlimefacePos_ = facePos_;
 
-	revivalPos_ = _initPos;
+	revivalPos_ = { _initPos.x,REVIVAL_HEIGHT_POS_Y,_initPos.z };
 
 	scale_ = { 1.0f,1.0f,1.0f };
 	rot_ = { 0.0f,0.0f,0.0f };
@@ -47,8 +47,6 @@ void Enemy::SetParam(VECTOR _initPos, int _padNum, int _enemyNum, ModelManager::
 	waidChargePar_.pos = SunUtility::VECTOR_ZERO;
 	waidChargePar_.rot = SunUtility::VECTOR_ZERO;
 	waidChargePar_.scl = { WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL,WAID_CHARGE_EFFECT_SCL };;
-
-	//speedAnim_ = ANIM_SPEED_DEFAULT;
 
 	//ƒWƒƒƒ“ƒv—Í
 	jumpPower_ = 0.0f;

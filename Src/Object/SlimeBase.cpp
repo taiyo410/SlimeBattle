@@ -19,7 +19,7 @@
 SlimeBase::SlimeBase(void)
 {
 	//modelFileName_ = "SilmeAnimKokage.mv1";
-	modelType_ = ModelManager::MODEL_TYPE::KOKAGE;
+	modelType_ = ModelManager::MODEL_TYPE::BLUE_SLIME;
 	dir_ = {};
 	//スライム状態画像のロード
 	for (int i=0;i<static_cast<int>(SLIME_FACE::MAX);i++)
