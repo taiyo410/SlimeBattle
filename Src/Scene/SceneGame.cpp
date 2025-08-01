@@ -177,8 +177,8 @@ void SceneGame::Update(void)
 
 #pragma region PVE—p‚Ì“–‚½‚è”»’è
 	//auto& slimeMng=SlimeManager::GetInstance();
-	float playerHp = GetPlayerHpPercent(SlimeManager::PLAYER);
-	float enemyHp = GetPlayerHpPercent(SlimeManager::ENEMY);
+	float playerHp = GetPlayerHpPercent(PLAYER);
+	float enemyHp = GetPlayerHpPercent(ENEMY);
 	if (CommonData::GetData().GetMode() == CommonData::MODE::PVE)
 	{
 		if (CommonData::GetData().GetRule() == CommonData::RULE::HP)
